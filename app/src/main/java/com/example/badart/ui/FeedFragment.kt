@@ -20,8 +20,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         // MOCK DATA (Offline Mode)
         // In Phase 2, you replace this with Firebase Firestore listener
         val mockPosts = listOf(
-            Post("1", "User1", "Apple", null),
-            Post("2", "User2", "Car", null)
+            Post("1", "User1", "Apple", 1, false),
+            Post("2", "User2", "Car", 1, false)
         )
 
         val adapter = FeedAdapter(mockPosts)
