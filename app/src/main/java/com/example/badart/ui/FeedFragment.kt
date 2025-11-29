@@ -17,18 +17,26 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFeedBinding.bind(view)
 
-        // MOCK DATA (Offline Mode)
-        // In Phase 2, you replace this with Firebase Firestore listener
+        // FIX IS HERE: We use standard Android system icons instead of plain numbers
         val mockPosts = listOf(
-            Post("1", "User1", "Apple", 1, false),
-            Post("2", "User2", "Car", 1, false)
+            Post(
+                id = "1",
+                artistName = "User1",
+                wordToGuess = "Apple",
+                imageResId = android.R.drawable.ic_menu_gallery // Valid System ID
+            ),
+            Post(
+                id = "2",
+                artistName = "User2",
+                wordToGuess = "Car",
+                imageResId = android.R.drawable.ic_menu_camera // Valid System ID
+            )
         )
 
         val adapter = FeedAdapter(mockPosts)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
-        // FAB to go to Drawing Screen
         binding.fabDraw.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_drawFragment)
         }
