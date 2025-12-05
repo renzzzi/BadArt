@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.badart.model.Post
 import com.example.badart.model.User
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
@@ -20,7 +21,6 @@ class SharedViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
 
-    // Changed to allow nulls initially to avoid initialization crashes
     private val _currentUser = MutableLiveData<User?>()
     val currentUser: LiveData<User?> = _currentUser
 
@@ -37,9 +37,9 @@ class SharedViewModel : ViewModel() {
 
         userRef.get().addOnSuccessListener { document: DocumentSnapshot ->
             if (document.exists()) {
-                // We use !! to force it to be non-null because we know the document exists
                 val user = document.toObject(User::class.java)!!
                 _currentUser.value = user
+                fetchPosts()
             } else {
                 val newUser = User(userId, username)
                 userRef.set(newUser)
@@ -75,13 +75,22 @@ class SharedViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
 
+                val user = _currentUser.value
+                val blockedList = user?.blockedUsers ?: emptyList()
+
                 val postList = mutableListOf<Post>()
 
                 for (doc in value.documents) {
-                    // Use safe call ?. and let to handle potential nulls
                     val post = doc.toObject(Post::class.java)
 
                     if (post != null) {
+                        if (post.reportCount >= 3) continue
+
+                        if (blockedList.contains(post.artistName)) continue
+
+                        // I REMOVED the check for filtering own posts here.
+                        // We will filter in the UI instead.
+
                         if (post.imageBase64.isNotEmpty()) {
                             try {
                                 val decodedBytes = Base64.decode(post.imageBase64, Base64.DEFAULT)
@@ -108,6 +117,23 @@ class SharedViewModel : ViewModel() {
             .update("totalScore", newScore)
             .addOnSuccessListener {
                 _currentUser.value = user.copy(totalScore = newScore)
+            }
+    }
+
+    fun reportPost(post: Post) {
+        db.collection("posts").document(post.id)
+            .update("reportCount", post.reportCount + 1)
+    }
+
+    fun blockUser(artistName: String) {
+        val user = _currentUser.value ?: return
+
+        db.collection("users").document(user.userId)
+            .update("blockedUsers", FieldValue.arrayUnion(artistName))
+            .addOnSuccessListener {
+                user.blockedUsers.add(artistName)
+                _currentUser.value = user
+                fetchPosts()
             }
     }
 }

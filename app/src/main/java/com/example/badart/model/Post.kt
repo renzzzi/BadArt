@@ -9,6 +9,7 @@ data class Post(
     var wordToGuess: String = "",
     var imageBase64: String = "",
     var isSolved: Boolean = false,
+    var reportCount: Int = 0,
     var timestamp: Long = 0,
     @get:Exclude var imageBitmap: Bitmap? = null
 )
