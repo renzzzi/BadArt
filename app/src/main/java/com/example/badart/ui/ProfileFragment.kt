@@ -7,6 +7,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -36,6 +37,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.tvCorrectGuesses.text = user.correctGuesses.toString()
                 binding.tvPostCount.text = user.postCount.toString()
 
+                if (user.hasChangedAvatar) {
+                    binding.tvAvatarHint.text = "Tap to Change Avatar (50 pts)"
+                } else {
+                    binding.tvAvatarHint.text = "Tap to Draw Avatar (Free)"
+                }
+
                 if (user.avatarBase64.isNotEmpty()) {
                     try {
                         val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
@@ -63,7 +70,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
 
         binding.cardAvatar.setOnClickListener {
-            showAvatarDialog()
+            val user = viewModel.currentUser.value ?: return@setOnClickListener
+            if (user.hasChangedAvatar) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Change Avatar")
+                    .setMessage("Changing your avatar will cost 50 points. Continue?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        if (user.totalScore >= 50) {
+                            showAvatarDialog()
+                        } else {
+                            showNotEnoughPointsDialog()
+                        }
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            } else {
+                showAvatarDialog()
+            }
+        }
+
+        binding.btnEditName.setOnClickListener {
+            val user = viewModel.currentUser.value ?: return@setOnClickListener
+            if (user.hasChangedUsername) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Change Username")
+                    .setMessage("Changing your username will cost 50 points. Continue?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        if (user.totalScore >= 50) {
+                            showNameDialog()
+                        } else {
+                            showNotEnoughPointsDialog()
+                        }
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+            } else {
+                showNameDialog()
+            }
         }
 
         binding.btnLogout.setOnClickListener {
@@ -80,6 +123,41 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+    }
+
+    private fun showNotEnoughPointsDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Not Enough Points")
+            .setMessage("Sorry, you need 50 points to make this change. Go solve some Bad Art!")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun showNameDialog() {
+        val input = EditText(requireContext())
+        input.hint = "New Username"
+
+        val container = LinearLayout(requireContext())
+        container.orientation = LinearLayout.VERTICAL
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        params.setMargins(50, 0, 50, 0)
+        input.layoutParams = params
+        container.addView(input)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("New Username")
+            .setView(container)
+            .setPositiveButton("Save") { _, _ ->
+                val newName = input.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    viewModel.updateUsername(newName,
+                        onSuccess = { Toast.makeText(context, "Username updated!", Toast.LENGTH_SHORT).show() },
+                        onFailure = { msg -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+                    )
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showAvatarDialog() {
@@ -140,8 +218,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         btnSave.setOnClickListener {
             val bitmap = drawingView.getBitmap()
             if (bitmap != null) {
-                viewModel.updateAvatar(bitmap)
-                dialog.dismiss()
+                viewModel.updateAvatar(bitmap,
+                    onSuccess = {
+                        Toast.makeText(context, "Avatar updated!", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    },
+                    onFailure = { msg ->
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    }
+                )
             }
         }
 

@@ -82,7 +82,6 @@ class SharedViewModel : ViewModel() {
                     fetchPosts()
                     fetchLeaderboard()
                 } else {
-                    // Recreate if auth exists but data was deleted
                     val newUser = User(userId = uid, username = "Returned User")
                     db.collection("users").document(uid).set(newUser)
                     _currentUser.value = newUser
@@ -258,17 +257,67 @@ class SharedViewModel : ViewModel() {
             }
     }
 
-    fun updateAvatar(bitmap: Bitmap) {
+    fun updateAvatar(bitmap: Bitmap, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
         val user = _currentUser.value ?: return
+        val cost = if (user.hasChangedAvatar) 50 else 0
+
+        if (user.totalScore < cost) {
+            onFailure("Not enough points! Cost: $cost")
+            return
+        }
+
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
         val byteArray = outputStream.toByteArray()
         val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
+        val newScore = user.totalScore - cost
+
         db.collection("users").document(user.userId)
-            .update("avatarBase64", base64String)
+            .update(
+                "avatarBase64", base64String,
+                "hasChangedAvatar", true,
+                "totalScore", newScore
+            )
             .addOnSuccessListener {
-                _currentUser.value = user.copy(avatarBase64 = base64String)
+                _currentUser.value = user.copy(
+                    avatarBase64 = base64String,
+                    hasChangedAvatar = true,
+                    totalScore = newScore
+                )
+                onSuccess()
+            }
+    }
+
+    fun updateUsername(newName: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        val user = _currentUser.value ?: return
+        val cost = if (user.hasChangedUsername) 50 else 0
+
+        if (newName.length < 3) {
+            onFailure("Too short")
+            return
+        }
+
+        if (user.totalScore < cost) {
+            onFailure("Not enough points! Cost: $cost")
+            return
+        }
+
+        val newScore = user.totalScore - cost
+
+        db.collection("users").document(user.userId)
+            .update(
+                "username", newName,
+                "hasChangedUsername", true,
+                "totalScore", newScore
+            )
+            .addOnSuccessListener {
+                _currentUser.value = user.copy(
+                    username = newName,
+                    hasChangedUsername = true,
+                    totalScore = newScore
+                )
+                onSuccess()
             }
     }
 
