@@ -65,6 +65,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             findNavController().navigate(R.id.action_feedFragment_to_drawFragment)
         }
 
+        binding.btnEmptyAction.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_drawFragment)
+        }
+
         binding.btnProfile.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_profileFragment)
         }
@@ -76,23 +80,39 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         val filteredList: List<Post>
         val isMyArt: Boolean
+        val tabIndex = binding.tabLayout.selectedTabPosition
 
-        if (binding.tabLayout.selectedTabPosition == 0) {
-            // TAB 0: My BadFeed (Everyone else's art)
-            filteredList = allPosts.filter { it.artistName != myName }
+        if (tabIndex == 0) {
+            // TAB 0: My BadFeed
+            // HIDE myself AND HIDE reported posts
+            filteredList = allPosts.filter { it.artistName != myName && it.reportCount < 3 }
             isMyArt = false
         } else {
-            // TAB 1: My BadArt (Only my art)
+            // TAB 1: My BadArt
+            // SHOW myself (including reported)
             filteredList = allPosts.filter { it.artistName == myName }
             isMyArt = true
         }
 
         if (filteredList.isEmpty()) {
-            binding.tvEmptyState.visibility = View.VISIBLE
+            binding.layoutEmptyState.visibility = View.VISIBLE
             binding.recyclerView.visibility = View.GONE
+
+            if (tabIndex == 0) {
+                // Empty Feed
+                binding.tvEmptyState.text = "Nothing to see here, come back later."
+                binding.btnEmptyAction.visibility = View.GONE
+                binding.fabDraw.visibility = View.VISIBLE
+            } else {
+                // Empty My Art
+                binding.tvEmptyState.text = "Create your first masterpiece"
+                binding.btnEmptyAction.visibility = View.VISIBLE
+                binding.fabDraw.visibility = View.GONE
+            }
         } else {
-            binding.tvEmptyState.visibility = View.GONE
+            binding.layoutEmptyState.visibility = View.GONE
             binding.recyclerView.visibility = View.VISIBLE
+            binding.fabDraw.visibility = View.VISIBLE
             adapter.updateList(filteredList, isMyArt)
         }
     }

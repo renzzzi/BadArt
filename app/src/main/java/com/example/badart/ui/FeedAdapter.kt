@@ -40,6 +40,13 @@ class FeedAdapter(
                 tvResult.visibility = View.VISIBLE
                 tvGuessHistory.visibility = View.VISIBLE
 
+                // Show Warning if Hidden
+                if (post.reportCount >= 3) {
+                    tvReportWarning.visibility = View.VISIBLE
+                } else {
+                    tvReportWarning.visibility = View.GONE
+                }
+
                 if (post.isSolved) {
                     tvResult.text = "Status: SOLVED by ${post.winner}\nWord: ${post.wordToGuess}"
                 } else {
@@ -53,9 +60,10 @@ class FeedAdapter(
                 }
 
             } else {
-                // MY BAD FEED (Public)
+                // PUBLIC FEED MODE
                 btnReport.visibility = View.VISIBLE
                 tvGuessHistory.visibility = View.GONE
+                tvReportWarning.visibility = View.GONE
 
                 if (post.isSolved) {
                     layoutGuessing.visibility = View.GONE

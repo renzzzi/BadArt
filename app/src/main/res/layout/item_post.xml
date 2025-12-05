@@ -12,25 +12,41 @@
         android:padding="8dp">
 
         <TextView
+            android:id="@+id/tvReportWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#FFEBEE"
+            android:padding="8dp"
+            android:text="This drawing has received multiple reports. It has now been hidden for everyone."
+            android:textColor="#D32F2F"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/tvArtist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/artist_name_placeholder"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/btnReport"
             app:layout_constraintEnd_toStartOf="@+id/btnReport"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnReport" />
+            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
 
         <ImageButton
             android:id="@+id/btnReport"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_desc_report"
             android:src="@android:drawable/ic_menu_info_details"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
 
         <ImageView
             android:id="@+id/ivDrawing"

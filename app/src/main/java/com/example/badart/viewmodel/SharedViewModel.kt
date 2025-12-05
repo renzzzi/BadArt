@@ -85,8 +85,11 @@ class SharedViewModel : ViewModel() {
                     val post = doc.toObject(Post::class.java)
 
                     if (post != null) {
-                        if (post.reportCount >= 3) continue
+                        // Filter out BLOCKED users (always hidden)
                         if (blockedList.contains(post.artistName)) continue
+
+                        // NOTE: Removed reportCount filtering here to handle it in UI
+                        // so artist can still see their own reported posts.
 
                         if (post.imageBase64.isNotEmpty()) {
                             try {
@@ -104,7 +107,6 @@ class SharedViewModel : ViewModel() {
     }
 
     fun solvePost(post: Post, winnerName: String) {
-        // Now that Post.kt enforces "isSolved", this update will match correctly
         db.collection("posts").document(post.id)
             .update(
                 "isSolved", true,
