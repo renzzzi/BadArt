@@ -78,6 +78,7 @@ class SharedViewModel : ViewModel() {
 
                 val user = _currentUser.value
                 val blockedList = user?.blockedUsers ?: emptyList()
+                val reportedList = user?.reportedPosts ?: emptyList()
 
                 val postList = mutableListOf<Post>()
 
@@ -85,11 +86,10 @@ class SharedViewModel : ViewModel() {
                     val post = doc.toObject(Post::class.java)
 
                     if (post != null) {
-                        // Filter out BLOCKED users (always hidden)
                         if (blockedList.contains(post.artistName)) continue
 
-                        // NOTE: Removed reportCount filtering here to handle it in UI
-                        // so artist can still see their own reported posts.
+                        // 2. Filter out posts I have personally reported
+                        if (reportedList.contains(post.id)) continue
 
                         if (post.imageBase64.isNotEmpty()) {
                             try {
@@ -133,8 +133,27 @@ class SharedViewModel : ViewModel() {
     }
 
     fun reportPost(post: Post) {
+        // 1. Increment global count
         db.collection("posts").document(post.id)
             .update("reportCount", post.reportCount + 1)
+
+        // 2. Add to local user's hidden list immediately
+        val user = _currentUser.value ?: return
+
+        db.collection("users").document(user.userId)
+            .update("reportedPosts", FieldValue.arrayUnion(post.id))
+            .addOnSuccessListener {
+                user.reportedPosts.add(post.id)
+                _currentUser.value = user
+                fetchPosts()
+            }
+    }
+
+    fun deletePost(post: Post) {
+        db.collection("posts").document(post.id).delete()
+            .addOnFailureListener { e ->
+                Log.e("BadArt", "Error deleting post: ${e.message}")
+            }
     }
 
     fun blockUser(artistName: String) {

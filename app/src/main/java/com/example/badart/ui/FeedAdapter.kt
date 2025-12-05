@@ -10,7 +10,8 @@ import com.example.badart.model.Post
 class FeedAdapter(
     private var posts: List<Post>,
     private val onGuess: (Post, String) -> Unit,
-    private val onReport: (Post) -> Unit
+    private val onReport: (Post) -> Unit,
+    private val onDelete: (Post) -> Unit
 ) : RecyclerView.Adapter<FeedAdapter.PostViewHolder>() {
 
     private var isMyArtMode = false
@@ -25,7 +26,6 @@ class FeedAdapter(
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
         holder.binding.apply {
-            tvArtist.text = post.artistName
 
             if (post.imageBitmap != null) {
                 ivDrawing.setImageBitmap(post.imageBitmap)
@@ -34,13 +34,14 @@ class FeedAdapter(
             }
 
             if (isMyArtMode) {
-                // MY BAD ART
+                tvArtist.visibility = View.GONE
                 btnReport.visibility = View.GONE
+                btnDelete.visibility = View.VISIBLE
+
                 layoutGuessing.visibility = View.GONE
                 tvResult.visibility = View.VISIBLE
                 tvGuessHistory.visibility = View.VISIBLE
 
-                // Show Warning if Hidden
                 if (post.reportCount >= 3) {
                     tvReportWarning.visibility = View.VISIBLE
                 } else {
@@ -59,9 +60,16 @@ class FeedAdapter(
                     tvGuessHistory.text = "No guesses yet."
                 }
 
+                btnDelete.setOnClickListener {
+                    onDelete(post)
+                }
+
             } else {
-                // PUBLIC FEED MODE
+                tvArtist.visibility = View.VISIBLE
+                tvArtist.text = post.artistName
                 btnReport.visibility = View.VISIBLE
+                btnDelete.visibility = View.GONE
+
                 tvGuessHistory.visibility = View.GONE
                 tvReportWarning.visibility = View.GONE
 

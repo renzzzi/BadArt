@@ -25,38 +25,59 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvArtist"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/artist_name_placeholder"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btnReport"
-            app:layout_constraintEnd_toStartOf="@+id/btnReport"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
-
         <ImageButton
             android:id="@+id/btnReport"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_desc_report"
             android:src="@android:drawable/ic_menu_info_details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
 
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete Post"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="#D32F2F"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
+
+        <TextView
+            android:id="@+id/tvArtist"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:text="@string/artist_name_placeholder"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/btnReport"
+            app:layout_constraintEnd_toStartOf="@+id/btnReport"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnReport" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvArtist,btnReport,btnDelete,tvReportWarning" />
+
         <ImageView
             android:id="@+id/ivDrawing"
             android:layout_width="0dp"
             android:layout_height="300dp"
+            android:layout_marginTop="8dp"
             android:background="@color/light_gray"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnReport" />
+            app:layout_constraintTop_toBottomOf="@+id/barrierHeader" />
 
         <TextView
             android:id="@+id/tvResult"

@@ -42,6 +42,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             },
             onReport = { post ->
                 showReportDialog(post)
+            },
+            onDelete = { post ->
+                showDeleteDialog(post)
             }
         )
 
@@ -83,13 +86,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         val tabIndex = binding.tabLayout.selectedTabPosition
 
         if (tabIndex == 0) {
-            // TAB 0: My BadFeed
-            // HIDE myself AND HIDE reported posts
             filteredList = allPosts.filter { it.artistName != myName && it.reportCount < 3 }
             isMyArt = false
         } else {
-            // TAB 1: My BadArt
-            // SHOW myself (including reported)
             filteredList = allPosts.filter { it.artistName == myName }
             isMyArt = true
         }
@@ -99,12 +98,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             binding.recyclerView.visibility = View.GONE
 
             if (tabIndex == 0) {
-                // Empty Feed
                 binding.tvEmptyState.text = "Nothing to see here, come back later."
                 binding.btnEmptyAction.visibility = View.GONE
                 binding.fabDraw.visibility = View.VISIBLE
             } else {
-                // Empty My Art
                 binding.tvEmptyState.text = "Create your first masterpiece"
                 binding.btnEmptyAction.visibility = View.VISIBLE
                 binding.fabDraw.visibility = View.GONE
@@ -133,6 +130,18 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     }
                 }
             }
+            .show()
+    }
+
+    private fun showDeleteDialog(post: Post) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Drawing")
+            .setMessage("Are you sure you want to delete this masterpiece? This cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deletePost(post)
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
             .show()
     }
 }
