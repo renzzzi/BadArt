@@ -68,22 +68,36 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="tvArtist,btnReport,btnDelete,tvReportWarning" />
 
-        <ImageView
-            android:id="@+id/ivDrawing"
+        <TextView
+            android:id="@+id/tvHintDisplay"
             android:layout_width="0dp"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@color/light_gray"
-            android:scaleType="fitCenter"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:letterSpacing="0.3"
+            android:text="_ _ _ _ _"
+            android:textColor="@color/primary_color"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/ivDrawing"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrierHeader" />
 
-        <!--
-           FIXED CONSTRAINTS:
-           Both btnReact and tvReactions are now anchored Top_toBottomOf ivDrawing.
-           This ensures they never float up over the image.
-        -->
+        <ImageView
+            android:id="@+id/ivDrawing"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/light_gray"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvHintDisplay" />
+
         <ImageButton
             android:id="@+id/btnReact"
             android:layout_width="40dp"
@@ -147,9 +161,21 @@
             android:layout_marginTop="8dp"
             android:hint="@string/hint_guess"
             android:minHeight="48dp"
-            app:layout_constraintEnd_toStartOf="@+id/btnGuess"
+            app:layout_constraintEnd_toStartOf="@+id/btnHint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvGuessHistory" />
+
+        <Button
+            android:id="@+id/btnHint"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hint (5)"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/etGuess"
+            app:layout_constraintEnd_toStartOf="@+id/btnGuess"
+            app:layout_constraintStart_toEndOf="@+id/etGuess"
+            app:layout_constraintTop_toTopOf="@+id/etGuess" />
 
         <Button
             android:id="@+id/btnGuess"
@@ -158,14 +184,13 @@
             android:text="@string/btn_guess"
             app:layout_constraintBottom_toBottomOf="@+id/etGuess"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/etGuess"
             app:layout_constraintTop_toTopOf="@+id/etGuess" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/layoutGuessing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="etGuess,btnGuess" />
+            app:constraint_referenced_ids="etGuess,btnGuess,btnHint,tvHintDisplay" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

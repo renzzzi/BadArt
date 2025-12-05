@@ -201,4 +201,20 @@ class SharedViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
+
+    fun deductScore(points: Int, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        val user = _currentUser.value ?: return
+        if (user.totalScore < points) {
+            onFailure()
+            return
+        }
+
+        val newScore = user.totalScore - points
+        db.collection("users").document(user.userId)
+            .update("totalScore", newScore)
+            .addOnSuccessListener {
+                _currentUser.value = user.copy(totalScore = newScore)
+                onSuccess()
+            }
+    }
 }

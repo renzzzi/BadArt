@@ -45,14 +45,27 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     Toast.makeText(context, "Wrong!", Toast.LENGTH_SHORT).show()
                 }
             },
-            onReport = { post ->
-                showReportDialog(post)
-            },
-            onDelete = { post ->
-                showDeleteDialog(post)
-            },
-            onReact = { post ->
-                showReactionDialog(post)
+            onReport = { post -> showReportDialog(post) },
+            onDelete = { post -> showDeleteDialog(post) },
+            onReact = { post -> showReactionDialog(post) },
+            onHint = { post ->
+
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Buy Hint?")
+                    .setMessage("Spend 5 points to briefly reveal a letter?")
+                    .setPositiveButton("Buy") { _, _ ->
+                        viewModel.deductScore(5,
+                            onSuccess = {
+                                adapter.triggerHint(post.id, post.wordToGuess)
+                                Toast.makeText(context, "Quick! Look closely!", Toast.LENGTH_SHORT).show()
+                            },
+                            onFailure = {
+                                Toast.makeText(context, "Not enough points!", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         )
 
