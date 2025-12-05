@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "646947800484",
+    "project_id": "badart-bcd6d",
+    "storage_bucket": "badart-bcd6d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646947800484:android:1b613f1460c6c6d1c9ed31",
+        "android_client_info": {
+          "package_name": "com.example.badart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-9AIve0JnzJsPIa9_UZd6gklIVGlDo88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

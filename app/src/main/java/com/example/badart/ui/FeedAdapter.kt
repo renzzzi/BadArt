@@ -24,7 +24,8 @@ class FeedAdapter(
         val post = posts[position]
         holder.binding.apply {
             tvArtist.text = post.artistName
-            if(post.imageBitmap != null) {
+
+            if (post.imageBitmap != null) {
                 ivDrawing.setImageBitmap(post.imageBitmap)
             } else {
                 ivDrawing.setImageDrawable(null)
@@ -40,8 +41,10 @@ class FeedAdapter(
 
                 btnGuess.setOnClickListener {
                     val guess = etGuess.text.toString().trim()
-                    onGuess(post, guess)
-                    etGuess.text.clear()
+                    if (guess.isNotEmpty()) {
+                        onGuess(post, guess)
+                        etGuess.text.clear()
+                    }
                 }
             }
         }

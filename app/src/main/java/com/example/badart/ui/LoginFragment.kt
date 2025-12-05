@@ -22,11 +22,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             binding.btnLogin.isEnabled = isChecked
         }
 
+        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+            }
+        }
+
         binding.btnLogin.setOnClickListener {
             val username = binding.etUsername.text.toString()
             if(username.isNotEmpty()) {
+                binding.btnLogin.isEnabled = false
+                binding.btnLogin.text = "Loading..."
                 viewModel.loginUser(username)
-                findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
             }
         }
     }
