@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Draw Avatar"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUndoAvatar"/>
+
+    <ImageButton
+        android:id="@+id/btnUndoAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_undo"
+        app:layout_constraintEnd_toStartOf="@+id/btnRedoAvatar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnRedoAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_redo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardCanvas"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="125dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUndoAvatar">
+
+        <com.example.badart.views.DrawingView
+            android:id="@+id/drawingViewAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+    </androidx.cardview.widget.CardView>
+
+    <HorizontalScrollView
+        android:id="@+id/scrollColors"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardCanvas">
+
+        <LinearLayout
+            android:id="@+id/layoutColorsAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutTools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/scrollColors">
+
+        <Button
+            android:id="@+id/btnBrushAvatar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_brush" />
+
+        <Button
+            android:id="@+id/btnFillAvatar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_fill" />
+
+        <Button
+            android:id="@+id/btnEraserAvatar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_eraser" />
+    </LinearLayout>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderSizeAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:value="10.0"
+        android:valueFrom="1.0"
+        android:valueTo="50.0"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTools" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/sliderSizeAvatar">
+
+        <Button
+            android:id="@+id/btnClearAvatar"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Clear" />
+
+        <Button
+            android:id="@+id/btnSaveAvatar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Save" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,4 +26,6 @@
     <string name="content_desc_leaderboard">View Leaderboard</string>
     <string name="rank_format">#%d</string>
     <string name="score_format">%d pts</string>
+
+    <string name="default_web_client_id">646947800484-dgm9jb8l7limubguqka3ata5us1oslc9.apps.googleusercontent.com</string>
 </resources>

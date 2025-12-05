@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.badart.model.Post
 import com.example.badart.model.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +23,7 @@ import java.util.UUID
 class SharedViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     private val _currentUser = MutableLiveData<User?>()
     val currentUser: LiveData<User?> = _currentUser
@@ -32,34 +35,69 @@ class SharedViewModel : ViewModel() {
     val leaderboard: LiveData<List<User>> = _leaderboard
 
     init {
-        fetchPosts()
-        fetchLeaderboard()
+        checkCurrentAuth()
     }
 
-    fun loginUser(username: String) {
-        val userId = username.lowercase().replace(" ", "_")
-        val userRef = db.collection("users").document(userId)
-
-        userRef.get().addOnSuccessListener { document: DocumentSnapshot ->
-            if (document.exists()) {
-                val user = document.toObject(User::class.java)!!
-                _currentUser.value = user
-                fetchPosts()
-            } else {
-                val newUser = User(userId, username)
-                userRef.set(newUser)
-                _currentUser.value = newUser
-            }
+    private fun checkCurrentAuth() {
+        val firebaseUser = auth.currentUser
+        if (firebaseUser != null) {
+            loadUserFromFirestore(firebaseUser.uid)
         }
+    }
+
+    fun firebaseLoginWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnSuccessListener { result ->
+                val firebaseUser = result.user!!
+                val userRef = db.collection("users").document(firebaseUser.uid)
+
+                userRef.get().addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        loadUserFromFirestore(firebaseUser.uid)
+                    } else {
+                        val newUser = User(
+                            userId = firebaseUser.uid,
+                            username = firebaseUser.displayName ?: "Artist ${firebaseUser.uid.take(4)}",
+                        )
+                        userRef.set(newUser).addOnSuccessListener {
+                            _currentUser.value = newUser
+                            fetchPosts()
+                            fetchLeaderboard()
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Auth", "Login failed", e)
+            }
+    }
+
+    private fun loadUserFromFirestore(uid: String) {
+        db.collection("users").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val user = document.toObject(User::class.java)
+                    _currentUser.value = user
+                    fetchPosts()
+                    fetchLeaderboard()
+                } else {
+                    // Recreate if auth exists but data was deleted
+                    val newUser = User(userId = uid, username = "Returned User")
+                    db.collection("users").document(uid).set(newUser)
+                    _currentUser.value = newUser
+                    fetchPosts()
+                    fetchLeaderboard()
+                }
+            }
     }
 
     private fun fetchLeaderboard() {
         db.collection("users")
             .orderBy("totalScore", Query.Direction.DESCENDING)
-            .limit(20)
+            .limit(50)
             .addSnapshotListener { value, error ->
                 if (error != null || value == null) return@addSnapshotListener
-
                 val users = value.toObjects(User::class.java)
                 _leaderboard.value = users
             }
@@ -82,6 +120,12 @@ class SharedViewModel : ViewModel() {
         )
 
         db.collection("posts").document(newPost.id).set(newPost)
+
+        db.collection("users").document(user.userId)
+            .update("postCount", FieldValue.increment(1))
+            .addOnSuccessListener {
+                _currentUser.value = user.copy(postCount = user.postCount + 1)
+            }
     }
 
     private fun fetchPosts() {
@@ -126,17 +170,18 @@ class SharedViewModel : ViewModel() {
                 "isSolved", true,
                 "winner", winnerName
             )
-            .addOnFailureListener { e ->
-                Log.e("BadArt", "Error updating post: ${e.message}")
-            }
 
         val user = _currentUser.value ?: return
         val newScore = user.totalScore + 10
+        val newGuesses = user.correctGuesses + 1
 
         db.collection("users").document(user.userId)
-            .update("totalScore", newScore)
+            .update(
+                "totalScore", newScore,
+                "correctGuesses", newGuesses
+            )
             .addOnSuccessListener {
-                _currentUser.value = user.copy(totalScore = newScore)
+                _currentUser.value = user.copy(totalScore = newScore, correctGuesses = newGuesses)
             }
     }
 
@@ -163,9 +208,6 @@ class SharedViewModel : ViewModel() {
 
     fun deletePost(post: Post) {
         db.collection("posts").document(post.id).delete()
-            .addOnFailureListener { e ->
-                Log.e("BadArt", "Error deleting post: ${e.message}")
-            }
     }
 
     fun blockUser(artistName: String) {
@@ -197,8 +239,6 @@ class SharedViewModel : ViewModel() {
             val currentCount = currentPost.reactions[emoji] ?: 0
             transaction.update(postRef, "reactions.$emoji", currentCount + 1)
             transaction.update(postRef, "userReactions.${user.userId}", emoji)
-        }.addOnFailureListener { e ->
-            e.printStackTrace()
         }
     }
 
@@ -215,6 +255,36 @@ class SharedViewModel : ViewModel() {
             .addOnSuccessListener {
                 _currentUser.value = user.copy(totalScore = newScore)
                 onSuccess()
+            }
+    }
+
+    fun updateAvatar(bitmap: Bitmap) {
+        val user = _currentUser.value ?: return
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        val byteArray = outputStream.toByteArray()
+        val base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+        db.collection("users").document(user.userId)
+            .update("avatarBase64", base64String)
+            .addOnSuccessListener {
+                _currentUser.value = user.copy(avatarBase64 = base64String)
+            }
+    }
+
+    fun logout() {
+        auth.signOut()
+        _currentUser.value = null
+    }
+
+    fun deleteAccount() {
+        val user = _currentUser.value ?: return
+        db.collection("users").document(user.userId).delete()
+            .addOnSuccessListener {
+                val firebaseUser = auth.currentUser
+                firebaseUser?.delete()?.addOnCompleteListener {
+                    logout()
+                }
             }
     }
 }
