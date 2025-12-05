@@ -11,18 +11,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentDrawBinding
+import com.example.badart.util.GameConstants
 import com.example.badart.viewmodel.SharedViewModel
 
 class DrawFragment : Fragment(R.layout.fragment_draw) {
 
     private lateinit var binding: FragmentDrawBinding
     private val viewModel: SharedViewModel by activityViewModels()
-    private val wordToDraw = "CACTUS"
+    private var wordToDraw = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDrawBinding.bind(view)
 
+        // Pick a random word when the screen loads
+        wordToDraw = GameConstants.getRandomWord()
         binding.tvWordPrompt.text = "Draw: $wordToDraw"
 
         setupColorRibbon()
@@ -42,6 +45,7 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         binding.btnSubmit.setOnClickListener {
             val bitmap = binding.drawingView.getBitmap()
             if (bitmap != null) {
+                // Now uploading the RANDOM word
                 viewModel.addPost(wordToDraw, bitmap)
                 Toast.makeText(requireContext(), "Uploaded to Feed!", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()

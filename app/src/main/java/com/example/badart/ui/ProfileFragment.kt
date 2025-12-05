@@ -18,8 +18,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding = FragmentProfileBinding.bind(view)
 
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-            binding.tvUsername.text = user.username
-            binding.tvScore.text = user.totalScore.toString()
+            if (user != null) {
+                binding.tvUsername.text = user.username
+                binding.tvScore.text = user.totalScore.toString()
+            }
         }
     }
 }

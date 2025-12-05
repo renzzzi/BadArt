@@ -1,11 +1,14 @@
 package com.example.badart.model
 
 import android.graphics.Bitmap
+import com.google.firebase.firestore.Exclude
 
 data class Post(
-    val id: String,
-    val artistName: String,
-    val wordToGuess: String,
-    val imageBitmap: Bitmap?,
-    var isSolved: Boolean = false
+    var id: String = "",
+    var artistName: String = "",
+    var wordToGuess: String = "",
+    var imageBase64: String = "",
+    var isSolved: Boolean = false,
+    var timestamp: Long = 0,
+    @get:Exclude var imageBitmap: Bitmap? = null
 )
