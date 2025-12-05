@@ -3,6 +3,7 @@ package com.example.badart.viewmodel
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -85,11 +86,7 @@ class SharedViewModel : ViewModel() {
 
                     if (post != null) {
                         if (post.reportCount >= 3) continue
-
                         if (blockedList.contains(post.artistName)) continue
-
-                        // I REMOVED the check for filtering own posts here.
-                        // We will filter in the UI instead.
 
                         if (post.imageBase64.isNotEmpty()) {
                             try {
@@ -106,9 +103,16 @@ class SharedViewModel : ViewModel() {
             }
     }
 
-    fun solvePost(post: Post) {
+    fun solvePost(post: Post, winnerName: String) {
+        // Now that Post.kt enforces "isSolved", this update will match correctly
         db.collection("posts").document(post.id)
-            .update("isSolved", true)
+            .update(
+                "isSolved", true,
+                "winner", winnerName
+            )
+            .addOnFailureListener { e ->
+                Log.e("BadArt", "Error updating post: ${e.message}")
+            }
 
         val user = _currentUser.value ?: return
         val newScore = user.totalScore + 10
@@ -118,6 +122,12 @@ class SharedViewModel : ViewModel() {
             .addOnSuccessListener {
                 _currentUser.value = user.copy(totalScore = newScore)
             }
+    }
+
+    fun recordWrongGuess(post: Post, guess: String, guesserName: String) {
+        val historyEntry = "$guesserName: $guess"
+        db.collection("posts").document(post.id)
+            .update("guessHistory", FieldValue.arrayUnion(historyEntry))
     }
 
     fun reportPost(post: Post) {

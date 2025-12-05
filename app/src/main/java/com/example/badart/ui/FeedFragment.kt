@@ -20,7 +20,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var adapter: FeedAdapter
 
-    // Store full list here, filter when sending to adapter
     private var allPosts: List<Post> = emptyList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,10 +29,14 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         adapter = FeedAdapter(
             posts = emptyList(),
             onGuess = { post, guess ->
+                val currentUser = viewModel.currentUser.value
+                val myName = currentUser?.username ?: "Anonymous"
+
                 if (guess.equals(post.wordToGuess, ignoreCase = true)) {
-                    viewModel.solvePost(post)
+                    viewModel.solvePost(post, myName)
                     Toast.makeText(context, "Correct! +10 Points", Toast.LENGTH_SHORT).show()
                 } else {
+                    viewModel.recordWrongGuess(post, guess, myName)
                     Toast.makeText(context, "Wrong!", Toast.LENGTH_SHORT).show()
                 }
             },
@@ -71,14 +74,26 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         val currentUser = viewModel.currentUser.value
         val myName = currentUser?.username ?: ""
 
+        val filteredList: List<Post>
+        val isMyArt: Boolean
+
         if (binding.tabLayout.selectedTabPosition == 0) {
             // TAB 0: My BadFeed (Everyone else's art)
-            val filtered = allPosts.filter { it.artistName != myName }
-            adapter.updateList(filtered, myArtMode = false)
+            filteredList = allPosts.filter { it.artistName != myName }
+            isMyArt = false
         } else {
             // TAB 1: My BadArt (Only my art)
-            val filtered = allPosts.filter { it.artistName == myName }
-            adapter.updateList(filtered, myArtMode = true)
+            filteredList = allPosts.filter { it.artistName == myName }
+            isMyArt = true
+        }
+
+        if (filteredList.isEmpty()) {
+            binding.tvEmptyState.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.tvEmptyState.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
+            adapter.updateList(filteredList, isMyArt)
         }
     }
 

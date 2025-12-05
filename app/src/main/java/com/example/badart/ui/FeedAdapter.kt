@@ -34,25 +34,33 @@ class FeedAdapter(
             }
 
             if (isMyArtMode) {
-                // MY BAD ART MODE: Show status, Hide Report, Hide Guessing
+                // MY BAD ART
                 btnReport.visibility = View.GONE
                 layoutGuessing.visibility = View.GONE
                 tvResult.visibility = View.VISIBLE
+                tvGuessHistory.visibility = View.VISIBLE
 
                 if (post.isSolved) {
-                    tvResult.text = "Status: SOLVED! Word: ${post.wordToGuess}"
+                    tvResult.text = "Status: SOLVED by ${post.winner}\nWord: ${post.wordToGuess}"
                 } else {
-                    tvResult.text = "Status: Still guessing... Word: ${post.wordToGuess}"
+                    tvResult.text = "Status: Unsolved\nWord: ${post.wordToGuess}"
+                }
+
+                if (post.guessHistory.isNotEmpty()) {
+                    tvGuessHistory.text = "Recent Guesses:\n" + post.guessHistory.joinToString("\n")
+                } else {
+                    tvGuessHistory.text = "No guesses yet."
                 }
 
             } else {
-                // PUBLIC FEED MODE
+                // MY BAD FEED (Public)
                 btnReport.visibility = View.VISIBLE
+                tvGuessHistory.visibility = View.GONE
 
                 if (post.isSolved) {
                     layoutGuessing.visibility = View.GONE
                     tvResult.visibility = View.VISIBLE
-                    tvResult.text = "Solved! Answer: ${post.wordToGuess}"
+                    tvResult.text = "Solved! The word was: ${post.wordToGuess}"
                 } else {
                     layoutGuessing.visibility = View.VISIBLE
                     tvResult.visibility = View.GONE

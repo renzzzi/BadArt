@@ -42,6 +42,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnReport" />
 
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="@color/solved_green"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivDrawing" />
+
+        <TextView
+            android:id="@+id/tvGuessHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvResult" />
+
         <EditText
             android:id="@+id/etGuess"
             android:layout_width="0dp"
@@ -51,7 +75,7 @@
             android:minHeight="48dp"
             app:layout_constraintEnd_toStartOf="@+id/btnGuess"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivDrawing" />
+            app:layout_constraintTop_toBottomOf="@+id/tvGuessHistory" />
 
         <Button
             android:id="@+id/btnGuess"
@@ -61,19 +85,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/etGuess"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etGuess"
-            app:layout_constraintTop_toTopOf="@+id/etGuess" />
-
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textColor="@color/solved_green"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/etGuess"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/etGuess" />
 
         <androidx.constraintlayout.widget.Group

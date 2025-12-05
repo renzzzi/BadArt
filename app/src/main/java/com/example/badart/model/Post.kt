@@ -7,9 +7,14 @@ data class Post(
     var id: String = "",
     var artistName: String = "",
     var wordToGuess: String = "",
-    var imageBase64: String = "",
+
     var isSolved: Boolean = false,
+
+    var winner: String = "",
+    var guessHistory: MutableList<String> = mutableListOf(),
     var reportCount: Int = 0,
     var timestamp: Long = 0,
+
+    var imageBase64: String = "",
     @get:Exclude var imageBitmap: Bitmap? = null
 )
