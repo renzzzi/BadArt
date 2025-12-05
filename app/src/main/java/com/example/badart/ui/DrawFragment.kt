@@ -11,13 +11,13 @@ import com.example.badart.databinding.FragmentDrawBinding
 class DrawFragment : Fragment(R.layout.fragment_draw) {
 
     private lateinit var binding: FragmentDrawBinding
-    private val wordToDraw = "ZOMBIE" // In real app, pick random from list
+    private val wordToDraw = "ZOMBIE"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDrawBinding.bind(view)
 
-        binding.tvWordPrompt.text = "Draw: $wordToDraw"
+        binding.tvWordPrompt.text = getString(R.string.draw_prompt, wordToDraw)
 
         binding.btnClear.setOnClickListener {
             binding.drawingView.clearCanvas()
@@ -26,9 +26,8 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         binding.btnSubmit.setOnClickListener {
             val bitmap = binding.drawingView.getBitmap()
             if (bitmap != null) {
-                // OFFLINE MODE: We just pretend to upload
-                Toast.makeText(requireContext(), "Uploaded to Feed!", Toast.LENGTH_SHORT).show()
-                findNavController().popBackStack() // Go back to feed
+                Toast.makeText(requireContext(), getString(R.string.uploaded_feed), Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
             }
         }
     }
