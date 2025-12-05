@@ -1,6 +1,5 @@
 package com.example.badart.ui
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -32,6 +31,13 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         binding.btnEraser.setOnClickListener { binding.drawingView.setEraser(true) }
         binding.btnFill.setOnClickListener { binding.drawingView.setFillMode(true) }
         binding.btnClear.setOnClickListener { binding.drawingView.clearCanvas() }
+
+        binding.btnUndo.setOnClickListener { binding.drawingView.undo() }
+        binding.btnRedo.setOnClickListener { binding.drawingView.redo() }
+
+        binding.sliderBrushSize.addOnChangeListener { _, value, _ ->
+            binding.drawingView.setBrushSize(value)
+        }
 
         binding.btnSubmit.setOnClickListener {
             val bitmap = binding.drawingView.getBitmap()

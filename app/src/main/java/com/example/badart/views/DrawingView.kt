@@ -27,6 +27,11 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var isEraser = false
     private var isFillMode = false
     private var isProcessing = false
+    private var brushSize = 10f
+
+    private val undoStack = ArrayList<Bitmap>()
+    private val redoStack = ArrayList<Bitmap>()
+    private val maxHistorySize = 10
 
     init {
         setupDrawing()
@@ -35,7 +40,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private fun setupDrawing() {
         drawPaint.color = paintColor
         drawPaint.isAntiAlias = true
-        drawPaint.strokeWidth = 10f
+        drawPaint.strokeWidth = brushSize
         drawPaint.style = Paint.Style.STROKE
         drawPaint.strokeJoin = Paint.Join.ROUND
         drawPaint.strokeCap = Paint.Cap.ROUND
@@ -72,6 +77,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
         if (isFillMode) {
             if (event.action == MotionEvent.ACTION_UP) {
+                saveToUndoStack()
                 performFloodFill(touchX.toInt(), touchY.toInt(), paintColor)
             }
             return true
@@ -79,6 +85,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                saveToUndoStack()
                 drawPath.moveTo(touchX, touchY)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -94,13 +101,58 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         return true
     }
 
+    private fun saveToUndoStack() {
+        val current = canvasBitmap ?: return
+        if (undoStack.size >= maxHistorySize) {
+            undoStack.removeAt(0)
+        }
+        val copy = current.copy(current.config, true)
+        undoStack.add(copy)
+        redoStack.clear()
+    }
+
+    fun undo() {
+        if (undoStack.isNotEmpty()) {
+            val current = canvasBitmap ?: return
+            val copyCurrent = current.copy(current.config, true)
+            redoStack.add(copyCurrent)
+
+            val previous = undoStack.removeAt(undoStack.size - 1)
+            canvasBitmap = previous.copy(previous.config, true)
+            drawCanvas = Canvas(canvasBitmap!!)
+            invalidate()
+        }
+    }
+
+    fun redo() {
+        if (redoStack.isNotEmpty()) {
+            val current = canvasBitmap ?: return
+            val copyCurrent = current.copy(current.config, true)
+            undoStack.add(copyCurrent)
+
+            val next = redoStack.removeAt(redoStack.size - 1)
+            canvasBitmap = next.copy(next.config, true)
+            drawCanvas = Canvas(canvasBitmap!!)
+            invalidate()
+        }
+    }
+
+    fun setBrushSize(newSize: Float) {
+        brushSize = newSize
+        if(isEraser) {
+            drawPaint.strokeWidth = newSize
+        } else {
+            drawPaint.strokeWidth = newSize
+        }
+    }
+
     fun setColor(newColor: Int) {
         paintColor = newColor
         drawPaint.color = paintColor
         isEraser = false
         isFillMode = false
         drawPaint.style = Paint.Style.STROKE
-        drawPaint.strokeWidth = 10f
+        drawPaint.strokeWidth = brushSize
     }
 
     fun setEraser(active: Boolean) {
@@ -108,11 +160,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         isFillMode = false
         if (active) {
             drawPaint.color = Color.WHITE
-            drawPaint.strokeWidth = 30f
         } else {
             drawPaint.color = paintColor
-            drawPaint.strokeWidth = 10f
         }
+        drawPaint.strokeWidth = brushSize
     }
 
     fun setFillMode(active: Boolean) {
@@ -122,6 +173,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     fun clearCanvas() {
         if (isProcessing) return
+        saveToUndoStack()
         drawCanvas?.drawColor(Color.WHITE)
         invalidate()
     }
@@ -161,8 +213,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                     val cx = index % width
                     val cy = index / width
 
-                    // Check 4 neighbors
-                    // Left
                     if (cx > 0) {
                         val left = index - 1
                         if (pixels[left] == startColor) {
@@ -170,7 +220,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                             queue.add(left)
                         }
                     }
-                    // Right
                     if (cx < width - 1) {
                         val right = index + 1
                         if (pixels[right] == startColor) {
@@ -178,7 +227,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                             queue.add(right)
                         }
                     }
-                    // Up
                     if (cy > 0) {
                         val up = index - width
                         if (pixels[up] == startColor) {
@@ -186,7 +234,6 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                             queue.add(up)
                         }
                     }
-                    // Down
                     if (cy < height - 1) {
                         val down = index + width
                         if (pixels[down] == startColor) {
