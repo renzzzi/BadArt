@@ -179,4 +179,26 @@ class SharedViewModel : ViewModel() {
                 fetchPosts()
             }
     }
+
+    fun addReaction(post: Post, emoji: String) {
+        val user = _currentUser.value ?: return
+        if (post.userReactions.containsKey(user.userId)) return
+
+        val postRef = db.collection("posts").document(post.id)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val currentPost = snapshot.toObject(Post::class.java) ?: return@runTransaction
+
+            if (currentPost.userReactions.containsKey(user.userId)) {
+                return@runTransaction
+            }
+
+            val currentCount = currentPost.reactions[emoji] ?: 0
+            transaction.update(postRef, "reactions.$emoji", currentCount + 1)
+            transaction.update(postRef, "userReactions.${user.userId}", emoji)
+        }.addOnFailureListener { e ->
+            e.printStackTrace()
+        }
+    }
 }

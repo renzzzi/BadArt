@@ -79,6 +79,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrierHeader" />
 
+        <!--
+           FIXED CONSTRAINTS:
+           Both btnReact and tvReactions are now anchored Top_toBottomOf ivDrawing.
+           This ensures they never float up over the image.
+        -->
+        <ImageButton
+            android:id="@+id/btnReact"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_smiley"
+            app:tint="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivDrawing"/>
+
+        <TextView
+            android:id="@+id/tvReactions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:layout_marginTop="8dp"
+            android:paddingStart="8dp"
+            android:text=""
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnReact"
+            app:layout_constraintTop_toBottomOf="@+id/ivDrawing"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierReactions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="btnReact,tvReactions" />
+
         <TextView
             android:id="@+id/tvResult"
             android:layout_width="0dp"
@@ -89,7 +126,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivDrawing" />
+            app:layout_constraintTop_toBottomOf="@+id/barrierReactions" />
 
         <TextView
             android:id="@+id/tvGuessHistory"

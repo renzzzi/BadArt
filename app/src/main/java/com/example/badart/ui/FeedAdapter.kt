@@ -1,8 +1,12 @@
 package com.example.badart.ui
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.badart.databinding.ItemPostBinding
 import com.example.badart.model.Post
@@ -11,10 +15,12 @@ class FeedAdapter(
     private var posts: List<Post>,
     private val onGuess: (Post, String) -> Unit,
     private val onReport: (Post) -> Unit,
-    private val onDelete: (Post) -> Unit
+    private val onDelete: (Post) -> Unit,
+    private val onReact: (Post) -> Unit
 ) : RecyclerView.Adapter<FeedAdapter.PostViewHolder>() {
 
     private var isMyArtMode = false
+    private var currentUserId: String = ""
 
     inner class PostViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -33,10 +39,49 @@ class FeedAdapter(
                 ivDrawing.setImageDrawable(null)
             }
 
+            val myReactionEmoji = post.userReactions[currentUserId]
+            val reactionBuilder = StringBuilder()
+
+            post.reactions.forEach { (emoji, count) ->
+                if (count > 0) {
+                    if (emoji == myReactionEmoji) {
+                        reactionBuilder.append("[ $emoji $count ]  ")
+                    } else {
+                        reactionBuilder.append("$emoji $count  ")
+                    }
+                }
+            }
+
+            val finalString = reactionBuilder.toString()
+            val spannable = SpannableString(finalString)
+
+            if (myReactionEmoji != null) {
+                val startIndex = finalString.indexOf("[")
+                val endIndex = finalString.indexOf("]") + 1
+                if(startIndex != -1 && endIndex != -1) {
+                    spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, 0)
+                }
+            }
+
+            tvReactions.text = spannable
+
+            if (myReactionEmoji != null) {
+                btnReact.alpha = 0.5f
+                btnReact.setOnClickListener {
+                    Toast.makeText(holder.itemView.context, "You reacted: $myReactionEmoji", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                btnReact.alpha = 1.0f
+                btnReact.setOnClickListener {
+                    onReact(post)
+                }
+            }
+
             if (isMyArtMode) {
                 tvArtist.visibility = View.GONE
                 btnReport.visibility = View.GONE
                 btnDelete.visibility = View.VISIBLE
+                btnReact.visibility = View.GONE
 
                 layoutGuessing.visibility = View.GONE
                 tvResult.visibility = View.VISIBLE
@@ -69,6 +114,7 @@ class FeedAdapter(
                 tvArtist.text = post.artistName
                 btnReport.visibility = View.VISIBLE
                 btnDelete.visibility = View.GONE
+                btnReact.visibility = View.VISIBLE
 
                 tvGuessHistory.visibility = View.GONE
                 tvReportWarning.visibility = View.GONE
@@ -99,9 +145,10 @@ class FeedAdapter(
 
     override fun getItemCount() = posts.size
 
-    fun updateList(newPosts: List<Post>, myArtMode: Boolean) {
+    fun updateList(newPosts: List<Post>, myArtMode: Boolean, myUserId: String) {
         posts = newPosts
         isMyArtMode = myArtMode
+        currentUserId = myUserId
         notifyDataSetChanged()
     }
 }

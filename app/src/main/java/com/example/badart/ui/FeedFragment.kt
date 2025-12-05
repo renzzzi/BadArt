@@ -13,6 +13,10 @@ import com.example.badart.databinding.FragmentFeedBinding
 import com.example.badart.model.Post
 import com.example.badart.viewmodel.SharedViewModel
 import com.google.android.material.tabs.TabLayout
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment(R.layout.fragment_feed) {
 
@@ -34,6 +38,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
                 if (guess.equals(post.wordToGuess, ignoreCase = true)) {
                     viewModel.solvePost(post, myName)
+                    triggerKonfetti()
                     Toast.makeText(context, "Correct! +10 Points", Toast.LENGTH_SHORT).show()
                 } else {
                     viewModel.recordWrongGuess(post, guess, myName)
@@ -45,6 +50,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             },
             onDelete = { post ->
                 showDeleteDialog(post)
+            },
+            onReact = { post ->
+                showReactionDialog(post)
             }
         )
 
@@ -81,9 +89,23 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }
     }
 
+    private fun triggerKonfetti() {
+        val party = Party(
+            speed = 0f,
+            maxSpeed = 30f,
+            damping = 0.9f,
+            spread = 360,
+            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            position = Position.Relative(0.5, 0.3),
+            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100)
+        )
+        binding.konfettiView.start(party)
+    }
+
     private fun updateFeedBasedOnTab() {
         val currentUser = viewModel.currentUser.value
         val myName = currentUser?.username ?: ""
+        val myId = currentUser?.userId ?: ""
 
         val filteredList: List<Post>
         val isMyArt: Boolean
@@ -114,8 +136,31 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             binding.layoutEmptyState.visibility = View.GONE
             binding.recyclerView.visibility = View.VISIBLE
             binding.fabDraw.visibility = View.VISIBLE
-            adapter.updateList(filteredList, isMyArt)
+            adapter.updateList(filteredList, isMyArt, myId)
         }
+    }
+
+    private fun showReactionDialog(post: Post) {
+        val reactions = arrayOf(
+            "🎨 Masterpiece",
+            "💩 Trash",
+            "🤦 Facepalm",
+            "😂 Hilarious",
+            "🤨 Confused",
+            "🔥 Lit",
+            "👻 Spooky",
+            "🧠 Big Brain"
+        )
+
+        val emojis = arrayOf("🎨", "💩", "🤦", "😂", "🤨", "🔥", "👻", "🧠")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("React to this Bad Art")
+            .setItems(reactions) { _, which ->
+                viewModel.addReaction(post, emojis[which])
+                Toast.makeText(context, "Reaction Added: ${emojis[which]}", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun showReportDialog(post: Post) {
