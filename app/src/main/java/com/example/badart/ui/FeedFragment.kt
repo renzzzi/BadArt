@@ -75,6 +75,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         binding.btnProfile.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_profileFragment)
         }
+
+        binding.btnLeaderboard.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_leaderboardFragment)
+        }
     }
 
     private fun updateFeedBasedOnTab() {

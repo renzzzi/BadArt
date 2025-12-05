@@ -28,8 +28,12 @@ class SharedViewModel : ViewModel() {
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> = _posts
 
+    private val _leaderboard = MutableLiveData<List<User>>()
+    val leaderboard: LiveData<List<User>> = _leaderboard
+
     init {
         fetchPosts()
+        fetchLeaderboard()
     }
 
     fun loginUser(username: String) {
@@ -47,6 +51,18 @@ class SharedViewModel : ViewModel() {
                 _currentUser.value = newUser
             }
         }
+    }
+
+    private fun fetchLeaderboard() {
+        db.collection("users")
+            .orderBy("totalScore", Query.Direction.DESCENDING)
+            .limit(20)
+            .addSnapshotListener { value, error ->
+                if (error != null || value == null) return@addSnapshotListener
+
+                val users = value.toObjects(User::class.java)
+                _leaderboard.value = users
+            }
     }
 
     fun addPost(word: String, bitmap: Bitmap) {
@@ -87,8 +103,6 @@ class SharedViewModel : ViewModel() {
 
                     if (post != null) {
                         if (blockedList.contains(post.artistName)) continue
-
-                        // 2. Filter out posts I have personally reported
                         if (reportedList.contains(post.id)) continue
 
                         if (post.imageBase64.isNotEmpty()) {
@@ -133,11 +147,9 @@ class SharedViewModel : ViewModel() {
     }
 
     fun reportPost(post: Post) {
-        // 1. Increment global count
         db.collection("posts").document(post.id)
             .update("reportCount", post.reportCount + 1)
 
-        // 2. Add to local user's hidden list immediately
         val user = _currentUser.value ?: return
 
         db.collection("users").document(user.userId)

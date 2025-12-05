@@ -16,4 +16,8 @@
     <color name="paint_yellow">#FFFFEB3B</color>
     <color name="paint_orange">#FFFF9800</color>
     <color name="paint_purple">#FF9C27B0</color>
+
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#CD7F32</color>
 </resources>

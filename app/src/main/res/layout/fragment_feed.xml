@@ -14,14 +14,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name">
 
-        <ImageView
-            android:id="@+id/btnProfile"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_my_calendar"
             android:layout_gravity="end"
-            android:padding="16dp"
-            android:contentDescription="@string/content_desc_profile"/>
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btnLeaderboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:src="@drawable/ic_trophy"
+                android:contentDescription="@string/content_desc_leaderboard"/>
+
+            <ImageView
+                android:id="@+id/btnProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                android:contentDescription="@string/content_desc_profile"/>
+        </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout

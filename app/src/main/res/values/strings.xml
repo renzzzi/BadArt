@@ -22,4 +22,8 @@
     <string name="content_desc_undo">Undo</string>
     <string name="content_desc_redo">Redo</string>
     <string name="label_brush_size">Size</string>
+    <string name="title_leaderboard">Leaderboard</string>
+    <string name="content_desc_leaderboard">View Leaderboard</string>
+    <string name="rank_format">#%d</string>
+    <string name="score_format">%d pts</string>
 </resources>
