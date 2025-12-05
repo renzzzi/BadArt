@@ -1,34 +1,67 @@
 package com.example.badart.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentDrawBinding
+import com.example.badart.viewmodel.SharedViewModel
 
 class DrawFragment : Fragment(R.layout.fragment_draw) {
 
     private lateinit var binding: FragmentDrawBinding
-    private val wordToDraw = "ZOMBIE"
+    private val viewModel: SharedViewModel by activityViewModels()
+    private val wordToDraw = "CACTUS"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDrawBinding.bind(view)
 
-        binding.tvWordPrompt.text = getString(R.string.draw_prompt, wordToDraw)
+        binding.tvWordPrompt.text = "Draw: $wordToDraw"
 
-        binding.btnClear.setOnClickListener {
-            binding.drawingView.clearCanvas()
-        }
+        setupColorRibbon()
+
+        binding.btnBrush.setOnClickListener { binding.drawingView.setEraser(false) }
+        binding.btnEraser.setOnClickListener { binding.drawingView.setEraser(true) }
+        binding.btnFill.setOnClickListener { binding.drawingView.setFillMode(true) }
+        binding.btnClear.setOnClickListener { binding.drawingView.clearCanvas() }
 
         binding.btnSubmit.setOnClickListener {
             val bitmap = binding.drawingView.getBitmap()
             if (bitmap != null) {
-                Toast.makeText(requireContext(), getString(R.string.uploaded_feed), Toast.LENGTH_SHORT).show()
+                viewModel.addPost(wordToDraw, bitmap)
+                Toast.makeText(requireContext(), "Uploaded to Feed!", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    private fun setupColorRibbon() {
+        val colors = listOf(
+            R.color.paint_black, R.color.paint_red, R.color.paint_blue,
+            R.color.paint_green, R.color.paint_yellow, R.color.paint_orange,
+            R.color.paint_purple
+        )
+
+        for (colorRes in colors) {
+            val colorBtn = Button(requireContext())
+            val params = LinearLayout.LayoutParams(100, 100)
+            params.setMargins(8, 0, 8, 0)
+            colorBtn.layoutParams = params
+            val colorValue = ContextCompat.getColor(requireContext(), colorRes)
+            colorBtn.setBackgroundColor(colorValue)
+
+            colorBtn.setOnClickListener {
+                binding.drawingView.setColor(colorValue)
+            }
+            binding.layoutColors.addView(colorBtn)
         }
     }
 }

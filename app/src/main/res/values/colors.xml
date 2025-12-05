@@ -2,9 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_gray">#FFEEEEEE</color>
-    <color name="canvas_background">#FFF0F0F0</color>
-    <color name="success_green">#FF4CAF50</color>
+    <color name="light_gray">#EEEEEE</color>
+    <color name="canvas_background">#FFFFFF</color>
+    <color name="solved_green">#FF00C853</color>
+
     <color name="primary_color">#FF6200EE</color>
     <color name="accent_color">#FF03DAC5</color>
+
+    <color name="paint_black">#FF000000</color>
+    <color name="paint_red">#FFF44336</color>
+    <color name="paint_blue">#FF2196F3</color>
+    <color name="paint_green">#FF4CAF50</color>
+    <color name="paint_yellow">#FFFFEB3B</color>
+    <color name="paint_orange">#FFFF9800</color>
+    <color name="paint_purple">#FF9C27B0</color>
 </resources>

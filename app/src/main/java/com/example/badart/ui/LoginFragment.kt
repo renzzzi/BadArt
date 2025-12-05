@@ -3,13 +3,16 @@ package com.example.badart.ui
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentLoginBinding
+import com.example.badart.viewmodel.SharedViewModel
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private lateinit var binding: FragmentLoginBinding
+    private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -20,7 +23,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         binding.btnLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+            val username = binding.etUsername.text.toString()
+            if(username.isNotEmpty()) {
+                viewModel.loginUser(username)
+                findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+            }
         }
     }
 }
