@@ -1,16 +1,15 @@
 package com.example.badart.ui
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentLoginBinding
+import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -28,7 +27,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 val account = task.getResult(ApiException::class.java)!!
                 viewModel.firebaseLoginWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                Toast.makeText(requireContext(), "Google Sign In Failed: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+                UiUtils.showModal(requireContext(), "Login Error", "Google Sign In Failed. Code: ${e.statusCode}")
             }
         }
     }

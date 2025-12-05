@@ -3,26 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_undo"
+        android:rotation="180"
+        app:tint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitleProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Profile"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAvatar"
         android:layout_width="140dp"
         android:layout_height="140dp"
+        android:layout_marginTop="24dp"
         app:cardCornerRadius="70dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/btnBack">
 
         <ImageView
             android:id="@+id/ivAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#DDDDDD"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_edit"
-            android:padding="30dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_person_placeholder"
+            android:padding="20dp"
             app:tint="@android:color/darker_gray" />
 
         <ImageView
@@ -49,12 +73,12 @@
         android:id="@+id/layoutName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardAvatar">
+        app:layout_constraintTop_toBottomOf="@+id/tvAvatarHint">
 
         <TextView
             android:id="@+id/tvUsername"
@@ -78,7 +102,7 @@
         android:id="@+id/gridStats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:columnCount="2"
         android:rowCount="2"
         app:layout_constraintTop_toBottomOf="@+id/layoutName">
@@ -221,7 +245,7 @@
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@android:color/darker_gray"
         android:text="Logout"
         app:layout_constraintTop_toBottomOf="@+id/gridStats" />

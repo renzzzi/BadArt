@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -12,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentDrawBinding
 import com.example.badart.util.GameConstants
+import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 
 class DrawFragment : Fragment(R.layout.fragment_draw) {
@@ -24,7 +24,6 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDrawBinding.bind(view)
 
-        // Pick a random word when the screen loads
         wordToDraw = GameConstants.getRandomWord()
         binding.tvWordPrompt.text = "Draw: $wordToDraw"
 
@@ -45,9 +44,8 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         binding.btnSubmit.setOnClickListener {
             val bitmap = binding.drawingView.getBitmap()
             if (bitmap != null) {
-                // Now uploading the RANDOM word
                 viewModel.addPost(wordToDraw, bitmap)
-                Toast.makeText(requireContext(), "Uploaded to Feed!", Toast.LENGTH_SHORT).show()
+                UiUtils.showModal(requireContext(), "Success", "Your masterpiece has been uploaded to the feed!")
                 findNavController().popBackStack()
             }
         }

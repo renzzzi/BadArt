@@ -1,9 +1,20 @@
 package com.example.badart.ui
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ContentValues
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.View
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -11,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.badart.R
 import com.example.badart.databinding.FragmentFeedBinding
 import com.example.badart.model.Post
+import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.google.android.material.tabs.TabLayout
 import nl.dionsegijn.konfetti.core.Party
@@ -39,17 +51,16 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 if (guess.equals(post.wordToGuess, ignoreCase = true)) {
                     viewModel.solvePost(post, myName)
                     triggerKonfetti()
-                    Toast.makeText(context, "Correct! +10 Points", Toast.LENGTH_SHORT).show()
+                    UiUtils.showModal(requireContext(), "You Won!", "Correct! The word was ${post.wordToGuess}. +10 Points!")
                 } else {
                     viewModel.recordWrongGuess(post, guess, myName)
-                    Toast.makeText(context, "Wrong!", Toast.LENGTH_SHORT).show()
+                    UiUtils.showModal(requireContext(), "So Close!", "That is not the correct word. Try again!")
                 }
             },
             onReport = { post -> showReportDialog(post) },
             onDelete = { post -> showDeleteDialog(post) },
             onReact = { post -> showReactionDialog(post) },
             onHint = { post ->
-
                 AlertDialog.Builder(requireContext())
                     .setTitle("Buy Hint?")
                     .setMessage("Spend 5 points to briefly reveal a letter?")
@@ -57,16 +68,16 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                         viewModel.deductScore(5,
                             onSuccess = {
                                 adapter.triggerHint(post.id, post.wordToGuess)
-                                Toast.makeText(context, "Quick! Look closely!", Toast.LENGTH_SHORT).show()
                             },
                             onFailure = {
-                                Toast.makeText(context, "Not enough points!", Toast.LENGTH_SHORT).show()
+                                UiUtils.showModal(requireContext(), "Oops", "You don't have enough points!")
                             }
                         )
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
-            }
+            },
+            onShare = { post -> sharePost(post) }
         )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -155,23 +166,17 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private fun showReactionDialog(post: Post) {
         val reactions = arrayOf(
-            "🎨 Masterpiece",
-            "💩 Trash",
-            "🤦 Facepalm",
-            "😂 Hilarious",
-            "🤨 Confused",
-            "🔥 Lit",
-            "👻 Spooky",
-            "🧠 Big Brain"
+            "🎨 Masterpiece", "💩 Trash", "🤦 Facepalm",
+            "😂 Hilarious", "🤨 Confused", "🔥 Lit",
+            "👻 Spooky", "🧠 Big Brain"
         )
-
         val emojis = arrayOf("🎨", "💩", "🤦", "😂", "🤨", "🔥", "👻", "🧠")
 
         AlertDialog.Builder(requireContext())
             .setTitle("React to this Bad Art")
             .setItems(reactions) { _, which ->
                 viewModel.addReaction(post, emojis[which])
-                Toast.makeText(context, "Reaction Added: ${emojis[which]}", Toast.LENGTH_SHORT).show()
+                UiUtils.showModal(requireContext(), "Reacted", "You added: ${emojis[which]}")
             }
             .show()
     }
@@ -184,11 +189,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 when (which) {
                     0 -> {
                         viewModel.reportPost(post)
-                        Toast.makeText(context, "Post Reported", Toast.LENGTH_SHORT).show()
+                        UiUtils.showModal(requireContext(), "Reported", "Thanks for keeping BadArt safe. This post has been reported.")
                     }
                     1 -> {
                         viewModel.blockUser(post.artistName)
-                        Toast.makeText(context, "User Blocked", Toast.LENGTH_SHORT).show()
+                        UiUtils.showModal(requireContext(), "Blocked", "You will no longer see art from ${post.artistName}.")
                     }
                 }
             }
@@ -198,12 +203,86 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     private fun showDeleteDialog(post: Post) {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete Drawing")
-            .setMessage("Are you sure you want to delete this masterpiece? This cannot be undone.")
+            .setMessage("Are you sure you want to delete this masterpiece?")
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deletePost(post)
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+                UiUtils.showModal(requireContext(), "Deleted", "Your artwork has been removed.")
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun sharePost(post: Post) {
+        val shareBitmap = generateShareableBitmap(post) ?: return
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "BadArt_${post.id}.jpg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/BadArt")
+            }
+        }
+
+        val uri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+        if (uri != null) {
+            try {
+                val outputStream = requireContext().contentResolver.openOutputStream(uri)
+                if (outputStream != null) {
+                    shareBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                    outputStream.close()
+
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "image/jpeg"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        putExtra(Intent.EXTRA_TEXT, "Can you guess this drawing? Download BadArt and play now!")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        clipData = ClipData.newRawUri(null, uri)
+                    }
+                    startActivity(Intent.createChooser(shareIntent, "Share your Bad Art"))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                UiUtils.showModal(requireContext(), "Share Error", "Failed to prepare image for sharing.")
+            }
+        } else {
+            UiUtils.showModal(requireContext(), "Storage Error", "Could not save image to storage.")
+        }
+    }
+
+    private fun generateShareableBitmap(post: Post): Bitmap? {
+        val original = post.imageBitmap ?: return null
+        val width = 1080
+        val height = 1350
+        val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(result)
+
+        val primaryColor = ContextCompat.getColor(requireContext(), R.color.primary_color)
+        canvas.drawColor(primaryColor)
+
+        val textPaint = Paint().apply {
+            color = Color.WHITE
+            textSize = 100f
+            isAntiAlias = true
+            textAlign = Paint.Align.CENTER
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+        }
+        canvas.drawText("BadArt", width / 2f, 200f, textPaint)
+
+        val boxSize = 900
+        val left = (width - boxSize) / 2
+        val top = (height - boxSize) / 2
+        val destRect = Rect(left, top, left + boxSize, top + boxSize)
+        val bgPaint = Paint().apply { color = Color.WHITE }
+        canvas.drawRect(destRect, bgPaint)
+        canvas.drawBitmap(original, null, destRect, null)
+
+        textPaint.textSize = 60f
+        canvas.drawText("Draw poorly. Guess correctly.", width / 2f, top + boxSize + 150f, textPaint)
+        textPaint.textSize = 40f
+        textPaint.alpha = 200
+        canvas.drawText("Artist: ${post.artistName}", width / 2f, top + boxSize + 250f, textPaint)
+
+        return result
     }
 }

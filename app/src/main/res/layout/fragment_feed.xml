@@ -22,18 +22,19 @@
 
             <ImageView
                 android:id="@+id/btnLeaderboard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_trophy"
                 android:contentDescription="@string/content_desc_leaderboard"/>
 
             <ImageView
                 android:id="@+id/btnProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:src="@android:drawable/ic_menu_my_calendar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_person_placeholder"
+                app:tint="@color/white"
                 android:contentDescription="@string/content_desc_profile"/>
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>

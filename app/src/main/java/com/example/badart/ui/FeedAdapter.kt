@@ -22,14 +22,14 @@ class FeedAdapter(
     private val onReport: (Post) -> Unit,
     private val onDelete: (Post) -> Unit,
     private val onReact: (Post) -> Unit,
-    private val onHint: (Post) -> Unit
+    private val onHint: (Post) -> Unit,
+    private val onShare: (Post) -> Unit
 ) : RecyclerView.Adapter<FeedAdapter.PostViewHolder>() {
 
     private var isMyArtMode = false
     private var currentUserId: String = ""
 
     private val activeHints = mutableMapOf<String, MutableMap<Int, Long>>()
-
     private val animationRunnables = mutableMapOf<String, Runnable>()
 
     inner class PostViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
@@ -82,6 +82,8 @@ class FeedAdapter(
                 btnReact.alpha = 1.0f
                 btnReact.setOnClickListener { onReact(post) }
             }
+
+            btnShare.setOnClickListener { onShare(post) }
 
             if (isMyArtMode) {
                 tvArtist.visibility = View.GONE
@@ -175,7 +177,7 @@ class FeedAdapter(
                     if (currentTime < startTime + 10000) {
                         hasActiveAnimation = true
                         val elapsed = currentTime - startTime
-                        val fraction = elapsed / 10000f // 0.0 to 1.0
+                        val fraction = elapsed / 10000f
 
                         val alpha = ((1.0f - fraction) * 255).toInt().coerceIn(0, 255)
                         val colorWithAlpha = Color.argb(alpha, Color.red(primaryColor), Color.green(primaryColor), Color.blue(primaryColor))
@@ -192,7 +194,6 @@ class FeedAdapter(
                 textView.text = spannable
 
                 if (hasActiveAnimation) {
-                    // Update at around 30fps
                     textView.postDelayed(this, 33)
                 }
             }

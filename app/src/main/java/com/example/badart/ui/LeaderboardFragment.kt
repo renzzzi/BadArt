@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.badart.R
 import com.example.badart.databinding.FragmentLeaderboardBinding
@@ -18,6 +19,10 @@ class LeaderboardFragment : Fragment(R.layout.fragment_leaderboard) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLeaderboardBinding.bind(view)
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.rvLeaderboard.layoutManager = LinearLayoutManager(requireContext())
         binding.rvLeaderboard.adapter = adapter

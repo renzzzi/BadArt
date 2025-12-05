@@ -10,15 +10,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentProfileBinding
+import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.example.badart.views.DrawingView
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.slider.Slider
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -29,6 +31,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentProfileBinding.bind(view)
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
@@ -79,7 +85,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         if (user.totalScore >= 50) {
                             showAvatarDialog()
                         } else {
-                            showNotEnoughPointsDialog()
+                            UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your avatar.")
                         }
                     }
                     .setNegativeButton("No", null)
@@ -99,7 +105,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         if (user.totalScore >= 50) {
                             showNameDialog()
                         } else {
-                            showNotEnoughPointsDialog()
+                            UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your username.")
                         }
                     }
                     .setNegativeButton("No", null)
@@ -110,7 +116,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
 
         binding.btnLogout.setOnClickListener {
-            viewModel.logout()
+            AlertDialog.Builder(requireContext())
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Logout") { _, _ ->
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        viewModel.logout()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
 
         binding.btnDeleteAccount.setOnClickListener {
@@ -118,25 +138,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 .setTitle("Delete Account")
                 .setMessage("Are you sure? All your data will be lost.")
                 .setPositiveButton("Delete") { _, _ ->
-                    viewModel.deleteAccount()
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        viewModel.deleteAccount()
+                    }
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
     }
 
-    private fun showNotEnoughPointsDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Not Enough Points")
-            .setMessage("Sorry, you need 50 points to make this change. Go solve some Bad Art!")
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
     private fun showNameDialog() {
         val input = EditText(requireContext())
         input.hint = "New Username"
-
         val container = LinearLayout(requireContext())
         container.orientation = LinearLayout.VERTICAL
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -151,8 +169,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 val newName = input.text.toString().trim()
                 if (newName.isNotEmpty()) {
                     viewModel.updateUsername(newName,
-                        onSuccess = { Toast.makeText(context, "Username updated!", Toast.LENGTH_SHORT).show() },
-                        onFailure = { msg -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+                        onSuccess = { UiUtils.showModal(requireContext(), "Updated", "Your username has been changed.") },
+                        onFailure = { msg -> UiUtils.showModal(requireContext(), "Error", msg) }
                     )
                 }
             }
@@ -162,17 +180,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun showAvatarDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_draw_avatar, null)
-
         val drawingView = dialogView.findViewById<DrawingView>(R.id.drawingViewAvatar)
         val layoutColors = dialogView.findViewById<LinearLayout>(R.id.layoutColorsAvatar)
-
         val btnUndo = dialogView.findViewById<ImageButton>(R.id.btnUndoAvatar)
         val btnRedo = dialogView.findViewById<ImageButton>(R.id.btnRedoAvatar)
-
         val btnBrush = dialogView.findViewById<Button>(R.id.btnBrushAvatar)
         val btnFill = dialogView.findViewById<Button>(R.id.btnFillAvatar)
         val btnEraser = dialogView.findViewById<Button>(R.id.btnEraserAvatar)
-
         val sliderSize = dialogView.findViewById<Slider>(R.id.sliderSizeAvatar)
         val btnClear = dialogView.findViewById<Button>(R.id.btnClearAvatar)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveAvatar)
@@ -202,34 +216,26 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         btnUndo.setOnClickListener { drawingView.undo() }
         btnRedo.setOnClickListener { drawingView.redo() }
-
         btnBrush.setOnClickListener { drawingView.setEraser(false) }
         btnFill.setOnClickListener { drawingView.setFillMode(true) }
         btnEraser.setOnClickListener { drawingView.setEraser(true) }
-
-        sliderSize.addOnChangeListener { _, value, _ ->
-            drawingView.setBrushSize(value)
-        }
-
-        btnClear.setOnClickListener {
-            drawingView.clearCanvas()
-        }
+        sliderSize.addOnChangeListener { _, value, _ -> drawingView.setBrushSize(value) }
+        btnClear.setOnClickListener { drawingView.clearCanvas() }
 
         btnSave.setOnClickListener {
             val bitmap = drawingView.getBitmap()
             if (bitmap != null) {
                 viewModel.updateAvatar(bitmap,
                     onSuccess = {
-                        Toast.makeText(context, "Avatar updated!", Toast.LENGTH_SHORT).show()
+                        UiUtils.showModal(requireContext(), "Updated", "Your new avatar is saved!")
                         dialog.dismiss()
                     },
                     onFailure = { msg ->
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        UiUtils.showModal(requireContext(), "Error", msg)
                     }
                 )
             }
         }
-
         dialog.show()
     }
 }
