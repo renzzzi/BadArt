@@ -12,7 +12,6 @@
         android:strokeColor="#BDBDBD"
         android:strokeWidth="3"
         android:strokeLineCap="round"
-        android:strokeDasharray="5,5"
         android:fillColor="#00000000"
         android:pathData="M50,80 Q100,60 150,80"/>
 

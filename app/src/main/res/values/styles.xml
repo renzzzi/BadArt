@@ -38,8 +38,8 @@
 
     <style name="BadArtSlider" parent="Widget.MaterialComponents.Slider">
         <item name="thumbColor">@color/primary_color</item>
-        <item name="activeTrackColor">@color/primary_color</item>
-        <item name="inactiveTrackColor">@color/light_gray</item>
+        <item name="trackColorActive">@color/primary_color</item>
+        <item name="trackColorInactive">@color/light_gray</item>
     </style>
 
     <style name="BadArtDialog" parent="Theme.MaterialComponents.Dialog">

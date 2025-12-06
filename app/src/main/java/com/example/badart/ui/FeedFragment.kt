@@ -119,7 +119,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             maxSpeed = 30f,
             damping = 0.9f,
             spread = 360,
-            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            colors = listOf(0xFF006E, 0x8338EC, 0x3A86FF, 0x06FFA5, 0xFFBE0B),
             position = Position.Relative(0.5, 0.3),
             emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100)
         )
