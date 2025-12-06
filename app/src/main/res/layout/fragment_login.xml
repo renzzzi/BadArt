@@ -1,146 +1,324 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_color">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/gradient_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginBottom="24dp"
+        <!-- Animated Background Gradient -->
+        <View
+            android:id="@+id/backgroundGradient"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Decorative Circles -->
+        <View
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="-100dp"
+            android:layout_marginTop="50dp"
+            android:alpha="0.1"
             android:background="@drawable/circle_white_background"
-            android:elevation="8dp"
-            android:padding="24dp"
-            android:src="@drawable/ic_launcher_foreground"
-            app:layout_constraintBottom_toTopOf="@+id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="sans-serif-black"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="56sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tvTagline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+        <View
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginEnd="-75dp"
+            android:layout_marginBottom="100dp"
+            android:alpha="0.1"
+            android:background="@drawable/circle_white_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/tvTagline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
-            android:alpha="0.9"
-            android:fontFamily="sans-serif-medium"
-            android:text="Draw poorly. Guess correctly."
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/cardLogin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:elevation="8dp"
-            app:cardCornerRadius="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/cbTerms"
-            app:layout_constraintTop_toBottomOf="@+id/tvTagline">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Welcome to the Community"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.7"
-                    android:lineSpacingExtra="4dp"
-                    android:text="Join thousands of artists sharing their terrible masterpieces and guessing even worse ones."
-                    android:textAlignment="center"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <CheckBox
-            android:id="@+id/cbTerms"
+        <!-- Content Container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:buttonTint="@color/white"
-            android:fontFamily="sans-serif"
-            android:text="@string/terms_agreement"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnGoogleLogin"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardLogin" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGoogleLogin"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:enabled="false"
-            android:fontFamily="sans-serif-medium"
-            android:text="Sign in with Google"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="32dp"
-            app:elevation="8dp"
-            app:icon="@drawable/common_google_signin_btn_icon_dark"
-            app:iconGravity="textStart"
-            app:iconPadding="12dp"
-            app:iconSize="24dp"
-            app:iconTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cbTerms"
-            app:strokeColor="@color/light_gray"
-            app:strokeWidth="0dp" />
+            <!-- App Icon with Shadow -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLogo"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="70dp"
+                app:cardElevation="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:strokeColor="@color/primary_light"
+                app:strokeWidth="4dp">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="28dp"
+                    android:src="@drawable/ic_brush"
+                    app:tint="@color/primary_color" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- App Name with Animation -->
+            <TextView
+                android:id="@+id/tvAppName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-black"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="56sp"
+                android:textStyle="bold"
+                android:shadowColor="#40000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardLogo" />
+
+            <!-- Tagline -->
+            <TextView
+                android:id="@+id/tvTagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Draw poorly. Guess correctly."
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:shadowColor="#40000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAppName" />
+
+            <!-- Feature Cards -->
+            <LinearLayout
+                android:id="@+id/layoutFeatures"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTagline">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#80FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle_white_background"
+                            android:gravity="center"
+                            android:text="🎨"
+                            android:textSize="24sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Create Bad Art"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Draw terrible masterpieces"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#80FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle_white_background"
+                            android:gravity="center"
+                            android:text="🤔"
+                            android:textSize="24sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guess &amp; Compete"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Solve drawings &amp; climb leaderboards"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#80FFFFFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle_white_background"
+                            android:gravity="center"
+                            android:text="🏆"
+                            android:textSize="24sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Earn Points &amp; Glory"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Join the community of bad artists"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Terms Checkbox -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTerms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="#40FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layoutFeatures">
+
+                <CheckBox
+                    android:id="@+id/cbTerms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
+                    android:padding="16dp"
+                    android:text="@string/terms_agreement"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Google Sign In Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoogleLogin"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:enabled="false"
+                android:fontFamily="sans-serif-medium"
+                android:text="Sign in with Google"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="32dp"
+                app:elevation="8dp"
+                app:icon="@drawable/common_google_signin_btn_icon_dark"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:iconSize="24dp"
+                app:iconTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardTerms" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

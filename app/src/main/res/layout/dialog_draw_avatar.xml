@@ -3,133 +3,250 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:background="@color/background_light"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Draw Avatar"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/btnUndoAvatar"/>
-
-    <ImageButton
-        android:id="@+id/btnUndoAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_undo"
-        app:layout_constraintEnd_toStartOf="@+id/btnRedoAvatar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/btnRedoAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_redo"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.cardview.widget.CardView
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🎨 Draw Your Avatar"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnUndoAvatar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_undo_circular"
+            app:tint="@color/primary_color" />
+
+        <ImageButton
+            android:id="@+id/btnRedoAvatar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_redo_circular"
+            app:tint="@color/primary_color" />
+    </LinearLayout>
+
+    <!-- Canvas Card -->
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardCanvas"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="125dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="150dp"
+        app:cardElevation="8dp"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUndoAvatar">
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
+        app:layout_constraintWidth_max="300dp"
+        app:strokeColor="@color/primary_color"
+        app:strokeWidth="3dp">
 
         <com.example.badart.views.DrawingView
             android:id="@+id/drawingViewAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <HorizontalScrollView
-        android:id="@+id/scrollColors"
+    <!-- Color Palette Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardColors"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardCanvas">
 
         <LinearLayout
-            android:id="@+id/layoutColorsAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Colors"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/layoutColorsAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tools Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTools"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardColors">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Tools"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBrushAvatar"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="Brush"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_brush"
+                    app:iconGravity="top"
+                    app:iconSize="20dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFillAvatar"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:text="Fill"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_fill_bucket"
+                    app:iconGravity="top"
+                    app:iconSize="20dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEraserAvatar"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="Erase"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_eraser"
+                    app:iconGravity="top"
+                    app:iconSize="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Size:"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderSizeAvatar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:stepSize="1.0"
+                    android:value="10.0"
+                    android:valueFrom="1.0"
+                    android:valueTo="50.0" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Action Buttons -->
     <LinearLayout
-        android:id="@+id/layoutTools"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/scrollColors">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardTools">
 
-        <Button
-            android:id="@+id/btnBrushAvatar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_brush" />
-
-        <Button
-            android:id="@+id/btnFillAvatar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_fill" />
-
-        <Button
-            android:id="@+id/btnEraserAvatar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_eraser" />
-    </LinearLayout>
-
-    <com.google.android.material.slider.Slider
-        android:id="@+id/sliderSizeAvatar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:value="10.0"
-        android:valueFrom="1.0"
-        android:valueTo="50.0"
-        app:layout_constraintTop_toBottomOf="@+id/layoutTools" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/sliderSizeAvatar">
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClearAvatar"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Clear" />
+            android:text="Clear"
+            android:textAllCaps="false"
+            app:cornerRadius="28dp"
+            app:icon="@drawable/ic_clear_canvas"
+            app:strokeColor="@color/error_red" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveAvatar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Save" />
+            android:text="Save Avatar"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:backgroundTint="@color/accent_color"
+            app:cornerRadius="28dp"
+            app:icon="@android:drawable/ic_menu_save" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

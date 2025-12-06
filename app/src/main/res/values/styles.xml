@@ -1,69 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Card Styles -->
     <style name="BadArtCardView">
-        <item name="cardCornerRadius">8dp</item>
+        <item name="cardCornerRadius">16dp</item>
         <item name="cardElevation">4dp</item>
         <item name="cardUseCompatPadding">true</item>
         <item name="contentPadding">16dp</item>
     </style>
 
+    <style name="BadArtCardView.Elevated">
+        <item name="cardElevation">8dp</item>
+    </style>
+
+    <style name="BadArtCardView.Flat">
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/light_gray</item>
+    </style>
+
+    <!-- Button Styles -->
     <style name="BadArtButton" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">24dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="BadArtButton.Large">
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="iconSize">24dp</item>
     </style>
 
     <style name="BadArtButtonText" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="rippleColor">@color/primary_light</item>
     </style>
 
+    <style name="BadArtButtonOutlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">@color/primary_color</item>
+    </style>
+
+    <style name="BadArtButtonIcon" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="iconGravity">top</item>
+        <item name="iconPadding">4dp</item>
+    </style>
+
+    <!-- FAB Styles -->
     <style name="BadArtFAB" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
-        <item name="cornerRadius">28dp</item>
-        <item name="elevation">6dp</item>
+        <item name="elevation">12dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
     </style>
 
+    <!-- Tab Layout Styles -->
     <style name="BadArtTab" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabIndicatorColor">@color/accent_color</item>
-        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabIndicatorHeight">4dp</item>
         <item name="tabSelectedTextColor">@color/primary_color</item>
         <item name="tabTextColor">@color/text_secondary</item>
         <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabRippleColor">@color/primary_light</item>
     </style>
 
+    <style name="TabTextStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Toolbar Styles -->
     <style name="BadArtToolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextColor">@android:color/white</item>
         <item name="elevation">4dp</item>
+        <item name="android:background">@color/primary_color</item>
     </style>
 
+    <!-- Slider Styles -->
     <style name="BadArtSlider" parent="Widget.MaterialComponents.Slider">
         <item name="thumbColor">@color/primary_color</item>
         <item name="trackColorActive">@color/primary_color</item>
         <item name="trackColorInactive">@color/light_gray</item>
+        <item name="trackHeight">4dp</item>
+        <item name="thumbRadius">10dp</item>
     </style>
 
-    <style name="BadArtDialog" parent="Theme.MaterialComponents.Dialog">
-        <item name="dialogCornerRadius">16dp</item>
+    <!-- Dialog Styles -->
+    <style name="BadArtDialog" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="dialogCornerRadius">24dp</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorAccent">@color/accent_color</item>
     </style>
 
+    <style name="BadArtBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BadArtBottomSheet</item>
+    </style>
+
+    <style name="BadArtBottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BadArt.BottomSheet</item>
+    </style>
+
+    <style name="ShapeAppearance.BadArt.BottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+    </style>
+
+    <!-- Stat Card Styles -->
     <style name="StatCard">
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">4dp</item>
         <item name="android:layout_margin">8dp</item>
     </style>
 
+    <style name="StatCard.Primary">
+        <item name="cardBackgroundColor">@color/primary_light</item>
+    </style>
+
+    <style name="StatCard.Accent">
+        <item name="cardBackgroundColor">@color/accent_light</item>
+    </style>
+
+    <style name="StatCard.Success">
+        <item name="cardBackgroundColor">#E8F5E9</item>
+    </style>
+
+    <!-- Rank Badge Styles -->
     <style name="RankBadge">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">@drawable/circle_white_background</item>
     </style>
 
-    <style name="ToolButton" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="RankBadge.Gold">
+        <item name="android:textColor">@color/gold</item>
+    </style>
+
+    <style name="RankBadge.Silver">
+        <item name="android:textColor">@color/silver</item>
+    </style>
+
+    <style name="RankBadge.Bronze">
+        <item name="android:textColor">@color/bronze</item>
+    </style>
+
+    <!-- Tool Button Style -->
+    <style name="ToolButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">12sp</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:padding">8dp</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Text Appearance Styles -->
+    <style name="TextAppearance.BadArt.Headline" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.BadArt.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.BadArt.Body" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.BadArt.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- Input Layout Styles -->
+    <style name="BadArtTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/primary_color</item>
+        <item name="hintTextColor">@color/primary_color</item>
+    </style>
+
+    <!-- Chip Styles -->
+    <style name="BadArtChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipCornerRadius">16dp</item>
+        <item name="chipBackgroundColor">@color/light_gray</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- Progress Indicator -->
+    <style name="BadArtProgressIndicator" parent="Widget.MaterialComponents.CircularProgressIndicator">
+        <item name="trackColor">@color/light_gray</item>
+        <item name="indicatorColor">@color/primary_color</item>
+        <item name="trackThickness">4dp</item>
+    </style>
+
+    <!-- Divider -->
+    <style name="BadArtDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/light_gray</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 </resources>

@@ -136,7 +136,7 @@ class FeedAdapter(
                         val guess = etGuess.text.toString().trim()
                         if (guess.isNotEmpty()) {
                             onGuess(post, guess)
-                            etGuess.text.clear()
+                            etGuess.text?.clear()
                         }
                     }
                 }

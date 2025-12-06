@@ -1,208 +1,362 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:paddingBottom="12dp">
 
-        <TextView
-            android:id="@+id/tvReportWarning"
+        <!-- Warning Banner -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardReportWarning"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#FFEBEE"
-            android:padding="8dp"
-            android:text="This drawing has received multiple reports. It has now been hidden for everyone."
-            android:textColor="#D32F2F"
-            android:textStyle="bold"
             android:visibility="gone"
+            app:cardBackgroundColor="#FFEBEE"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/btnReport"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/content_desc_report"
-            android:src="@android:drawable/ic_menu_info_details"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
 
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete Post"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="#D32F2F"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvReportWarning" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_flag_report"
+                    app:tint="#D32F2F" />
 
-        <TextView
-            android:id="@+id/tvArtist"
+                <TextView
+                    android:id="@+id/tvReportWarning"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Multiple reports received. Hidden from feed."
+                    android:textColor="#D32F2F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Header Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerSection"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardReportWarning">
+
+            <ImageView
+                android:id="@+id/ivArtistAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_white_background"
+                android:padding="8dp"
+                android:src="@drawable/ic_person_placeholder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/medium_gray" />
+
+            <TextView
+                android:id="@+id/tvArtist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/artist_name_placeholder"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnMoreOptions"
+                app:layout_constraintStart_toEndOf="@+id/ivArtistAvatar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnMoreOptions"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="More options"
+                android:src="@android:drawable/ic_menu_more"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/text_secondary" />
+
+            <ImageButton
+                android:id="@+id/btnReport"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/content_desc_report"
+                android:src="@drawable/ic_flag_report"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/error_red" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Delete Post"
+                android:src="@drawable/ic_trash_delete"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/error_red" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Animated Hint Display -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/primary_light"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerSection">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingVertical="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guess this word:"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvHintDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.3"
+                    android:text="_ _ _ _ _"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Drawing Image with Shadow -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardDrawing"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardHint">
+
+            <ImageView
+                android:id="@+id/ivDrawing"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:background="@color/white"
+                android:scaleType="fitCenter" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Action Buttons Row -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:gravity="center_vertical"
-            android:text="@string/artist_name_placeholder"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btnReport"
-            app:layout_constraintEnd_toStartOf="@+id/btnReport"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnReport" />
+            app:layout_constraintTop_toBottomOf="@+id/cardDrawing">
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tvArtist,btnReport,btnDelete,tvReportWarning" />
+            <ImageButton
+                android:id="@+id/btnReact"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_reaction_smiley"
+                app:tint="@color/text_secondary" />
 
-        <TextView
-            android:id="@+id/tvHintDisplay"
+            <ImageButton
+                android:id="@+id/btnShare"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_share_arrow"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvReactions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text=""
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Result Text -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardResult"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:letterSpacing="0.3"
-            android:text="_ _ _ _ _"
-            android:textColor="@color/primary_color"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:typeface="monospace"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/ivDrawing"
+            app:cardBackgroundColor="#E8F5E9"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrierHeader" />
+            app:layout_constraintTop_toBottomOf="@+id/layoutActions">
 
-        <ImageView
-            android:id="@+id/ivDrawing"
-            android:layout_width="0dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="4dp"
-            android:background="@color/light_gray"
-            android:scaleType="fitCenter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHintDisplay" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
 
-        <ImageButton
-            android:id="@+id/btnReact"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_smiley"
-            app:tint="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivDrawing"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_trophy"
+                    app:tint="@color/solved_green" />
 
-        <ImageButton
-            android:id="@+id/btnShare"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_share"
-            app:tint="@android:color/darker_gray"
-            app:layout_constraintStart_toEndOf="@+id/btnReact"
-            app:layout_constraintTop_toBottomOf="@+id/ivDrawing"/>
+                <TextView
+                    android:id="@+id/tvResult"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/solved_green"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/tvReactions"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:layout_marginTop="8dp"
-            android:paddingStart="8dp"
-            android:text=""
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnShare"
-            app:layout_constraintTop_toBottomOf="@+id/ivDrawing"/>
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierReactions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="btnReact,tvReactions,btnShare" />
-
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textColor="@color/solved_green"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrierReactions" />
-
+        <!-- Guess History -->
         <TextView
             android:id="@+id/tvGuessHistory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
+            android:background="#F5F5F5"
+            android:padding="12dp"
+            android:textColor="@color/text_secondary"
             android:textSize="12sp"
-            android:textColor="@android:color/darker_gray"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvResult" />
+            app:layout_constraintTop_toBottomOf="@+id/cardResult" />
 
-        <EditText
-            android:id="@+id/etGuess"
+        <!-- Guessing Section -->
+        <LinearLayout
+            android:id="@+id/layoutGuessing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="8dp"
-            android:hint="@string/hint_guess"
-            android:minHeight="48dp"
-            app:layout_constraintEnd_toStartOf="@+id/btnHint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvGuessHistory" />
-
-        <Button
-            android:id="@+id/btnHint"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hint (5)"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/etGuess"
-            app:layout_constraintEnd_toStartOf="@+id/btnGuess"
-            app:layout_constraintStart_toEndOf="@+id/etGuess"
-            app:layout_constraintTop_toTopOf="@+id/etGuess" />
-
-        <Button
-            android:id="@+id/btnGuess"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_guess"
-            app:layout_constraintBottom_toBottomOf="@+id/etGuess"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/etGuess" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvGuessHistory">
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/layoutGuessing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="etGuess,btnGuess,btnHint,tvHintDisplay" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilGuess"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_guess"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:endIconDrawable="@android:drawable/ic_menu_send"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etGuess"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSend"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnHint"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="💡 Hint (5 pts)"
+                    android:textAllCaps="false"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="@color/primary_color" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuess"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/btn_guess"
+                    android:textAllCaps="false"
+                    app:cornerRadius="20dp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

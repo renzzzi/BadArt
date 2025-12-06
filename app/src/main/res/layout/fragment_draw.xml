@@ -2,167 +2,318 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBar"
+    <!-- Top App Bar with Word Prompt -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarDraw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvWordPrompt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/prompt_draw_placeholder"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btnUndo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/content_desc_undo"
-            android:src="@drawable/ic_undo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnRedo"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btnRedo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/content_desc_redo"
-            android:src="@drawable/ic_redo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <HorizontalScrollView
-        android:id="@+id/scrollTools"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="@color/light_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar">
-
-        <LinearLayout
-            android:id="@+id/layoutColors"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <LinearLayout
-        android:id="@+id/layoutActions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#DDDDDD"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/scrollTools">
-
-        <Button
-            android:id="@+id/btnBrush"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_brush" />
-
-        <Button
-            android:id="@+id/btnFill"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_fill" />
-
-        <Button
-            android:id="@+id/btnEraser"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_eraser" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutSize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#EEEEEE"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/layoutActions">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_brush_size"
-            android:textStyle="bold" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/sliderBrushSize"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stepSize="1.0"
-            android:value="10.0"
-            android:valueFrom="1.0"
-            android:valueTo="50.0" />
-    </LinearLayout>
+            android:background="@color/primary_color"
+            android:padding="12dp">
 
-    <com.example.badart.views.DrawingView
-        android:id="@+id/drawingView"
+            <ImageView
+                android:id="@+id/ivBrushIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_brush"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/layoutUndoRedo"
+                app:layout_constraintStart_toEndOf="@+id/ivBrushIcon"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Draw this word:"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvWordPrompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:text="@string/prompt_draw_placeholder"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutUndoRedo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btnUndo"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_desc_undo"
+                    android:src="@drawable/ic_undo_circular"
+                    app:tint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/btnRedo"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_desc_redo"
+                    android:src="@drawable/ic_redo_circular"
+                    app:tint="@color/white" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Color Palette -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardColorPalette"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/canvas_background"
-        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutSize" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarDraw">
 
-    <LinearLayout
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/btnClear"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_clear" />
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <Button
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="🎨 Colors"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/layoutColors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tools Panel -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTools"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardColorPalette">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="🛠️ Tools"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBrush"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="Brush"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_brush"
+                    app:iconGravity="top"
+                    app:iconPadding="4dp"
+                    app:iconSize="24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFill"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:text="Fill"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_fill_bucket"
+                    app:iconGravity="top"
+                    app:iconPadding="4dp"
+                    app:iconSize="24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEraser"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="Eraser"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_eraser"
+                    app:iconGravity="top"
+                    app:iconPadding="4dp"
+                    app:iconSize="24dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Size:"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderBrushSize"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:stepSize="1.0"
+                    android:value="10.0"
+                    android:valueFrom="1.0"
+                    android:valueTo="50.0"
+                    app:thumbColor="@color/primary_color"
+                    app:trackColorActive="@color/primary_color"
+                    app:trackColorInactive="@color/light_gray" />
+
+                <TextView
+                    android:id="@+id/tvBrushSize"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="10"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Drawing Canvas -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardCanvas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBottomActions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardTools">
+
+        <com.example.badart.views.DrawingView
+            android:id="@+id/drawingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Bottom Actions -->
+    <LinearLayout
+        android:id="@+id/layoutBottomActions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Clear Canvas"
+            android:textAllCaps="false"
+            app:cornerRadius="28dp"
+            app:icon="@drawable/ic_clear_canvas"
+            app:strokeColor="@color/error_red" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmit"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="@string/btn_post_art" />
+            android:text="Post Masterpiece"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:backgroundTint="@color/accent_color"
+            app:cornerRadius="28dp"
+            app:icon="@android:drawable/ic_menu_upload" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
