@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BadArtCardView">
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <style name="BadArtButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="BadArtButtonText" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="BadArtFAB" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="cornerRadius">28dp</item>
+        <item name="elevation">6dp</item>
+    </style>
+
+    <style name="BadArtTab" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorColor">@color/accent_color</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabSelectedTextColor">@color/primary_color</item>
+        <item name="tabTextColor">@color/text_secondary</item>
+        <item name="tabIndicatorFullWidth">false</item>
+    </style>
+
+    <style name="BadArtToolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="elevation">4dp</item>
+    </style>
+
+    <style name="BadArtSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="thumbColor">@color/primary_color</item>
+        <item name="activeTrackColor">@color/primary_color</item>
+        <item name="inactiveTrackColor">@color/light_gray</item>
+    </style>
+
+    <style name="BadArtDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="dialogCornerRadius">16dp</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="StatCard">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="RankBadge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+    </style>
+
+    <style name="ToolButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+</resources>
