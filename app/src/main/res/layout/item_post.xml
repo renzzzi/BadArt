@@ -183,16 +183,13 @@
                 android:src="@drawable/ic_share_arrow"
                 app:tint="@color/text_secondary" />
 
-            <TextView
-                android:id="@+id/tvReactions"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupReactions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text=""
-                android:textSize="14sp" />
+                android:layout_weight="1"/>
+
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView

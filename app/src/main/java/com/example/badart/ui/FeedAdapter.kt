@@ -1,20 +1,18 @@
 package com.example.badart.ui
 
+import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.alpha
 import androidx.recyclerview.widget.RecyclerView
 import com.example.badart.R
 import com.example.badart.databinding.ItemPostBinding
 import com.example.badart.model.Post
+import com.google.android.material.chip.Chip
 
 class FeedAdapter(
     private var posts: List<Post>,
@@ -29,7 +27,6 @@ class FeedAdapter(
     private var isMyArtMode = false
     private var currentUserId: String = ""
 
-    // Map to store which indices are revealed for which post
     private val revealedIndices = mutableMapOf<String, MutableSet<Int>>()
 
     inner class PostViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
@@ -44,55 +41,48 @@ class FeedAdapter(
 
         holder.binding.apply {
 
-            // 1. IMAGE HANDLING
             if (post.imageBitmap != null) {
                 ivDrawing.setImageBitmap(post.imageBitmap)
             } else {
-                ivDrawing.setImageDrawable(null) // Or placeholder
+                ivDrawing.setImageDrawable(null) 
             }
 
-            // 2. REACTIONS
+            chipGroupReactions.removeAllViews()
             val myReactionEmoji = post.userReactions[currentUserId]
-            val reactionBuilder = StringBuilder()
+
             post.reactions.forEach { (emoji, count) ->
                 if (count > 0) {
-                    if (emoji == myReactionEmoji) {
-                        reactionBuilder.append("[ $emoji $count ]  ")
-                    } else {
-                        reactionBuilder.append("$emoji $count  ")
+                    val chip = Chip(holder.itemView.context).apply {
+                        text = "$emoji $count"
+                        chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.light_gray)
+                        chipStrokeWidth = 0f
+                        isClickable = false
                     }
+
+                    if (emoji == myReactionEmoji) {
+                        val baseColor = ContextCompat.getColor(holder.itemView.context, R.color.primary_light)
+                        val translucentColor = Color.argb(77, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor)) // 30% alpha
+                        chip.chipBackgroundColor = ColorStateList.valueOf(translucentColor)
+                        chip.chipStrokeColor = ContextCompat.getColorStateList(holder.itemView.context, R.color.primary_dark)
+                        chip.chipStrokeWidth = 4f
+                    }
+
+                    chipGroupReactions.addView(chip)
                 }
             }
 
-            // Bold the user's reaction
-            val finalString = reactionBuilder.toString()
-            val spannable = SpannableString(finalString)
-            if (myReactionEmoji != null) {
-                val startIndex = finalString.indexOf("[")
-                val endIndex = finalString.indexOf("]") + 1
-                if(startIndex != -1 && endIndex != -1) {
-                    spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, 0)
-                }
-                btnReact.alpha = 0.5f // Visual feedback
-            } else {
-                btnReact.alpha = 1.0f
-            }
-            tvReactions.text = spannable
+            btnReact.alpha = if (myReactionEmoji != null) 0.5f else 1.0f
             btnReact.setOnClickListener { onReact(post) }
             btnShare.setOnClickListener { onShare(post) }
 
-            // 3. ARTIST MODE (MY ART)
             if (isMyArtMode) {
-                // Header
-                headerSection.visibility = View.VISIBLE // Hide artist header in My Art
+                headerSection.visibility = View.VISIBLE
                 btnDelete.visibility = View.VISIBLE
-
-                // Visibility Toggles
                 btnReport.visibility = View.GONE
                 layoutGuessing.visibility = View.GONE
                 cardResult.visibility = View.VISIBLE
                 cardGuessHistory.visibility = View.VISIBLE
-                tvHintDisplay.visibility = View.GONE // Hide underscores for own art
+                tvHintDisplay.visibility = View.GONE
 
                 if (post.reportCount >= 3) cardReportWarning.visibility = View.VISIBLE
                 else cardReportWarning.visibility = View.GONE
@@ -114,7 +104,6 @@ class FeedAdapter(
                 btnDelete.setOnClickListener { onDelete(post) }
 
             } else {
-                // 4. FEED MODE (GUESSING)
                 headerSection.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
                 btnReport.visibility = View.VISIBLE
@@ -122,7 +111,6 @@ class FeedAdapter(
                 cardGuessHistory.visibility = View.GONE
                 cardReportWarning.visibility = View.GONE
 
-                // LOGIC: Show Result vs Guessing Input
                 if (post.isSolved) {
                     layoutGuessing.visibility = View.GONE
                     cardResult.visibility = View.VISIBLE
@@ -133,7 +121,6 @@ class FeedAdapter(
                     layoutGuessing.visibility = View.VISIBLE
                     cardResult.visibility = View.GONE
 
-                    // SHOW UNDERSCORES
                     tvHintDisplay.visibility = View.VISIBLE
                     updateHintDisplay(post, tvHintDisplay)
 
@@ -152,7 +139,6 @@ class FeedAdapter(
         }
     }
 
-    // SIMPLIFIED HINT DISPLAY (No fading animation, just reveal)
     private fun updateHintDisplay(post: Post, textView: TextView) {
         val wordLen = post.wordToGuess.length
         val sb = StringBuilder()
@@ -162,11 +148,11 @@ class FeedAdapter(
             val charAtI = post.wordToGuess[i]
 
             if (Character.isWhitespace(charAtI)) {
-                sb.append("  ") // Double space for word separation
+                sb.append("  ")
             } else if (revealed.contains(i)) {
-                sb.append(charAtI).append(" ") // Show letter + space
+                sb.append(charAtI).append(" ")
             } else {
-                sb.append("_ ") // Show underscore + space
+                sb.append("_ ")
             }
         }
 
@@ -182,11 +168,9 @@ class FeedAdapter(
         notifyDataSetChanged()
     }
 
-    // Call this when user clicks "Hint" and has enough points
     fun triggerHint(postId: String, wordToGuess: String) {
         val revealed = revealedIndices.getOrPut(postId) { mutableSetOf() }
 
-        // Find indices that are NOT yet revealed
         val unrevealedIndices = mutableListOf<Int>()
         for (i in wordToGuess.indices) {
             if (!revealed.contains(i) && !Character.isWhitespace(wordToGuess[i])) {
@@ -197,7 +181,7 @@ class FeedAdapter(
         if (unrevealedIndices.isNotEmpty()) {
             val randomIndex = unrevealedIndices.random()
             revealed.add(randomIndex)
-            notifyDataSetChanged() // Refresh UI to show new letter
+            notifyDataSetChanged()
         }
     }
 }
