@@ -14,7 +14,7 @@
         <View
             android:id="@+id/headerBackground"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="180dp"
             android:background="@drawable/gradient_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,12 +23,12 @@
         <!-- Back Button -->
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_margin="6dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:rotation="180"
-            android:src="@drawable/ic_undo"
+            android:src="@drawable/ic_redo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/white" />
@@ -36,16 +36,16 @@
         <!-- Avatar Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAvatar"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="100dp"
-            app:cardCornerRadius="70dp"
-            app:cardElevation="8dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="90dp"
+            app:cardCornerRadius="60dp"
+            app:cardElevation="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/white"
-            app:strokeWidth="4dp">
+            app:strokeWidth="3dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/light_gray"
-                    android:padding="24dp"
+                    android:padding="20dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_person_placeholder"
                     app:tint="@color/medium_gray" />
@@ -67,52 +67,19 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
-
-                <!-- Edit Overlay -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0.5"
-                    android:background="@color/black"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:visibility="gone"
-                    app:tint="@color/white" />
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Avatar Edit Icon -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="80dp"
-            app:cardBackgroundColor="@color/primary_color"
-            app:cardCornerRadius="22dp"
-            app:cardElevation="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/cardAvatar"
-            app:layout_constraintStart_toStartOf="@+id/cardAvatar">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_edit"
-                app:tint="@color/white" />
-        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/tvAvatarHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:text="Tap to Draw Avatar (Free)"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardAvatar" />
@@ -122,7 +89,7 @@
             android:id="@+id/layoutUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -136,14 +103,14 @@
                 android:fontFamily="sans-serif-black"
                 android:text="Username"
                 android:textColor="@color/text_primary"
-                android:textSize="28sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btnEditName"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_edit"
                 app:tint="@color/primary_color" />
@@ -154,10 +121,10 @@
             android:id="@+id/cardStats"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutUsername">
@@ -166,7 +133,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:padding="8dp"
+                android:padding="6dp"
                 android:rowCount="2">
 
                 <!-- Points Card -->
@@ -175,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="6dp"
                     app:cardBackgroundColor="#E3F2FD"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
@@ -185,12 +152,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="8dp">
 
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginBottom="6dp"
                             android:src="@drawable/ic_trophy"
                             app:tint="@color/primary_color" />
 
@@ -201,16 +169,16 @@
                             android:fontFamily="sans-serif-black"
                             android:text="0"
                             android:textColor="@color/primary_color"
-                            android:textSize="28sp"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:text="Points"
                             android:textColor="@color/primary_color"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -221,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="6dp"
                     app:cardBackgroundColor="#FFF9C4"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
@@ -231,14 +199,15 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="6dp"
                             android:text="🏆"
-                            android:textSize="32sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/tvRank"
@@ -247,16 +216,16 @@
                             android:fontFamily="sans-serif-black"
                             android:text="-"
                             android:textColor="@color/gold"
-                            android:textSize="28sp"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:text="Rank"
                             android:textColor="@color/gold"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -267,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="6dp"
                     app:cardBackgroundColor="#E8F5E9"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
@@ -277,14 +246,15 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="6dp"
                             android:text="✅"
-                            android:textSize="32sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/tvCorrectGuesses"
@@ -293,16 +263,16 @@
                             android:fontFamily="sans-serif-black"
                             android:text="0"
                             android:textColor="@color/solved_green"
-                            android:textSize="28sp"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:text="Solved"
                             android:textColor="@color/solved_green"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -313,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_margin="6dp"
                     app:cardBackgroundColor="#F3E5F5"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
@@ -323,14 +293,15 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:paddingVertical="16dp"
+                        android:paddingHorizontal="8dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="6dp"
                             android:text="🎨"
-                            android:textSize="32sp" />
+                            android:textSize="28sp" />
 
                         <TextView
                             android:id="@+id/tvPostCount"
@@ -339,16 +310,16 @@
                             android:fontFamily="sans-serif-black"
                             android:text="0"
                             android:textColor="@color/primary_dark"
-                            android:textSize="28sp"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:text="Artworks"
                             android:textColor="@color/primary_dark"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -356,19 +327,21 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Action Buttons -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="20dp"
             android:text="Logout"
             android:textAllCaps="false"
-            android:textSize="16sp"
-            app:cornerRadius="28dp"
+            android:textSize="15sp"
+            app:cornerRadius="26dp"
             app:icon="@android:drawable/ic_lock_power_off"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardStats"
             app:strokeColor="@color/dark_gray" />
@@ -378,12 +351,13 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
             android:text="Delete Account"
             android:textAllCaps="false"
             android:textColor="@color/error_red"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

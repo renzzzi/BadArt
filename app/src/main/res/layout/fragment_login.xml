@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_color">
+    android:background="@drawable/gradient_background">
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -74,7 +74,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="14dp"
-                    android:src="@drawable/ic_palette_white"
+                    android:src="@drawable/ic_palette"
                     app:tint="@color/white" />
 
                 <LinearLayout
@@ -124,7 +124,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="14dp"
-                    android:src="@drawable/ic_smiley_white"
+                    android:src="@drawable/ic_smiley"
                     app:tint="@color/white" />
 
                 <LinearLayout
@@ -173,7 +173,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="14dp"
-                    android:src="@drawable/ic_trophy_white"
+                    android:src="@drawable/ic_trophy"
                     app:tint="@color/white" />
 
                 <LinearLayout

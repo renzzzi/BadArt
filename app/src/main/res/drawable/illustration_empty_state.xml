@@ -4,29 +4,69 @@
     android:viewportWidth="200"
     android:viewportHeight="200">
 
+    <!-- Background circle -->
     <path
-        android:fillColor="#EEEEEE"
-        android:pathData="M100,20 Q140,30 160,70 Q170,110 140,140 Q110,170 70,160 Q30,150 20,110 Q10,70 40,40 Q70,10 100,20 Z"/>
+        android:fillColor="#F5F5F5"
+        android:pathData="M100,20 Q140,25 165,55 Q185,90 175,125 Q160,160 125,175 Q90,185 60,170 Q30,150 25,115 Q15,75 40,45 Q65,20 100,20 Z"/>
 
+    <!-- Canvas/Paper -->
     <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,70 L140,70 L140,150 L60,150 Z"
+        android:strokeColor="#E0E0E0"
+        android:strokeWidth="2"/>
+
+    <!-- Scribble line 1 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M70,85 Q90,80 110,90 Q125,95 130,85"
         android:strokeColor="#BDBDBD"
-        android:strokeWidth="3"
         android:strokeLineCap="round"
+        android:strokeWidth="3"/>
+
+    <!-- Scribble line 2 -->
+    <path
         android:fillColor="#00000000"
-        android:pathData="M50,80 Q100,60 150,80"/>
-
-    <path
-        android:fillColor="#BDBDBD"
-        android:pathData="M70,100 m-5,0 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0"/>
-
-    <path
-        android:fillColor="#BDBDBD"
-        android:pathData="M130,100 m-5,0 a5,5 0 1,1 10,0 a5,5 0 1,1 -10,0"/>
-
-    <path
-        android:strokeColor="#6200EE"
-        android:strokeWidth="4"
+        android:pathData="M70,105 Q85,110 100,105 Q115,100 130,110"
+        android:strokeColor="#BDBDBD"
         android:strokeLineCap="round"
+        android:strokeWidth="3"/>
+
+    <!-- Scribble line 3 -->
+    <path
         android:fillColor="#00000000"
-        android:pathData="M160,30 L180,50 M180,30 L160,50"/>
+        android:pathData="M70,125 Q95,120 120,130"
+        android:strokeColor="#BDBDBD"
+        android:strokeLineCap="round"
+        android:strokeWidth="3"/>
+
+    <!-- Paintbrush -->
+    <path
+        android:fillColor="#6200EE"
+        android:pathData="M155,45 L160,50 L145,65 L140,60 Z"/>
+
+    <!-- Brush bristles -->
+    <path
+        android:fillColor="#9D46FF"
+        android:pathData="M140,60 L135,65 L132,68 L137,73 L145,65 Z"/>
+
+    <!-- Paint drop -->
+    <path
+        android:fillColor="#00E5CC"
+        android:pathData="M150,55 C150,55 148,58 148,59 C148,60 149,61 150,61 C151,61 152,60 152,59 C152,58 150,55 150,55 Z"/>
+
+    <!-- Star sparkle 1 -->
+    <path
+        android:fillColor="#FFD93D"
+        android:pathData="M165,80 L168,83 L165,86 L162,83 Z"/>
+
+    <!-- Star sparkle 2 -->
+    <path
+        android:fillColor="#FFD93D"
+        android:pathData="M45,90 L47,92 L45,94 L43,92 Z"/>
+
+    <!-- Star sparkle 3 -->
+    <path
+        android:fillColor="#FF6B9D"
+        android:pathData="M155,135 L157,137 L155,139 L153,137 Z"/>
 </vector>

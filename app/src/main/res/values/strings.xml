@@ -16,7 +16,8 @@
     <string name="btn_start_drawing">Start Drawing</string>
     <string name="btn_sign_in_google">Sign in with Google</string>
 
-    <string name="prompt_draw_word">Draw: %s</string>
+    <string name="prompt_draw_word">%s</string>
+    <string name="prompt_draw_placeholder">...</string>
     <string name="btn_clear">Clear Canvas</string>
     <string name="btn_post_art">Post Masterpiece</string>
 

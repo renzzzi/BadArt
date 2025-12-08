@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
-    <!-- Top App Bar with Word Prompt -->
+    <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarDraw"
         android:layout_width="match_parent"
@@ -24,7 +25,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_brush"
+                android:src="@drawable/ic_paintbrush_logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -42,12 +43,7 @@
                 app:layout_constraintStart_toEndOf="@+id/ivBrushIcon"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Draw this word:"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
+
 
                 <TextView
                     android:id="@+id/tvWordPrompt"
@@ -76,7 +72,7 @@
                     android:layout_height="44dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/content_desc_undo"
-                    android:src="@drawable/ic_undo_circular"
+                    android:src="@drawable/ic_undo"
                     app:tint="@color/white" />
 
                 <ImageButton
@@ -86,13 +82,13 @@
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/content_desc_redo"
-                    android:src="@drawable/ic_redo_circular"
+                    android:src="@drawable/ic_redo"
                     app:tint="@color/white" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Color Palette -->
+    <!-- Color Palette Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardColorPalette"
         android:layout_width="0dp"
@@ -105,36 +101,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarDraw">
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="12dp"
+            android:scrollbars="none">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/layoutColors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="🎨 Colors"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:id="@+id/layoutColors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Tools Panel -->
+    <!-- Tools Panel Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardTools"
         android:layout_width="0dp"
@@ -148,18 +130,11 @@
         app:layout_constraintTop_toBottomOf="@+id/cardColorPalette">
 
         <LinearLayout
+            android:id="@+id/layoutTools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="🛠️ Tools"
-                android:textSize="14sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -178,7 +153,7 @@
                     android:textAllCaps="false"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_brush"
+                    app:icon="@drawable/ic_paintbrush_logo"
                     app:iconGravity="top"
                     app:iconPadding="4dp"
                     app:iconSize="24dp" />
@@ -243,15 +218,6 @@
                     app:thumbColor="@color/primary_color"
                     app:trackColorActive="@color/primary_color"
                     app:trackColorInactive="@color/light_gray" />
-
-                <TextView
-                    android:id="@+id/tvBrushSize"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="10"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -293,27 +259,33 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClear"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Clear Canvas"
+            android:text="Clear"
             android:textAllCaps="false"
+            android:textColor="@color/error_red"
+            android:textStyle="bold"
             app:cornerRadius="28dp"
             app:icon="@drawable/ic_clear_canvas"
+            app:iconTint="@color/error_red"
             app:strokeColor="@color/error_red" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmit"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_width="189dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Post Masterpiece"
             android:textAllCaps="false"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
             app:backgroundTint="@color/accent_color"
             app:cornerRadius="28dp"
-            app:icon="@android:drawable/ic_menu_upload" />
+            app:icon="@android:drawable/ic_menu_upload"
+            app:iconTint="@color/text_primary" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

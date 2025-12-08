@@ -32,7 +32,7 @@
             android:layout_height="44dp"
             android:layout_marginEnd="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_undo_circular"
+            android:src="@drawable/ic_undo"
             app:tint="@color/primary_color" />
 
         <ImageButton
@@ -40,7 +40,7 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_redo_circular"
+            android:src="@drawable/ic_redo"
             app:tint="@color/primary_color" />
     </LinearLayout>
 
@@ -151,7 +151,7 @@
                     android:textAllCaps="false"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_brush"
+                    app:icon="@drawable/ic_paintbrush_logo"
                     app:iconGravity="top"
                     app:iconSize="20dp" />
 
