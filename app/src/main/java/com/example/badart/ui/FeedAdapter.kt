@@ -84,10 +84,10 @@ class FeedAdapter(
             // 3. ARTIST MODE (MY ART)
             if (isMyArtMode) {
                 // Header
-                headerSection.visibility = View.GONE // Hide artist header in My Art
+                headerSection.visibility = View.VISIBLE // Hide artist header in My Art
+                btnDelete.visibility = View.VISIBLE
 
                 // Visibility Toggles
-                btnDelete.visibility = View.VISIBLE
                 btnReport.visibility = View.GONE
                 layoutGuessing.visibility = View.GONE
                 cardResult.visibility = View.VISIBLE
