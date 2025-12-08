@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Create your first masterpiece"
+                    android:text="Oops it seems your art is empty"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"

@@ -66,31 +66,33 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✅ "
-                    android:textSize="12sp" />
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_check_circle"
+                    app:tint="@color/text_secondary" />
 
                 <TextView
                     android:id="@+id/tvCorrectGuesses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="0 solved"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
                     android:layout_marginStart="12dp"
-                    android:text="🎨 "
-                    android:textSize="12sp" />
+                    android:src="@drawable/ic_palette"
+                    app:tint="@color/text_secondary" />
 
                 <TextView
                     android:id="@+id/tvPostCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="0 posts"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
@@ -102,7 +104,7 @@
             android:id="@+id/layoutScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android.gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

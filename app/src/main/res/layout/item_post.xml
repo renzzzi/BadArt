@@ -3,18 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
+    android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="6dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="3dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp">
+        android:paddingBottom="12dp">
 
-        <!-- Warning Banner -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardReportWarning"
             android:layout_width="0dp"
@@ -33,12 +32,12 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingVertical="10dp"
-                android:paddingHorizontal="12dp">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_flag_report"
                     app:tint="#D32F2F" />
 
@@ -49,29 +48,28 @@
                     android:layout_weight="1"
                     android:text="Multiple reports received. Hidden from feed."
                     android:textColor="#D32F2F"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Header Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerSection"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="8dp"
+            android:paddingHorizontal="14dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardReportWarning">
 
             <ImageView
                 android:id="@+id/ivArtistAvatar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:background="@drawable/circle_white_background"
-                android:padding="7dp"
+                android:padding="8dp"
                 android:src="@drawable/ic_person_placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -82,40 +80,41 @@
                 android:id="@+id/tvArtist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="12dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/artist_name_placeholder"
                 android:textColor="@color/text_primary"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnMoreOptions"
                 app:layout_constraintStart_toEndOf="@+id/ivArtistAvatar"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/btnMoreOptions"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="More options"
-                android:src="@android:drawable/ic_menu_more"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:tint="@color/text_secondary" />
+                app:layout_constraintEnd_toStartOf="@+id/tvHintDisplay"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/tvHintDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.3"
+                android:text="_ _ _ _ _"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnReport"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="12dp"/>
 
             <ImageButton
                 android:id="@+id/btnReport"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/content_desc_report"
                 android:src="@drawable/ic_flag_report"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -123,8 +122,8 @@
 
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Delete Post"
                 android:src="@drawable/ic_trash_delete"
@@ -135,96 +134,51 @@
                 app:tint="@color/error_red" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Animated Hint Display -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardHint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="6dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/primary_light"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/headerSection">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingVertical="14dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guess this word:"
-                    android:textColor="@color/white"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:id="@+id/tvHintDisplay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="monospace"
-                    android:letterSpacing="0.3"
-                    android:text="_ _ _ _ _"
-                    android:textColor="@color/white"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Drawing Image with Shadow -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDrawing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="6dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardHint">
+            app:layout_constraintTop_toBottomOf="@+id/headerSection">
 
             <ImageView
                 android:id="@+id/ivDrawing"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
+                android:layout_height="280dp"
                 android:background="@color/white"
                 android:scaleType="fitCenter" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Action Buttons Row -->
         <LinearLayout
             android:id="@+id/layoutActions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardDrawing">
 
             <ImageButton
                 android:id="@+id/btnReact"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_reaction_smiley"
                 app:tint="@color/text_secondary" />
 
             <ImageButton
                 android:id="@+id/btnShare"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="4dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_share_arrow"
                 app:tint="@color/text_secondary" />
@@ -233,24 +187,23 @@
                 android:id="@+id/tvReactions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text=""
-                android:textSize="13sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
-        <!-- Result Text -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardResult"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="10dp"
             android:visibility="gone"
             app:cardBackgroundColor="#E8F5E9"
-            app:cardCornerRadius="8dp"
+            app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -261,13 +214,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingVertical="10dp"
-                android:paddingHorizontal="12dp">
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="14dp">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_trophy"
                     app:tint="@color/solved_green" />
 
@@ -277,39 +230,45 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/solved_green"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Guess History -->
-        <TextView
-            android:id="@+id/tvGuessHistory"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardGuessHistory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
-            android:background="#F5F5F5"
-            android:padding="10dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="10dp"
             android:visibility="gone"
+            app:cardBackgroundColor="#F5F5F5"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardResult" />
+            app:layout_constraintTop_toBottomOf="@+id/cardResult">
 
-        <!-- Guessing Section -->
+            <TextView
+                android:id="@+id/tvGuessHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </com.google.android.material.card.MaterialCardView>
+
         <LinearLayout
             android:id="@+id/layoutGuessing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvGuessHistory">
+            app:layout_constraintTop_toBottomOf="@+id/cardGuessHistory">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilGuess"
@@ -317,10 +276,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_guess"
-                app:boxCornerRadiusBottomEnd="10dp"
-                app:boxCornerRadiusBottomStart="10dp"
-                app:boxCornerRadiusTopEnd="10dp"
-                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
                 app:endIconDrawable="@android:drawable/ic_menu_send"
                 app:endIconMode="custom">
 
@@ -331,37 +290,39 @@
                     android:imeOptions="actionSend"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textSize="14sp" />
+                    android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnHint"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:text="💡 Hint (5 pts)"
                     android:textAllCaps="false"
-                    android:textSize="13sp"
-                    app:cornerRadius="18dp"
-                    app:strokeColor="@color/primary_color" />
+                    android:textSize="14sp"
+                    app:cornerRadius="26dp"
+                    app:strokeColor="@color/primary_color"
+                    app:strokeWidth="2dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGuess"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:layout_weight="1"
                     android:text="@string/btn_guess"
                     android:textAllCaps="false"
-                    android:textSize="13sp"
-                    app:cornerRadius="18dp" />
+                    android:textSize="14sp"
+                    app:backgroundTint="@color/primary_color"
+                    app:cornerRadius="26dp" />
             </LinearLayout>
         </LinearLayout>
 

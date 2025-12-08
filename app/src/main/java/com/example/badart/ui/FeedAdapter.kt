@@ -29,8 +29,8 @@ class FeedAdapter(
     private var isMyArtMode = false
     private var currentUserId: String = ""
 
-    private val activeHints = mutableMapOf<String, MutableMap<Int, Long>>()
-    private val animationRunnables = mutableMapOf<String, Runnable>()
+    // Map to store which indices are revealed for which post
+    private val revealedIndices = mutableMapOf<String, MutableSet<Int>>()
 
     inner class PostViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -42,16 +42,16 @@ class FeedAdapter(
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
 
-        holder.binding.tvHintDisplay.removeCallbacks(animationRunnables[post.id])
-
         holder.binding.apply {
 
+            // 1. IMAGE HANDLING
             if (post.imageBitmap != null) {
                 ivDrawing.setImageBitmap(post.imageBitmap)
             } else {
-                ivDrawing.setImageDrawable(null)
+                ivDrawing.setImageDrawable(null) // Or placeholder
             }
 
+            // 2. REACTIONS
             val myReactionEmoji = post.userReactions[currentUserId]
             val reactionBuilder = StringBuilder()
             post.reactions.forEach { (emoji, count) ->
@@ -63,6 +63,8 @@ class FeedAdapter(
                     }
                 }
             }
+
+            // Bold the user's reaction
             val finalString = reactionBuilder.toString()
             val spannable = SpannableString(finalString)
             if (myReactionEmoji != null) {
@@ -71,36 +73,36 @@ class FeedAdapter(
                 if(startIndex != -1 && endIndex != -1) {
                     spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, 0)
                 }
-            }
-            tvReactions.text = spannable
-            if (myReactionEmoji != null) {
-                btnReact.alpha = 0.5f
-                btnReact.setOnClickListener {
-                    Toast.makeText(holder.itemView.context, "You reacted: $myReactionEmoji", Toast.LENGTH_SHORT).show()
-                }
+                btnReact.alpha = 0.5f // Visual feedback
             } else {
                 btnReact.alpha = 1.0f
-                btnReact.setOnClickListener { onReact(post) }
             }
-
+            tvReactions.text = spannable
+            btnReact.setOnClickListener { onReact(post) }
             btnShare.setOnClickListener { onShare(post) }
 
+            // 3. ARTIST MODE (MY ART)
             if (isMyArtMode) {
-                tvArtist.visibility = View.GONE
-                btnReport.visibility = View.GONE
-                btnDelete.visibility = View.VISIBLE
-                btnReact.visibility = View.GONE
-                layoutGuessing.visibility = View.GONE
-                tvResult.visibility = View.VISIBLE
-                tvGuessHistory.visibility = View.VISIBLE
+                // Header
+                headerSection.visibility = View.GONE // Hide artist header in My Art
 
-                if (post.reportCount >= 3) tvReportWarning.visibility = View.VISIBLE
-                else tvReportWarning.visibility = View.GONE
+                // Visibility Toggles
+                btnDelete.visibility = View.VISIBLE
+                btnReport.visibility = View.GONE
+                layoutGuessing.visibility = View.GONE
+                cardResult.visibility = View.VISIBLE
+                cardGuessHistory.visibility = View.VISIBLE
+                tvHintDisplay.visibility = View.GONE // Hide underscores for own art
+
+                if (post.reportCount >= 3) cardReportWarning.visibility = View.VISIBLE
+                else cardReportWarning.visibility = View.GONE
 
                 if (post.isSolved) {
                     tvResult.text = "Status: SOLVED by ${post.winner}\nWord: ${post.wordToGuess}"
+                    tvResult.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.solved_green))
                 } else {
                     tvResult.text = "Status: Unsolved\nWord: ${post.wordToGuess}"
+                    tvResult.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.text_secondary))
                 }
 
                 if (post.guessHistory.isNotEmpty()) {
@@ -108,27 +110,32 @@ class FeedAdapter(
                 } else {
                     tvGuessHistory.text = "No guesses yet."
                 }
+
                 btnDelete.setOnClickListener { onDelete(post) }
 
             } else {
-                tvArtist.visibility = View.VISIBLE
+                // 4. FEED MODE (GUESSING)
+                headerSection.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
                 btnReport.visibility = View.VISIBLE
                 btnDelete.visibility = View.GONE
-                btnReact.visibility = View.VISIBLE
-                tvGuessHistory.visibility = View.GONE
-                tvReportWarning.visibility = View.GONE
+                cardGuessHistory.visibility = View.GONE
+                cardReportWarning.visibility = View.GONE
 
+                // LOGIC: Show Result vs Guessing Input
                 if (post.isSolved) {
                     layoutGuessing.visibility = View.GONE
-                    tvResult.visibility = View.VISIBLE
+                    cardResult.visibility = View.VISIBLE
                     tvResult.text = "Solved! The word was: ${post.wordToGuess}"
+                    tvResult.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.solved_green))
+                    tvHintDisplay.visibility = View.GONE
                 } else {
                     layoutGuessing.visibility = View.VISIBLE
-                    tvResult.visibility = View.GONE
+                    cardResult.visibility = View.GONE
 
+                    // SHOW UNDERSCORES
                     tvHintDisplay.visibility = View.VISIBLE
-                    startHintAnimation(post, tvHintDisplay)
+                    updateHintDisplay(post, tvHintDisplay)
 
                     btnHint.setOnClickListener { onHint(post) }
 
@@ -145,67 +152,25 @@ class FeedAdapter(
         }
     }
 
-    private fun startHintAnimation(post: Post, textView: TextView) {
-        val primaryColor = ContextCompat.getColor(textView.context, R.color.primary_color)
+    // SIMPLIFIED HINT DISPLAY (No fading animation, just reveal)
+    private fun updateHintDisplay(post: Post, textView: TextView) {
+        val wordLen = post.wordToGuess.length
+        val sb = StringBuilder()
+        val revealed = revealedIndices[post.id] ?: mutableSetOf()
 
-        val runnable = object : Runnable {
-            override fun run() {
-                val wordLen = post.wordToGuess.length
-                val sb = StringBuilder()
-                val currentTime = System.currentTimeMillis()
-                val postHints = activeHints[post.id] ?: mutableMapOf()
+        for (i in 0 until wordLen) {
+            val charAtI = post.wordToGuess[i]
 
-                for (i in 0 until wordLen) {
-                    val startTime = postHints[i] ?: 0L
-                    if (currentTime < startTime + 10000) {
-                        sb.append(post.wordToGuess[i])
-                    } else {
-                        sb.append("_")
-                    }
-                    if (i < wordLen - 1) sb.append(" ")
-                }
-
-                val fullText = sb.toString()
-                val spannable = SpannableString(fullText)
-                var hasActiveAnimation = false
-
-                for (i in 0 until wordLen) {
-                    val startTime = postHints[i] ?: 0L
-
-                    val spanIndex = i * 2
-
-                    if (currentTime < startTime + 10000) {
-                        hasActiveAnimation = true
-                        val elapsed = currentTime - startTime
-                        val fraction = elapsed / 10000f
-
-                        val alpha = ((1.0f - fraction) * 255).toInt().coerceIn(0, 255)
-                        val colorWithAlpha = Color.argb(alpha, Color.red(primaryColor), Color.green(primaryColor), Color.blue(primaryColor))
-
-                        spannable.setSpan(
-                            ForegroundColorSpan(colorWithAlpha),
-                            spanIndex,
-                            spanIndex + 1,
-                            0
-                        )
-                    }
-                }
-
-                textView.text = spannable
-
-                if (hasActiveAnimation) {
-                    textView.postDelayed(this, 33)
-                }
+            if (Character.isWhitespace(charAtI)) {
+                sb.append("  ") // Double space for word separation
+            } else if (revealed.contains(i)) {
+                sb.append(charAtI).append(" ") // Show letter + space
+            } else {
+                sb.append("_ ") // Show underscore + space
             }
         }
 
-        animationRunnables[post.id] = runnable
-        runnable.run()
-    }
-
-    override fun onViewRecycled(holder: PostViewHolder) {
-        super.onViewRecycled(holder)
-        holder.binding.tvHintDisplay.removeCallbacks(null)
+        textView.text = sb.toString()
     }
 
     override fun getItemCount() = posts.size
@@ -217,22 +182,22 @@ class FeedAdapter(
         notifyDataSetChanged()
     }
 
+    // Call this when user clicks "Hint" and has enough points
     fun triggerHint(postId: String, wordToGuess: String) {
-        val postHints = activeHints.getOrPut(postId) { mutableMapOf() }
-        val currentTime = System.currentTimeMillis()
-        val validIndices = mutableListOf<Int>()
+        val revealed = revealedIndices.getOrPut(postId) { mutableSetOf() }
 
+        // Find indices that are NOT yet revealed
+        val unrevealedIndices = mutableListOf<Int>()
         for (i in wordToGuess.indices) {
-            val start = postHints[i] ?: 0L
-            if (currentTime >= start + 10000) {
-                validIndices.add(i)
+            if (!revealed.contains(i) && !Character.isWhitespace(wordToGuess[i])) {
+                unrevealedIndices.add(i)
             }
         }
 
-        if (validIndices.isNotEmpty()) {
-            val randomIndex = validIndices.random()
-            postHints[randomIndex] = currentTime
-            notifyDataSetChanged()
+        if (unrevealedIndices.isNotEmpty()) {
+            val randomIndex = unrevealedIndices.random()
+            revealed.add(randomIndex)
+            notifyDataSetChanged() // Refresh UI to show new letter
         }
     }
 }

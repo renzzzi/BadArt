@@ -28,7 +28,7 @@
 
     <string name="empty_feed_title">Nothing to see here, come back later.</string>
     <string name="empty_feed_subtitle">Come back later or create your first masterpiece!</string>
-    <string name="empty_myart_title">Create your first masterpiece</string>
+    <string name="empty_myart_title">Oops it seems your art is empty</string>
     <string name="empty_myart_subtitle">Come back later or create your first masterpiece!</string>
     <string name="btn_create_masterpiece">Create Masterpiece</string>
 
