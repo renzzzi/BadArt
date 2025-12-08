@@ -1,7 +1,9 @@
 package com.example.badart.ui
 
 import android.app.AlertDialog
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,8 +22,10 @@ import com.example.badart.databinding.FragmentProfileBinding
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.example.badart.views.DrawingView
+import com.example.badart.views.Tool
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -184,12 +189,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val layoutColors = dialogView.findViewById<LinearLayout>(R.id.layoutColorsAvatar)
         val btnUndo = dialogView.findViewById<ImageButton>(R.id.btnUndoAvatar)
         val btnRedo = dialogView.findViewById<ImageButton>(R.id.btnRedoAvatar)
-        val btnBrush = dialogView.findViewById<Button>(R.id.btnBrushAvatar)
-        val btnFill = dialogView.findViewById<Button>(R.id.btnFillAvatar)
-        val btnEraser = dialogView.findViewById<Button>(R.id.btnEraserAvatar)
+        val btnBrush = dialogView.findViewById<MaterialButton>(R.id.btnBrushAvatar)
+        val btnFill = dialogView.findViewById<MaterialButton>(R.id.btnFillAvatar)
+        val btnEraser = dialogView.findViewById<MaterialButton>(R.id.btnEraserAvatar)
         val sliderSize = dialogView.findViewById<Slider>(R.id.sliderSizeAvatar)
         val btnClear = dialogView.findViewById<Button>(R.id.btnClearAvatar)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveAvatar)
+        val layoutTools = dialogView.findViewById<LinearLayout>(R.id.tools_container_avatar)
 
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -201,26 +207,53 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             R.color.paint_purple
         )
 
+        fun selectTool(selectedButton: View, tool: Tool) {
+            layoutTools.children.filterIsInstance<MaterialButton>().forEach { 
+                it.strokeWidth = 0
+            }
+            (selectedButton as? MaterialButton)?.apply {
+                strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.primary_color))
+                strokeWidth = 8
+            }
+            drawingView.setTool(tool)
+        }
+
         for (colorRes in colors) {
-            val colorBtn = Button(requireContext())
+            val colorBtn = MaterialButton(requireContext())
             val params = LinearLayout.LayoutParams(100, 100)
             params.setMargins(8, 0, 8, 0)
             colorBtn.layoutParams = params
             val colorValue = ContextCompat.getColor(requireContext(), colorRes)
             colorBtn.setBackgroundColor(colorValue)
-            colorBtn.setOnClickListener {
+
+            colorBtn.setOnClickListener { view ->
+                layoutColors.children.forEach { child ->
+                    (child as? MaterialButton)?.strokeWidth = 0
+                }
+                (view as? MaterialButton)?.apply {
+                    strokeColor = ColorStateList.valueOf(Color.WHITE)
+                    strokeWidth = 8
+                }
                 drawingView.setColor(colorValue)
+                selectTool(btnBrush, Tool.BRUSH) // Switch back to brush on color selection
             }
             layoutColors.addView(colorBtn)
         }
 
+        (layoutColors.getChildAt(0) as? MaterialButton)?.performClick()
+
         btnUndo.setOnClickListener { drawingView.undo() }
         btnRedo.setOnClickListener { drawingView.redo() }
-        btnBrush.setOnClickListener { drawingView.setEraser(false) }
-        btnFill.setOnClickListener { drawingView.setFillMode(true) }
-        btnEraser.setOnClickListener { drawingView.setEraser(true) }
+        btnBrush.setOnClickListener { selectTool(it, Tool.BRUSH) }
+        btnFill.setOnClickListener { selectTool(it, Tool.FILL) }
+        btnEraser.setOnClickListener { selectTool(it, Tool.ERASER) }
         sliderSize.addOnChangeListener { _, value, _ -> drawingView.setBrushSize(value) }
-        btnClear.setOnClickListener { drawingView.clearCanvas() }
+        btnClear.setOnClickListener { 
+            drawingView.clearCanvas()
+            selectTool(btnBrush, Tool.BRUSH)
+        }
+
+        selectTool(btnBrush, Tool.BRUSH)
 
         btnSave.setOnClickListener {
             val bitmap = drawingView.getBitmap()

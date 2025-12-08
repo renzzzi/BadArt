@@ -24,14 +24,13 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var canvasBitmap: Bitmap? = null
     private var drawCanvas: Canvas? = null
     private var paintColor = Color.BLACK
-    private var isEraser = false
-    private var isFillMode = false
     private var isProcessing = false
     private var brushSize = 10f
 
     private val undoStack = ArrayList<Bitmap>()
     private val redoStack = ArrayList<Bitmap>()
     private val maxHistorySize = 10
+    private var currentTool = Tool.BRUSH
 
     init {
         setupDrawing()
@@ -64,7 +63,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         canvasBitmap?.let {
             canvas.drawBitmap(it, 0f, 0f, canvasPaint)
         }
-        if (!isFillMode && !isProcessing) {
+        if (currentTool != Tool.FILL) {
             canvas.drawPath(drawPath, drawPaint)
         }
     }
@@ -75,9 +74,8 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         val touchX = event.x
         val touchY = event.y
 
-        if (isFillMode) {
+        if (currentTool == Tool.FILL) {
             if (event.action == MotionEvent.ACTION_UP) {
-                saveToUndoStack()
                 performFloodFill(touchX.toInt(), touchY.toInt(), paintColor)
             }
             return true
@@ -139,36 +137,29 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     fun setBrushSize(newSize: Float) {
         brushSize = newSize
-        if(isEraser) {
-            drawPaint.strokeWidth = newSize
-        } else {
-            drawPaint.strokeWidth = newSize
-        }
+        drawPaint.strokeWidth = newSize
     }
 
     fun setColor(newColor: Int) {
         paintColor = newColor
         drawPaint.color = paintColor
-        isEraser = false
-        isFillMode = false
-        drawPaint.style = Paint.Style.STROKE
-        drawPaint.strokeWidth = brushSize
     }
 
-    fun setEraser(active: Boolean) {
-        isEraser = active
-        isFillMode = false
-        if (active) {
-            drawPaint.color = Color.WHITE
-        } else {
-            drawPaint.color = paintColor
+    fun setTool(tool: Tool) {
+        currentTool = tool
+        when (tool) {
+            Tool.BRUSH -> {
+                drawPaint.color = paintColor
+                drawPaint.style = Paint.Style.STROKE
+            }
+            Tool.ERASER -> {
+                drawPaint.color = Color.WHITE
+                drawPaint.style = Paint.Style.STROKE
+            }
+            Tool.FILL -> {
+                // No paint changes needed here, handled in onTouchEvent
+            }
         }
-        drawPaint.strokeWidth = brushSize
-    }
-
-    fun setFillMode(active: Boolean) {
-        isFillMode = active
-        isEraser = false
     }
 
     fun clearCanvas() {
