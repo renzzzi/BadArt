@@ -1,180 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- App Info -->
     <string name="app_name">BadArt</string>
-    <string name="app_tagline">Draw poorly. Guess correctly.</string>
-    <string name="app_description">Join the community of bad artists and compete in the worst drawing competition ever!</string>
-
-    <!-- Login Screen -->
     <string name="title_login">BadArt</string>
+    <string name="tagline">Draw poorly. Guess correctly.</string>
+
+    <string name="feature_1_title">Create Bad Art</string>
+    <string name="feature_1_desc">Draw terrible masterpieces</string>
+    <string name="feature_2_title">Guess &amp; Compete</string>
+    <string name="feature_2_desc">Solve drawings &amp; climb leaderboard</string>
+    <string name="feature_3_title">Earn Points &amp; Glory</string>
+    <string name="feature_3_desc">Join the community of bad artists</string>
+
     <string name="hint_username">Username</string>
     <string name="terms_agreement">I agree to the Terms. No offensive drawings.</string>
-    <string name="btn_google_login">Sign in with Google</string>
-    <string name="feature_create_title">Create Bad Art</string>
-    <string name="feature_create_desc">Draw terrible masterpieces</string>
-    <string name="feature_guess_title">Guess &amp; Compete</string>
-    <string name="feature_guess_desc">Solve drawings &amp; climb leaderboards</string>
-    <string name="feature_earn_title">Earn Points &amp; Glory</string>
-    <string name="feature_earn_desc">Join the community of bad artists</string>
+    <string name="btn_start_drawing">Start Drawing</string>
+    <string name="btn_sign_in_google">Sign in with Google</string>
 
-    <!-- Drawing Screen -->
-    <string name="prompt_draw_placeholder">Draw: CACTUS</string>
-    <string name="prompt_draw_word">Draw this word:</string>
-    <string name="btn_brush">Brush</string>
-    <string name="btn_fill">Fill</string>
-    <string name="btn_eraser">Eraser</string>
-    <string name="btn_clear">Clear</string>
-    <string name="btn_clear_canvas">Clear Canvas</string>
-    <string name="btn_post_art">Post Art</string>
-    <string name="btn_post_masterpiece">Post Masterpiece</string>
-    <string name="label_brush_size">Size</string>
+    <string name="prompt_draw_word">Draw: %s</string>
+    <string name="btn_clear">Clear Canvas</string>
+    <string name="btn_post_art">Post Masterpiece</string>
+
+    <string name="artist_name_placeholder">ArtistName</string>
+    <string name="hint_guess">Guess the word...</string>
+    <string name="btn_guess">Guess</string>
+    <string name="btn_hint">Hint (5 pts)</string>
+
+    <string name="empty_feed_title">Nothing to see here, come back later.</string>
+    <string name="empty_feed_subtitle">Come back later or create your first masterpiece!</string>
+    <string name="empty_myart_title">Create your first masterpiece</string>
+    <string name="empty_myart_subtitle">Come back later or create your first masterpiece!</string>
+    <string name="btn_create_masterpiece">Create Masterpiece</string>
+
     <string name="label_colors">Colors</string>
     <string name="label_tools">Tools</string>
+    <string name="btn_brush">Brush</string>
+    <string name="btn_eraser">Eraser</string>
+    <string name="btn_fill">Fill</string>
+    <string name="label_size">Size:</string>
 
-    <!-- Feed Screen -->
-    <string name="tab_my_feed">My Feed</string>
-    <string name="tab_my_art">My Art</string>
-    <string name="artist_name_placeholder">ArtistName</string>
-    <string name="hint_guess">Guess the word…</string>
-    <string name="btn_guess">Guess</string>
-    <string name="btn_hint">Hint (5)</string>
-    <string name="btn_buy_hint">💡 Hint (5 pts)</string>
-    <string name="empty_state_feed">Nothing to see here, come back later.</string>
-    <string name="empty_state_my_art">Create your first masterpiece</string>
-    <string name="empty_state_subtitle">Come back later or create your first masterpiece!</string>
-    <string name="btn_create_first">Create Masterpiece</string>
-    <string name="solved_text">Solved! The word was: %s</string>
-    <string name="status_solved">Status: SOLVED by %s\nWord: %s</string>
-    <string name="status_unsolved">Status: Unsolved\nWord: %s</string>
-    <string name="recent_guesses">Recent Guesses:</string>
-    <string name="no_guesses">No guesses yet.</string>
-    <string name="guess_word_prompt">Guess this word:</string>
-    <string name="report_multiple">Multiple reports received. Hidden from feed.</string>
+    <string name="content_desc_report">Report Post</string>
+    <string name="content_desc_delete">Delete Post</string>
+    <string name="content_desc_add_drawing">Add new drawing</string>
+    <string name="content_desc_profile">Go to Profile</string>
+    <string name="content_desc_undo">Undo</string>
+    <string name="content_desc_redo">Redo</string>
+    <string name="content_desc_leaderboard">View Leaderboard</string>
 
-    <!-- Profile Screen -->
     <string name="title_profile">Profile</string>
-    <string name="my_profile">My Profile</string>
-    <string name="label_score">Total Score</string>
+    <string name="title_leaderboard">Leaderboard</string>
+    <string name="label_score">Points</string>
     <string name="label_rank">Rank</string>
     <string name="label_solved">Solved</string>
     <string name="label_artworks">Artworks</string>
-    <string name="label_points">Points</string>
-    <string name="label_blocked">Blocked Users</string>
-    <string name="btn_edit_username">Edit Username</string>
     <string name="btn_logout">Logout</string>
     <string name="btn_delete_account">Delete Account</string>
-    <string name="avatar_hint_free">Tap to Draw Avatar (Free)</string>
-    <string name="avatar_hint_paid">Tap to Change Avatar (50 pts)</string>
-    <string name="draw_your_avatar">🎨 Draw Your Avatar</string>
-    <string name="btn_save_avatar">Save Avatar</string>
 
-    <!-- Leaderboard -->
-    <string name="title_leaderboard">Leaderboard</string>
-    <string name="all_rankings">All Rankings</string>
-    <string name="rank_format">#%d</string>
-    <string name="score_format">%d pts</string>
-    <string name="solved_count">%d solved</string>
-    <string name="post_count">%d posts</string>
+    <string name="status_solved">Status: SOLVED by %s\nWord: %s</string>
+    <string name="status_unsolved">Status: Unsolved\nWord: %s</string>
+    <string name="recent_guesses_label">Recent Guesses:</string>
+    <string name="no_guesses">No guesses yet.</string>
 
-    <!-- Dialogs -->
-    <string name="dialog_success">Success</string>
-    <string name="dialog_error">Error</string>
-    <string name="dialog_confirm">Confirm</string>
-    <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_yes">Yes</string>
-    <string name="dialog_no">No</string>
-    <string name="dialog_save">Save</string>
-    <string name="dialog_delete">Delete</string>
-
-    <!-- Success Messages -->
-    <string name="success_posted">Your masterpiece has been uploaded to the feed!</string>
-    <string name="success_correct_guess">Correct! The word was %s. +10 Points!</string>
-    <string name="success_reported">Thanks for keeping BadArt safe. This post has been reported.</string>
-    <string name="success_blocked">You will no longer see art from %s.</string>
-    <string name="success_deleted">Your artwork has been removed.</string>
-    <string name="success_username_updated">Your username has been changed.</string>
-    <string name="success_avatar_updated">Your new avatar is saved!</string>
-    <string name="success_reacted">You added: %s</string>
-
-    <!-- Error Messages -->
-    <string name="error_wrong_guess">That is not the correct word. Try again!</string>
-    <string name="error_not_enough_points">You don\'t have enough points!</string>
-    <string name="error_low_balance">You need %d points to change your %s.</string>
-    <string name="error_username_too_short">Username too short (minimum 3 characters)</string>
-    <string name="error_login_failed">Google Sign In Failed. Code: %d</string>
-    <string name="error_share_failed">Failed to prepare image for sharing.</string>
-    <string name="error_storage_failed">Could not save image to storage.</string>
-
-    <!-- Confirmation Dialogs -->
-    <string name="confirm_logout_title">Logout</string>
-    <string name="confirm_logout_message">Are you sure you want to log out?</string>
-    <string name="confirm_delete_account_title">Delete Account</string>
-    <string name="confirm_delete_account_message">Are you sure? All your data will be lost.</string>
-    <string name="confirm_delete_post_title">Delete Drawing</string>
-    <string name="confirm_delete_post_message">Are you sure you want to delete this masterpiece?</string>
-    <string name="confirm_buy_hint_title">Buy Hint?</string>
-    <string name="confirm_buy_hint_message">Spend 5 points to briefly reveal a letter?</string>
-    <string name="confirm_change_avatar_title">Change Avatar</string>
-    <string name="confirm_change_avatar_message">Changing your avatar will cost 50 points. Continue?</string>
-    <string name="confirm_change_username_title">Change Username</string>
-    <string name="confirm_change_username_message">Changing your username will cost 50 points. Continue?</string>
-    <string name="btn_buy">Buy</string>
-
-    <!-- Reactions -->
-    <string name="reaction_masterpiece">🎨 Masterpiece</string>
-    <string name="reaction_trash">💩 Trash</string>
-    <string name="reaction_facepalm">🤦 Facepalm</string>
-    <string name="reaction_hilarious">😂 Hilarious</string>
-    <string name="reaction_confused">🤨 Confused</string>
-    <string name="reaction_lit">🔥 Lit</string>
-    <string name="reaction_spooky">👻 Spooky</string>
-    <string name="reaction_big_brain">🧠 Big Brain</string>
-    <string name="react_to_badart">React to this Bad Art</string>
-    <string name="you_reacted">You reacted: %s</string>
-
-    <!-- Report & Block -->
-    <string name="action_title">Action</string>
-    <string name="action_report_content">Report Content</string>
-    <string name="action_block_user">Block User</string>
-
-    <!-- Share -->
-    <string name="share_message">Can you guess this drawing? Download BadArt and play now!</string>
-    <string name="share_title">Share your Bad Art</string>
-    <string name="share_text_overlay">Draw poorly. Guess correctly.</string>
-
-    <!-- Content Descriptions -->
-    <string name="content_desc_report">Report Post</string>
-    <string name="content_desc_add_drawing">Add new drawing</string>
-    <string name="content_desc_profile">Go to Profile</string>
-    <string name="content_desc_leaderboard">View Leaderboard</string>
-    <string name="content_desc_undo">Undo</string>
-    <string name="content_desc_redo">Redo</string>
-    <string name="content_desc_back">Go Back</string>
-    <string name="content_desc_more_options">More options</string>
-    <string name="content_desc_delete">Delete</string>
-    <string name="content_desc_share">Share</string>
-    <string name="content_desc_react">React</string>
-    <string name="content_desc_avatar">Avatar</string>
-    <string name="content_desc_app_logo">App Logo</string>
-
-    <!-- Loading & Processing -->
-    <string name="loading">Loading…</string>
-    <string name="processing">Processing…</string>
-    <string name="saving">Saving…</string>
-    <string name="uploading">Uploading…</string>
-
-    <!-- Stats -->
-    <string name="stats_points">%d points</string>
-    <string name="stats_rank">#%d</string>
-    <string name="stats_solved">%d solved</string>
-    <string name="stats_posts">%d posts</string>
-
-    <!-- Misc -->
     <string name="default_web_client_id">646947800484-dgm9jb8l7limubguqka3ata5us1oslc9.apps.googleusercontent.com</string>
-    <string name="winner_announcement">🎉 Winner: %s</string>
-    <string name="you_won">You Won!</string>
-    <string name="so_close">So Close!</string>
-    <string name="oops">Oops</string>
-    <string name="new_username_prompt">New Username</string>
-    <string name="updated">Updated</string>
 </resources>

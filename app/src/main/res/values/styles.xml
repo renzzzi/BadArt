@@ -2,10 +2,10 @@
 <resources>
     <!-- Card Styles -->
     <style name="BadArtCardView">
-        <item name="cardCornerRadius">16dp</item>
-        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">3dp</item>
         <item name="cardUseCompatPadding">true</item>
-        <item name="contentPadding">16dp</item>
+        <item name="contentPadding">12dp</item>
     </style>
 
     <style name="BadArtCardView.Elevated">
@@ -23,7 +23,6 @@
         <item name="cornerRadius">24dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:minHeight">48dp</item>
     </style>
 
     <style name="BadArtButton.Large">
@@ -35,7 +34,6 @@
     <style name="BadArtButtonText" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="rippleColor">@color/primary_light</item>
     </style>
 
     <style name="BadArtButtonOutlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
