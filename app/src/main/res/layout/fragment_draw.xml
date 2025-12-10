@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
-    <!-- Top App Bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarDraw"
         android:layout_width="match_parent"
@@ -42,8 +41,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/layoutUndoRedo"
                 app:layout_constraintStart_toEndOf="@+id/ivBrushIcon"
                 app:layout_constraintTop_toTopOf="parent">
-
-
 
                 <TextView
                     android:id="@+id/tvWordPrompt"
@@ -88,7 +85,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Color Palette Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardColorPalette"
         android:layout_width="0dp"
@@ -101,22 +97,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarDraw">
 
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:scrollbars="none">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <LinearLayout
-                android:id="@+id/layoutColors"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:id="@+id/scrollViewColors"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+                android:layout_weight="1"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/layoutColors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@color/light_gray" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorWheel"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:backgroundTint="@null"
+                app:cornerRadius="25dp"
+                app:icon="@drawable/ic_color_wheel"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="50dp"
+                app:iconTint="@null" />
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Tools Panel Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardTools"
         android:layout_width="0dp"
@@ -222,7 +250,6 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Drawing Canvas -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardCanvas"
         android:layout_width="0dp"
@@ -244,7 +271,6 @@
             android:background="@color/white" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Bottom Actions -->
     <LinearLayout
         android:id="@+id/layoutBottomActions"
         android:layout_width="0dp"

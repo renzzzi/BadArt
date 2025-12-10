@@ -4,12 +4,14 @@ import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -21,6 +23,8 @@ import com.example.badart.R
 import com.example.badart.databinding.FragmentProfileBinding
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
+import com.example.badart.views.ColorValueView
+import com.example.badart.views.ColorWheelView
 import com.example.badart.views.DrawingView
 import com.example.badart.views.Tool
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,9 +37,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private lateinit var binding: FragmentProfileBinding
     private val viewModel: SharedViewModel by activityViewModels()
 
+    private val recentColors = mutableListOf<Int>()
+    private val maxRecentColors = 8
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentProfileBinding.bind(view)
+
+        initDefaultColors()
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
@@ -157,6 +166,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+    private fun initDefaultColors() {
+        if (recentColors.isEmpty()) {
+            val defaults = listOf(
+                R.color.paint_black, R.color.paint_red, R.color.paint_blue,
+                R.color.paint_green, R.color.paint_yellow
+            )
+            defaults.forEach {
+                recentColors.add(ContextCompat.getColor(requireContext(), it))
+            }
+        }
+    }
+
     private fun showNameDialog() {
         val input = EditText(requireContext())
         input.hint = "New Username"
@@ -187,6 +208,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_draw_avatar, null)
         val drawingView = dialogView.findViewById<DrawingView>(R.id.drawingViewAvatar)
         val layoutColors = dialogView.findViewById<LinearLayout>(R.id.layoutColorsAvatar)
+        val scrollViewColors = dialogView.findViewById<HorizontalScrollView>(R.id.scrollViewColorsAvatar)
+        val btnColorWheel = dialogView.findViewById<MaterialButton>(R.id.btnColorWheelAvatar)
+
         val btnUndo = dialogView.findViewById<ImageButton>(R.id.btnUndoAvatar)
         val btnRedo = dialogView.findViewById<ImageButton>(R.id.btnRedoAvatar)
         val btnBrush = dialogView.findViewById<MaterialButton>(R.id.btnBrushAvatar)
@@ -201,14 +225,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .setView(dialogView)
             .create()
 
-        val colors = listOf(
-            R.color.paint_black, R.color.paint_red, R.color.paint_blue,
-            R.color.paint_green, R.color.paint_yellow, R.color.paint_orange,
-            R.color.paint_purple
-        )
-
         fun selectTool(selectedButton: View, tool: Tool) {
-            layoutTools.children.filterIsInstance<MaterialButton>().forEach { 
+            layoutTools.children.filterIsInstance<MaterialButton>().forEach {
                 it.strokeWidth = 0
             }
             (selectedButton as? MaterialButton)?.apply {
@@ -218,29 +236,109 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             drawingView.setTool(tool)
         }
 
-        for (colorRes in colors) {
-            val colorBtn = MaterialButton(requireContext())
-            val params = LinearLayout.LayoutParams(100, 100)
-            params.setMargins(8, 0, 8, 0)
-            colorBtn.layoutParams = params
-            val colorValue = ContextCompat.getColor(requireContext(), colorRes)
-            colorBtn.setBackgroundColor(colorValue)
+        fun refreshColors() {
+            layoutColors.removeAllViews()
 
-            colorBtn.setOnClickListener { view ->
-                layoutColors.children.forEach { child ->
-                    (child as? MaterialButton)?.strokeWidth = 0
+            for (colorValue in recentColors.asReversed()) {
+                val colorBtn = MaterialButton(requireContext())
+                val colorParams = LinearLayout.LayoutParams(100, 100)
+                colorParams.setMargins(8, 0, 8, 0)
+                colorBtn.layoutParams = colorParams
+
+                colorBtn.backgroundTintList = null
+                colorBtn.stateListAnimator = null
+
+                val shape = GradientDrawable()
+                shape.shape = GradientDrawable.OVAL
+                shape.setColor(colorValue)
+                shape.setStroke(4, Color.LTGRAY)
+                colorBtn.background = shape
+
+                colorBtn.setOnClickListener { view ->
+                    layoutColors.children.forEach { child ->
+                        val b = child as? MaterialButton
+                        b?.strokeWidth = 0
+                        (b?.background as? GradientDrawable)?.setStroke(4, Color.LTGRAY)
+                    }
+                    val btn = view as? MaterialButton
+                    val bg = btn?.background as? GradientDrawable
+
+                    bg?.setStroke(6, Color.BLACK)
+                    btn?.strokeColor = ColorStateList.valueOf(Color.WHITE)
+                    btn?.strokeWidth = 6
+
+                    drawingView.setColor(colorValue)
+                    selectTool(btnBrush, Tool.BRUSH)
                 }
-                (view as? MaterialButton)?.apply {
-                    strokeColor = ColorStateList.valueOf(Color.WHITE)
-                    strokeWidth = 8
-                }
-                drawingView.setColor(colorValue)
-                selectTool(btnBrush, Tool.BRUSH) // Switch back to brush on color selection
+                layoutColors.addView(colorBtn)
             }
-            layoutColors.addView(colorBtn)
+
+            scrollViewColors.post {
+                scrollViewColors.fullScroll(View.FOCUS_RIGHT)
+            }
         }
 
-        (layoutColors.getChildAt(0) as? MaterialButton)?.performClick()
+        btnColorWheel.setOnClickListener {
+            val pickerView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_color_picker, null)
+            val colorWheel = pickerView.findViewById<ColorWheelView>(R.id.colorWheel)
+            val valueSlider = pickerView.findViewById<ColorValueView>(R.id.colorValueSlider)
+            val preview = pickerView.findViewById<View>(R.id.viewPreviewColor)
+            val btnSelect = pickerView.findViewById<Button>(R.id.btnSelectColor)
+
+            var currentHue = 0f
+            var currentSat = 1f
+            var currentValue = 1f
+
+            fun updatePreview() {
+                val color = Color.HSVToColor(floatArrayOf(currentHue, currentSat, currentValue))
+                preview.backgroundTintList = ColorStateList.valueOf(color)
+            }
+
+            colorWheel.setOnColorSelectedListener { color ->
+                val hsv = FloatArray(3)
+                Color.colorToHSV(color, hsv)
+                currentHue = hsv[0]
+                currentSat = hsv[1]
+
+                valueSlider.setHueSat(currentHue, currentSat)
+                updatePreview()
+            }
+
+            valueSlider.setOnValueChangedListener { value ->
+                currentValue = value
+                updatePreview()
+            }
+
+            val pickerDialog = AlertDialog.Builder(requireContext())
+                .setView(pickerView)
+                .create()
+
+            btnSelect.setOnClickListener {
+                val finalColor = Color.HSVToColor(floatArrayOf(currentHue, currentSat, currentValue))
+
+                if (recentColors.contains(finalColor)) recentColors.remove(finalColor)
+                recentColors.add(0, finalColor)
+                if (recentColors.size > maxRecentColors) recentColors.removeAt(recentColors.size - 1)
+
+                refreshColors()
+
+                val count = layoutColors.childCount
+                if (count > 0) {
+                    val newBtn = layoutColors.getChildAt(count - 1)
+                    newBtn.performClick()
+                }
+                pickerDialog.dismiss()
+            }
+            pickerDialog.show()
+        }
+
+        refreshColors()
+
+        val count = layoutColors.childCount
+        if (count > 0) {
+            val firstColorBtn = layoutColors.getChildAt(count - 1)
+            firstColorBtn?.performClick()
+        }
 
         btnUndo.setOnClickListener { drawingView.undo() }
         btnRedo.setOnClickListener { drawingView.redo() }
@@ -248,7 +346,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         btnFill.setOnClickListener { selectTool(it, Tool.FILL) }
         btnEraser.setOnClickListener { selectTool(it, Tool.ERASER) }
         sliderSize.addOnChangeListener { _, value, _ -> drawingView.setBrushSize(value) }
-        btnClear.setOnClickListener { 
+        btnClear.setOnClickListener {
             drawingView.clearCanvas()
             selectTool(btnBrush, Tool.BRUSH)
         }
