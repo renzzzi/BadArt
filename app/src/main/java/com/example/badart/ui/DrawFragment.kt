@@ -31,6 +31,7 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         wordToDraw = GameConstants.getRandomWord()
         binding.tvWordPrompt.text = "Draw: $wordToDraw"
 
+
         setupColorRibbon()
         setupToolButtons()
 

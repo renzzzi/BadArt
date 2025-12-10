@@ -152,7 +152,7 @@
                     android:textAllCaps="false"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_paintbrush_logo"
+                    app:icon="@drawable/ic_paintbrush"
                     app:iconGravity="top"
                     app:iconSize="20dp" />
 

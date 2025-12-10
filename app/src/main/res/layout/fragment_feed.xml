@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/ivAppLogo"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_paintbrush_logo"
+            android:src="@drawable/ic_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Oops it seems your art is empty"
+                    android:text="Oops, your art gallery is empty"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20sp"
