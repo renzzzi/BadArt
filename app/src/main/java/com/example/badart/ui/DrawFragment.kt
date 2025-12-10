@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentDrawBinding
 import com.example.badart.util.GameConstants
+import com.example.badart.util.SoundManager
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.example.badart.views.ColorValueView
@@ -44,8 +45,14 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
         setupColorRibbon()
         setupToolButtons()
 
-        binding.btnUndo.setOnClickListener { binding.drawingView.undo() }
-        binding.btnRedo.setOnClickListener { binding.drawingView.redo() }
+        binding.btnUndo.setOnClickListener {
+            SoundManager.playUndo()
+            binding.drawingView.undo()
+        }
+        binding.btnRedo.setOnClickListener {
+            SoundManager.playRedo()
+            binding.drawingView.redo()
+        }
 
         binding.sliderBrushSize.addOnChangeListener { _, value, _ ->
             binding.drawingView.setBrushSize(value)
@@ -59,9 +66,16 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
             val bitmap = binding.drawingView.getBitmap()
             if (bitmap != null) {
                 viewModel.addPost(wordToDraw, bitmap)
+                SoundManager.playSubmitDrawing()
                 UiUtils.showModal(requireContext(), "Success", "Your masterpiece has been uploaded to the feed!")
                 findNavController().popBackStack()
             }
+        }
+
+        binding.btnClear.setOnClickListener {
+            SoundManager.playDelete()
+            binding.drawingView.clearCanvas()
+            selectTool(binding.btnBrush, Tool.BRUSH)
         }
     }
 
@@ -78,12 +92,17 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
     }
 
     private fun setupToolButtons() {
-        binding.btnBrush.setOnClickListener { selectTool(it, Tool.BRUSH) }
-        binding.btnEraser.setOnClickListener { selectTool(it, Tool.ERASER) }
-        binding.btnFill.setOnClickListener { selectTool(it, Tool.FILL) }
-        binding.btnClear.setOnClickListener {
-            binding.drawingView.clearCanvas()
-            selectTool(binding.btnBrush, Tool.BRUSH)
+        binding.btnBrush.setOnClickListener {
+            SoundManager.playBrush()
+            selectTool(it, Tool.BRUSH)
+        }
+        binding.btnEraser.setOnClickListener {
+            SoundManager.playEraser()
+            selectTool(it, Tool.ERASER)
+        }
+        binding.btnFill.setOnClickListener {
+            SoundManager.playFill()
+            selectTool(it, Tool.FILL)
         }
         selectTool(binding.btnBrush, Tool.BRUSH)
     }

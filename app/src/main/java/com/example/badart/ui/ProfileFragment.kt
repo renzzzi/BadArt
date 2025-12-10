@@ -21,6 +21,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentProfileBinding
+import com.example.badart.util.SoundManager
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.example.badart.views.ColorValueView
@@ -99,6 +100,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         if (user.totalScore >= 50) {
                             showAvatarDialog()
                         } else {
+                            SoundManager.playErrorModal()
                             UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your avatar.")
                         }
                     }
@@ -119,6 +121,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                         if (user.totalScore >= 50) {
                             showNameDialog()
                         } else {
+                            SoundManager.playErrorModal()
                             UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your username.")
                         }
                     }
@@ -195,8 +198,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 val newName = input.text.toString().trim()
                 if (newName.isNotEmpty()) {
                     viewModel.updateUsername(newName,
-                        onSuccess = { UiUtils.showModal(requireContext(), "Updated", "Your username has been changed.") },
-                        onFailure = { msg -> UiUtils.showModal(requireContext(), "Error", msg) }
+                        onSuccess = {
+                            SoundManager.playSuccessModal()
+                            UiUtils.showModal(requireContext(), "Updated", "Your username has been changed.")
+                        },
+                        onFailure = { msg ->
+                            SoundManager.playErrorModal()
+                            UiUtils.showModal(requireContext(), "Error", msg)
+                        }
                     )
                 }
             }
@@ -340,13 +349,29 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             firstColorBtn?.performClick()
         }
 
-        btnUndo.setOnClickListener { drawingView.undo() }
-        btnRedo.setOnClickListener { drawingView.redo() }
-        btnBrush.setOnClickListener { selectTool(it, Tool.BRUSH) }
-        btnFill.setOnClickListener { selectTool(it, Tool.FILL) }
-        btnEraser.setOnClickListener { selectTool(it, Tool.ERASER) }
+        btnUndo.setOnClickListener {
+            SoundManager.playUndo()
+            drawingView.undo()
+        }
+        btnRedo.setOnClickListener {
+            SoundManager.playRedo()
+            drawingView.redo()
+        }
+        btnBrush.setOnClickListener {
+            SoundManager.playBrush()
+            selectTool(it, Tool.BRUSH)
+        }
+        btnFill.setOnClickListener {
+            SoundManager.playFill()
+            selectTool(it, Tool.FILL)
+        }
+        btnEraser.setOnClickListener {
+            SoundManager.playEraser()
+            selectTool(it, Tool.ERASER)
+        }
         sliderSize.addOnChangeListener { _, value, _ -> drawingView.setBrushSize(value) }
         btnClear.setOnClickListener {
+            SoundManager.playDelete()
             drawingView.clearCanvas()
             selectTool(btnBrush, Tool.BRUSH)
         }
@@ -358,10 +383,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             if (bitmap != null) {
                 viewModel.updateAvatar(bitmap,
                     onSuccess = {
+                        SoundManager.playSuccessModal()
                         UiUtils.showModal(requireContext(), "Updated", "Your new avatar is saved!")
                         dialog.dismiss()
                     },
                     onFailure = { msg ->
+                        SoundManager.playErrorModal()
                         UiUtils.showModal(requireContext(), "Error", msg)
                     }
                 )

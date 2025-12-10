@@ -13,6 +13,7 @@ import com.example.badart.R
 import com.example.badart.databinding.ItemPostBinding
 import com.example.badart.model.Post
 import com.google.android.material.chip.Chip
+import com.example.badart.util.SoundManager
 
 class FeedAdapter(
     private var posts: List<Post>,
@@ -44,7 +45,7 @@ class FeedAdapter(
             if (post.imageBitmap != null) {
                 ivDrawing.setImageBitmap(post.imageBitmap)
             } else {
-                ivDrawing.setImageDrawable(null) 
+                ivDrawing.setImageDrawable(null)
             }
 
             chipGroupReactions.removeAllViews()
@@ -72,7 +73,9 @@ class FeedAdapter(
             }
 
             btnReact.alpha = if (myReactionEmoji != null) 0.5f else 1.0f
-            btnReact.setOnClickListener { onReact(post) }
+            btnReact.setOnClickListener {
+                onReact(post)
+            }
             btnShare.setOnClickListener { onShare(post) }
 
             if (isMyArtMode) {
@@ -124,7 +127,9 @@ class FeedAdapter(
                     tvHintDisplay.visibility = View.VISIBLE
                     updateHintDisplay(post, tvHintDisplay)
 
-                    btnHint.setOnClickListener { onHint(post) }
+                    btnHint.setOnClickListener {
+                        onHint(post)
+                    }
 
                     btnGuess.setOnClickListener {
                         val guess = etGuess.text.toString().trim()
@@ -134,7 +139,9 @@ class FeedAdapter(
                         }
                     }
                 }
-                btnReport.setOnClickListener { onReport(post) }
+                btnReport.setOnClickListener {
+                    onReport(post)
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.badart.R
 import com.example.badart.databinding.FragmentFeedBinding
 import com.example.badart.model.Post
+import com.example.badart.util.SoundManager
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
 import com.google.android.material.tabs.TabLayout
@@ -51,10 +52,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 if (guess.equals(post.wordToGuess, ignoreCase = true)) {
                     viewModel.solvePost(post, myName)
                     triggerKonfetti()
-                    UiUtils.showModal(requireContext(), "You Won!", "Correct! The word was ${post.wordToGuess}. +10 Points!")
+                    SoundManager.playCorrectGuess()
                 } else {
                     viewModel.recordWrongGuess(post, guess, myName)
-                    UiUtils.showModal(requireContext(), "So Close!", "That is not the correct word. Try again!")
+                    SoundManager.playWrongGuess()
                 }
             },
             onReport = { post -> showReportDialog(post) },
@@ -67,9 +68,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     .setPositiveButton("Buy") { _, _ ->
                         viewModel.deductScore(5,
                             onSuccess = {
+                                SoundManager.playSuccessModal()
                                 adapter.triggerHint(post.id, post.wordToGuess)
                             },
                             onFailure = {
+                                SoundManager.playErrorModal()
                                 UiUtils.showModal(requireContext(), "Oops", "You don't have enough points!")
                             }
                         )
@@ -205,6 +208,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             .setTitle("Delete Drawing")
             .setMessage("Are you sure you want to delete this masterpiece?")
             .setPositiveButton("Delete") { _, _ ->
+                SoundManager.playDelete()
                 viewModel.deletePost(post)
                 UiUtils.showModal(requireContext(), "Deleted", "Your artwork has been removed.")
             }
@@ -213,6 +217,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     }
 
     private fun sharePost(post: Post) {
+        SoundManager.playShare()
         val shareBitmap = generateShareableBitmap(post) ?: return
 
         val contentValues = ContentValues().apply {
