@@ -277,7 +277,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     btn?.strokeWidth = 6
 
                     drawingView.setColor(colorValue)
-                    selectTool(btnBrush, Tool.BRUSH)
                 }
                 layoutColors.addView(colorBtn)
             }

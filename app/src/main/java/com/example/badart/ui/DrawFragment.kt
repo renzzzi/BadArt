@@ -141,7 +141,6 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
             colorBtn.setOnClickListener { view ->
                 highlightColorBtn(view)
                 binding.drawingView.setColor(colorValue)
-                selectTool(binding.btnBrush, Tool.BRUSH)
             }
             binding.layoutColors.addView(colorBtn)
         }
