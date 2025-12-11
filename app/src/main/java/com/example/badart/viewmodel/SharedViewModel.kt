@@ -349,21 +349,39 @@ class SharedViewModel : ViewModel() {
             return
         }
 
+        val oldName = user.username
         val newScore = user.totalScore - cost
 
-        db.collection("users").document(user.userId)
-            .update(
-                "username", newName,
-                "hasChangedUsername", true,
-                "totalScore", newScore
-            )
-            .addOnSuccessListener {
-                _currentUser.value = user.copy(
-                    username = newName,
-                    hasChangedUsername = true,
-                    totalScore = newScore
-                )
-                onSuccess()
+        db.collection("posts")
+            .whereEqualTo("artistName", oldName)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val batch = db.batch()
+
+                val userRef = db.collection("users").document(user.userId)
+                batch.update(userRef, "username", newName)
+                batch.update(userRef, "hasChangedUsername", true)
+                batch.update(userRef, "totalScore", newScore)
+
+                for (doc in snapshot.documents) {
+                    batch.update(doc.reference, "artistName", newName)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener {
+                        _currentUser.value = user.copy(
+                            username = newName,
+                            hasChangedUsername = true,
+                            totalScore = newScore
+                        )
+                        onSuccess()
+                    }
+                    .addOnFailureListener { e ->
+                        onFailure(e.localizedMessage ?: "Update failed")
+                    }
+            }
+            .addOnFailureListener { e ->
+                onFailure(e.localizedMessage ?: "Network error")
             }
     }
 
