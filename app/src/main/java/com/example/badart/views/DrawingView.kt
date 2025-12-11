@@ -76,6 +76,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
         if (currentTool == Tool.FILL) {
             if (event.action == MotionEvent.ACTION_UP) {
+                saveToUndoStack()
                 performFloodFill(touchX.toInt(), touchY.toInt(), paintColor)
             }
             return true
@@ -156,9 +157,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                 drawPaint.color = Color.WHITE
                 drawPaint.style = Paint.Style.STROKE
             }
-            Tool.FILL -> {
-                // No paint changes needed here, handled in onTouchEvent
-            }
+            Tool.FILL -> {}
         }
     }
 
