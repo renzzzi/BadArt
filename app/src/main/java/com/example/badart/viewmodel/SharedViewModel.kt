@@ -279,7 +279,17 @@ class SharedViewModel : ViewModel() {
     }
 
     fun deletePost(post: Post) {
+        val user = _currentUser.value ?: return
+
         db.collection("posts").document(post.id).delete()
+            .addOnSuccessListener {
+                db.collection("users").document(user.userId)
+                    .update("postCount", FieldValue.increment(-1))
+                    .addOnSuccessListener {
+                        val newCount = if (user.postCount > 0) user.postCount - 1 else 0
+                        _currentUser.value = user.copy(postCount = newCount)
+                    }
+            }
     }
 
     fun blockUser(artistName: String) {
