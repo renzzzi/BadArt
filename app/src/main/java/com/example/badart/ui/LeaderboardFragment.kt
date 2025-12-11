@@ -29,6 +29,35 @@ class LeaderboardFragment : Fragment(R.layout.fragment_leaderboard) {
 
         viewModel.leaderboard.observe(viewLifecycleOwner) { users ->
             adapter.updateList(users)
+            updateTopThree(users)
+        }
+
+        binding.layoutFirst.setOnClickListener { navigateToTopUser(0) }
+        binding.layoutSecond.setOnClickListener { navigateToTopUser(1) }
+        binding.layoutThird.setOnClickListener { navigateToTopUser(2) }
+    }
+
+    private fun updateTopThree(users: List<com.example.badart.model.User>) {
+        if (users.isNotEmpty()) {
+            binding.tvFirstName.text = users[0].username
+            binding.tvFirstScore.text = "${users[0].totalScore} pts"
+        }
+        if (users.size > 1) {
+            binding.tvSecondName.text = users[1].username
+            binding.tvSecondScore.text = "${users[1].totalScore} pts"
+        }
+        if (users.size > 2) {
+            binding.tvThirdName.text = users[2].username
+            binding.tvThirdScore.text = "${users[2].totalScore} pts"
+        }
+    }
+
+    private fun navigateToTopUser(index: Int) {
+        val users = viewModel.leaderboard.value ?: return
+        if (index < users.size) {
+            val user = users[index]
+            val bundle = Bundle().apply { putString("userId", user.userId) }
+            findNavController().navigate(R.id.action_leaderboardFragment_to_profileFragment, bundle)
         }
     }
 }

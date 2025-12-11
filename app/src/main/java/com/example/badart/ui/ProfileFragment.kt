@@ -21,6 +21,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.badart.R
 import com.example.badart.databinding.FragmentProfileBinding
+import com.example.badart.model.User
 import com.example.badart.util.SoundManager
 import com.example.badart.util.UiUtils
 import com.example.badart.viewmodel.SharedViewModel
@@ -41,55 +42,96 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val recentColors = mutableListOf<Int>()
     private val maxRecentColors = 8
 
+    private var viewedUserId: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentProfileBinding.bind(view)
 
         initDefaultColors()
 
+        viewedUserId = arguments?.getString("userId")
+
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                binding.tvUsername.text = user.username
-                binding.tvScore.text = user.totalScore.toString()
-                binding.tvCorrectGuesses.text = user.correctGuesses.toString()
-                binding.tvPostCount.text = user.postCount.toString()
-
-                if (user.hasChangedAvatar) {
-                    binding.tvAvatarHint.text = "Tap to Change Avatar (50 pts)"
+        if (viewedUserId != null && viewedUserId != viewModel.currentUser.value?.userId) {
+            setupReadOnlyMode()
+            viewModel.getUser(viewedUserId!!) { user ->
+                if (user != null) {
+                    populateUserData(user)
                 } else {
-                    binding.tvAvatarHint.text = "Tap to Draw Avatar (Free)"
+                    UiUtils.showModal(requireContext(), "Error", "User not found")
+                    findNavController().popBackStack()
                 }
-
-                if (user.avatarBase64.isNotEmpty()) {
-                    try {
-                        val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
-                        val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-                        binding.ivAvatarDisplay.setImageBitmap(bitmap)
-                        binding.ivAvatarDisplay.visibility = View.VISIBLE
-                        binding.ivAvatar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+            }
+        } else {
+            setupEditMode()
+            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+                if (user != null) {
+                    populateUserData(user)
+                } else {
+                    findNavController().navigate(R.id.loginFragment)
                 }
-            } else {
-                findNavController().navigate(R.id.loginFragment)
             }
         }
 
         viewModel.leaderboard.observe(viewLifecycleOwner) { users ->
-            val myId = viewModel.currentUser.value?.userId
-            val myRank = users.indexOfFirst { it.userId == myId }
+            val targetId = viewedUserId ?: viewModel.currentUser.value?.userId
+            val myRank = users.indexOfFirst { it.userId == targetId }
             if (myRank != -1) {
                 binding.tvRank.text = "#${myRank + 1}"
             } else {
                 binding.tvRank.text = "-"
             }
         }
+    }
 
+    private fun setupReadOnlyMode() {
+        binding.btnEditName.visibility = View.GONE
+        binding.cardAvatar.isClickable = false
+        binding.tvAvatarHint.visibility = View.INVISIBLE
+        binding.btnLogout.visibility = View.GONE
+        binding.btnDeleteAccount.visibility = View.GONE
+    }
+
+    private fun setupEditMode() {
+        binding.btnEditName.visibility = View.VISIBLE
+        binding.cardAvatar.isClickable = true
+        binding.tvAvatarHint.visibility = View.VISIBLE
+        binding.btnLogout.visibility = View.VISIBLE
+        binding.btnDeleteAccount.visibility = View.VISIBLE
+
+        setupClickListeners()
+    }
+
+    private fun populateUserData(user: User) {
+        binding.tvUsername.text = user.username
+        binding.tvScore.text = user.totalScore.toString()
+        binding.tvCorrectGuesses.text = user.correctGuesses.toString()
+        binding.tvPostCount.text = user.postCount.toString()
+
+        if (user.hasChangedAvatar && binding.tvAvatarHint.visibility == View.VISIBLE) {
+            binding.tvAvatarHint.text = "Tap to Change Avatar (50 pts)"
+        } else if (binding.tvAvatarHint.visibility == View.VISIBLE) {
+            binding.tvAvatarHint.text = "Tap to Draw Avatar (Free)"
+        }
+
+        if (user.avatarBase64.isNotEmpty()) {
+            try {
+                val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                binding.ivAvatarDisplay.setImageBitmap(bitmap)
+                binding.ivAvatarDisplay.visibility = View.VISIBLE
+                binding.ivAvatar.visibility = View.GONE
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
         binding.cardAvatar.setOnClickListener {
             val user = viewModel.currentUser.value ?: return@setOnClickListener
             if (user.hasChangedAvatar) {

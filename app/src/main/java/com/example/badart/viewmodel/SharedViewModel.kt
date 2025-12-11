@@ -116,6 +116,34 @@ class SharedViewModel : ViewModel() {
             }
     }
 
+    fun getUser(userId: String, onResult: (User?) -> Unit) {
+        if (userId == _currentUser.value?.userId) {
+            onResult(_currentUser.value)
+            return
+        }
+        db.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                onResult(document.toObject(User::class.java))
+            }
+            .addOnFailureListener {
+                onResult(null)
+            }
+    }
+
+    fun getUserByName(username: String, onResult: (User?) -> Unit) {
+        db.collection("users").whereEqualTo("username", username).limit(1).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    onResult(documents.documents[0].toObject(User::class.java))
+                } else {
+                    onResult(null)
+                }
+            }
+            .addOnFailureListener {
+                onResult(null)
+            }
+    }
+
     private fun fetchLeaderboard() {
         db.collection("users")
             .orderBy("totalScore", Query.Direction.DESCENDING)
@@ -141,6 +169,7 @@ class SharedViewModel : ViewModel() {
         val newPost = Post(
             id = UUID.randomUUID().toString(),
             artistName = user.username,
+            artistId = user.userId,
             wordToGuess = word,
             imageBase64 = base64String,
             timestamp = System.currentTimeMillis()

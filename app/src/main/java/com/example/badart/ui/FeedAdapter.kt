@@ -2,12 +2,14 @@ package com.example.badart.ui
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.alpha
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.badart.R
 import com.example.badart.databinding.ItemPostBinding
@@ -114,6 +116,21 @@ class FeedAdapter(
                 ivArtistAvatar.visibility = View.VISIBLE
                 tvArtist.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
+
+                val navigateToProfile = View.OnClickListener {
+                    if (post.artistId.isNotEmpty()) {
+                        val bundle = Bundle().apply { putString("userId", post.artistId) }
+                        it.findNavController().navigate(R.id.action_feedFragment_to_profileFragment, bundle)
+                    }
+                }
+
+                ivArtistAvatar.isClickable = true
+                ivArtistAvatar.isFocusable = true
+                ivArtistAvatar.setOnClickListener(navigateToProfile)
+
+                tvArtist.isClickable = true
+                tvArtist.isFocusable = true
+                tvArtist.setOnClickListener(navigateToProfile)
 
                 btnReport.visibility = View.VISIBLE
                 btnDelete.visibility = View.GONE

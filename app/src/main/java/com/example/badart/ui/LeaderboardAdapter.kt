@@ -1,8 +1,10 @@
 package com.example.badart.ui
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.badart.R
 import com.example.badart.databinding.ItemLeaderboardBinding
@@ -26,6 +28,8 @@ class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>()
         holder.binding.tvRank.text = "#$rank"
         holder.binding.tvUsername.text = user.username
         holder.binding.tvScore.text = "${user.totalScore} pts"
+        holder.binding.tvCorrectGuesses.text = "${user.correctGuesses} solved"
+        holder.binding.tvPostCount.text = "${user.postCount} posts"
 
         val colorRes = when(rank) {
             1 -> R.color.gold
@@ -34,6 +38,11 @@ class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>()
             else -> android.R.color.darker_gray
         }
         holder.binding.tvRank.setTextColor(ContextCompat.getColor(holder.itemView.context, colorRes))
+
+        holder.itemView.setOnClickListener {
+            val bundle = Bundle().apply { putString("userId", user.userId) }
+            it.findNavController().navigate(R.id.action_leaderboardFragment_to_profileFragment, bundle)
+        }
     }
 
     override fun getItemCount() = users.size

@@ -77,7 +77,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     .setPositiveButton("Buy") { _, _ ->
                         viewModel.deductScore(5,
                             onSuccess = {
-                                SoundManager.playSuccessModal()
+                                SoundManager.playCorrectGuess()
                                 adapter.triggerHint(post.id, post.wordToGuess)
                             },
                             onFailure = {

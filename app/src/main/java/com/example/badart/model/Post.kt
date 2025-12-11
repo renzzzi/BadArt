@@ -7,6 +7,7 @@ import com.google.firebase.firestore.PropertyName
 data class Post(
     var id: String = "",
     var artistName: String = "",
+    var artistId: String = "",
     var wordToGuess: String = "",
 
     @get:PropertyName("isSolved") @set:PropertyName("isSolved")
