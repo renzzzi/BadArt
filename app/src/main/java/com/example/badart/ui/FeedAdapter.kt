@@ -62,7 +62,7 @@ class FeedAdapter(
 
                     if (emoji == myReactionEmoji) {
                         val baseColor = ContextCompat.getColor(holder.itemView.context, R.color.primary_light)
-                        val translucentColor = Color.argb(77, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor)) // 30% alpha
+                        val translucentColor = Color.argb(77, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
                         chip.chipBackgroundColor = ColorStateList.valueOf(translucentColor)
                         chip.chipStrokeColor = ContextCompat.getColorStateList(holder.itemView.context, R.color.primary_dark)
                         chip.chipStrokeWidth = 4f
@@ -80,6 +80,9 @@ class FeedAdapter(
 
             if (isMyArtMode) {
                 headerSection.visibility = View.VISIBLE
+                ivArtistAvatar.visibility = View.GONE
+                tvArtist.visibility = View.GONE
+
                 btnDelete.visibility = View.VISIBLE
                 btnReport.visibility = View.GONE
                 layoutGuessing.visibility = View.GONE
@@ -108,7 +111,10 @@ class FeedAdapter(
 
             } else {
                 headerSection.visibility = View.VISIBLE
+                ivArtistAvatar.visibility = View.VISIBLE
+                tvArtist.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
+
                 btnReport.visibility = View.VISIBLE
                 btnDelete.visibility = View.GONE
                 cardGuessHistory.visibility = View.GONE
