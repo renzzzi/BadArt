@@ -50,12 +50,21 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 val myName = currentUser?.username ?: "Anonymous"
 
                 if (guess.equals(post.wordToGuess, ignoreCase = true)) {
-                    viewModel.solvePost(post, myName)
-                    triggerKonfetti()
-                    SoundManager.playCorrectGuess()
+                    viewModel.solvePost(post, myName,
+                        onSuccess = {
+                            triggerKonfetti()
+                            SoundManager.playCorrectGuess()
+                            UiUtils.showModal(requireContext(), "You Won!", "Correct! The word was ${post.wordToGuess}. +10 Points!")
+                        },
+                        onFailure = {
+                            SoundManager.playWrongGuess()
+                            UiUtils.showModal(requireContext(), "Too Late!", "Someone else solved this just before you!")
+                        }
+                    )
                 } else {
                     viewModel.recordWrongGuess(post, guess, myName)
                     SoundManager.playWrongGuess()
+                    UiUtils.showModal(requireContext(), "So Close!", "That is not the correct word. Try again!")
                 }
             },
             onReport = { post -> showReportDialog(post) },

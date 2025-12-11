@@ -14,6 +14,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import java.io.ByteArrayOutputStream
@@ -37,109 +38,95 @@ class SharedViewModel : ViewModel() {
     val loginError: LiveData<String?> = _loginError
 
     init {
-        Log.d("Auth", "ViewModel initialized")
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
+            .build()
+        db.firestoreSettings = settings
+
         checkCurrentAuth()
     }
 
     private fun checkCurrentAuth() {
         val firebaseUser = auth.currentUser
-        Log.d("Auth", "Checking for existing user: ${firebaseUser?.uid}")
         if (firebaseUser != null) {
             loadUserFromFirestore(firebaseUser.uid)
         }
     }
 
     fun firebaseLoginWithGoogle(idToken: String) {
-        Log.d("Auth", "Attempting to sign in with Google token.")
         _loginError.value = null
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnSuccessListener { result ->
                 val firebaseUser = result.user!!
-                Log.d("Auth", "Firebase auth success: ${firebaseUser.uid}")
                 val userRef = db.collection("users").document(firebaseUser.uid)
 
                 userRef.get()
                     .addOnSuccessListener { document ->
                         if (document.exists()) {
-                            Log.d("Firestore", "User document found, loading user.")
                             loadUserFromFirestore(firebaseUser.uid)
                         } else {
-                            Log.d("Firestore", "User document not found, creating new user.")
                             val newUser = User(
                                 userId = firebaseUser.uid,
                                 username = firebaseUser.displayName ?: "Artist ${firebaseUser.uid.take(4)}",
                             )
                             userRef.set(newUser)
                                 .addOnSuccessListener {
-                                    Log.d("Firestore", "New user document created.")
                                     _currentUser.value = newUser
                                     fetchPosts()
                                     fetchLeaderboard()
                                 }
                                 .addOnFailureListener { e ->
-                                    Log.e("Firestore", "Failed to create user document", e)
                                     _loginError.value = "Failed to create user profile: ${e.localizedMessage}"
                                 }
                         }
                     }
                     .addOnFailureListener { e ->
-                        Log.e("Firestore", "Failed to get user document", e)
                         _loginError.value = "Failed to load user profile: ${e.localizedMessage}"
                     }
             }
             .addOnFailureListener { e ->
-                Log.e("Auth", "Login failed", e)
                 _loginError.value = "Firebase authentication failed: ${e.message}"
             }
     }
 
     private fun loadUserFromFirestore(uid: String) {
-        Log.d("Firestore", "Loading user profile for UID: $uid")
         db.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val user = document.toObject(User::class.java)
                     _currentUser.value = user
-                    Log.d("Firestore", "User profile loaded: ${user?.username}")
                     fetchPosts()
                     fetchLeaderboard()
                 } else {
-                    Log.w("Firestore", "User document unexpectedly missing, creating new one.")
                     val newUser = User(userId = uid, username = "Returned User")
                     db.collection("users").document(uid).set(newUser)
                         .addOnSuccessListener {
-                            Log.d("Firestore", "Re-created user document for returned user.")
                             _currentUser.value = newUser
                             fetchPosts()
                             fetchLeaderboard()
                         }
                         .addOnFailureListener { e ->
-                            Log.e("Firestore", "Failed to create document for returned user", e)
                             _loginError.value = "Failed to create user profile: ${e.localizedMessage}"
                         }
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("Firestore", "Failed to load user profile", e)
                 _loginError.value = "Failed to load user profile: ${e.localizedMessage}"
             }
     }
 
     private fun fetchLeaderboard() {
-        Log.d("DataFetch", "Fetching leaderboard.")
         db.collection("users")
             .orderBy("totalScore", Query.Direction.DESCENDING)
             .limit(50)
             .addSnapshotListener { value, error ->
                 if (error != null) {
-                    Log.w("DataFetch", "Leaderboard fetch failed", error)
                     return@addSnapshotListener
                 }
                 if (value == null) return@addSnapshotListener
                 val users = value.toObjects(User::class.java)
                 _leaderboard.value = users
-                Log.d("DataFetch", "Leaderboard updated with ${users.size} users.")
             }
     }
 
@@ -169,12 +156,10 @@ class SharedViewModel : ViewModel() {
     }
 
     private fun fetchPosts() {
-        Log.d("DataFetch", "Fetching posts.")
         db.collection("posts")
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
                 if (error != null) {
-                    Log.w("DataFetch", "Posts fetch failed", error)
                     return@addSnapshotListener
                 }
 
@@ -205,29 +190,42 @@ class SharedViewModel : ViewModel() {
                     }
                 }
                 _posts.value = postList
-                Log.d("DataFetch", "Posts updated with ${postList.size} posts.")
             }
     }
 
-    fun solvePost(post: Post, winnerName: String) {
-        db.collection("posts").document(post.id)
-            .update(
-                "isSolved", true,
-                "winner", winnerName
-            )
+    fun solvePost(post: Post, winnerName: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        val postRef = db.collection("posts").document(post.id)
+        val userRef = db.collection("users").document(currentUser.value!!.userId)
 
-        val user = _currentUser.value ?: return
-        val newScore = user.totalScore + 10
-        val newGuesses = user.correctGuesses + 1
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val currentPost = snapshot.toObject(Post::class.java)
 
-        db.collection("users").document(user.userId)
-            .update(
-                "totalScore", newScore,
-                "correctGuesses", newGuesses
-            )
-            .addOnSuccessListener {
-                _currentUser.value = user.copy(totalScore = newScore, correctGuesses = newGuesses)
+            if (currentPost?.isSolved == true) {
+                throw FirebaseFirestoreException("Already Solved", FirebaseFirestoreException.Code.ABORTED)
             }
+
+            transaction.update(postRef, "isSolved", true)
+            transaction.update(postRef, "winner", winnerName)
+
+            val userSnap = transaction.get(userRef)
+            val currentScore = userSnap.getLong("totalScore") ?: 0
+            val currentGuesses = userSnap.getLong("correctGuesses") ?: 0
+
+            transaction.update(userRef, "totalScore", currentScore + 10)
+            transaction.update(userRef, "correctGuesses", currentGuesses + 1)
+        }.addOnSuccessListener {
+            val user = _currentUser.value
+            if (user != null) {
+                _currentUser.value = user.copy(
+                    totalScore = user.totalScore + 10,
+                    correctGuesses = user.correctGuesses + 1
+                )
+            }
+            onSuccess()
+        }.addOnFailureListener {
+            onFailure()
+        }
     }
 
     fun recordWrongGuess(post: Post, guess: String, guesserName: String) {
