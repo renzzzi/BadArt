@@ -226,12 +226,28 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             .setItems(options) { _, which ->
                 when (which) {
                     0 -> {
-                        viewModel.reportPost(post)
-                        UiUtils.showModal(requireContext(), "Reported", "Thanks for keeping BadArt safe. This post has been reported.")
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Report Content")
+                            .setMessage("Are you sure you want to report this content? It will be reviewed and hidden from your feed.")
+                            .setPositiveButton("Report") { _, _ ->
+                                viewModel.reportPost(post) {
+                                    UiUtils.showModal(requireContext(), "Reported", "Thanks for keeping BadArt safe. This post has been reported.")
+                                }
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .show()
                     }
                     1 -> {
-                        viewModel.blockUser(post.artistName)
-                        UiUtils.showModal(requireContext(), "Blocked", "You will no longer see art from ${post.artistName}.")
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Block User")
+                            .setMessage("Are you sure you want to block ${post.artistName}? You will no longer see their posts.")
+                            .setPositiveButton("Block") { _, _ ->
+                                viewModel.blockUser(post.artistName) {
+                                    UiUtils.showModal(requireContext(), "Blocked", "You will no longer see art from ${post.artistName}.")
+                                }
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .show()
                     }
                 }
             }

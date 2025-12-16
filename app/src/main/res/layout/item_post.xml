@@ -137,9 +137,8 @@
                 android:contentDescription="Delete Post"
                 android:src="@drawable/ic_trash_delete"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/cardArtistAvatar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/cardArtistAvatar"
+                app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/error_red" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

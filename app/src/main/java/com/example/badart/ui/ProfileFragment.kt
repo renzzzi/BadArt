@@ -124,14 +124,31 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             val user = viewModel.currentUser.value ?: return@setOnClickListener
             
             if (user.blockedUsers.contains(username)) {
-                viewModel.unblockUser(username) {
-                    UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
-                    setupBlockButton()
-                }
+                // Confirmation for unblock
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Unblock User")
+                    .setMessage("Are you sure you want to unblock \"$username\"? You will see their posts again.")
+                    .setPositiveButton("Unblock") { _, _ ->
+                        viewModel.unblockUser(username) {
+                            UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
+                            setupBlockButton()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             } else {
-                viewModel.blockUser(username)
-                UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
-                setupBlockButton()
+                // Confirmation for block
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Block User")
+                    .setMessage("Are you sure you want to block \"$username\"? You will no longer see their posts.")
+                    .setPositiveButton("Block") { _, _ ->
+                        viewModel.blockUser(username) {
+                            UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
+                            setupBlockButton()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         }
     }

@@ -296,7 +296,7 @@ class SharedViewModel : ViewModel() {
             .update("guessHistory", FieldValue.arrayUnion(historyEntry))
     }
 
-    fun reportPost(post: Post) {
+    fun reportPost(post: Post, onSuccess: () -> Unit = {}) {
         db.collection("posts").document(post.id)
             .update("reportCount", post.reportCount + 1)
 
@@ -308,6 +308,7 @@ class SharedViewModel : ViewModel() {
                 user.reportedPosts.add(post.id)
                 _currentUser.value = user
                 fetchPosts()
+                onSuccess()
             }
     }
 
@@ -325,7 +326,7 @@ class SharedViewModel : ViewModel() {
             }
     }
 
-    fun blockUser(artistName: String) {
+    fun blockUser(artistName: String, onSuccess: () -> Unit = {}) {
         val user = _currentUser.value ?: return
 
         db.collection("users").document(user.userId)
@@ -334,6 +335,7 @@ class SharedViewModel : ViewModel() {
                 user.blockedUsers.add(artistName)
                 _currentUser.value = user
                 fetchPosts()
+                onSuccess()
             }
     }
 

@@ -121,20 +121,27 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
             }
 
             holder.btnUnreport.setOnClickListener {
-                viewModel.unreportPost(post.id) {
-                    UiUtils.showModal(requireContext(), "Unreported", "Your report has been removed.")
-                    val pos = holder.adapterPosition
-                    if (pos != RecyclerView.NO_POSITION) {
-                        posts.removeAt(pos)
-                        reportedIds.remove(post.id)
-                        notifyItemRemoved(pos)
-                        
-                        if (posts.isEmpty()) {
-                            view?.findViewById<View>(R.id.layoutEmpty)?.visibility = View.VISIBLE
-                            view?.findViewById<RecyclerView>(R.id.rvReportedContent)?.visibility = View.GONE
+                android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Unreport Content")
+                    .setMessage("Are you sure you want to remove your report from this post?")
+                    .setPositiveButton("Unreport") { _, _ ->
+                        viewModel.unreportPost(post.id) {
+                            UiUtils.showModal(requireContext(), "Unreported", "Your report has been removed.")
+                            val pos = holder.adapterPosition
+                            if (pos != RecyclerView.NO_POSITION) {
+                                posts.removeAt(pos)
+                                reportedIds.remove(post.id)
+                                notifyItemRemoved(pos)
+                                
+                                if (posts.isEmpty()) {
+                                    view?.findViewById<View>(R.id.layoutEmpty)?.visibility = View.VISIBLE
+                                    view?.findViewById<RecyclerView>(R.id.rvReportedContent)?.visibility = View.GONE
+                                }
+                            }
                         }
                     }
-                }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         }
 

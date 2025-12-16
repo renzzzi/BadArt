@@ -91,19 +91,26 @@ class BlockedUsersFragment : Fragment(R.layout.fragment_blocked_users) {
             }
 
             holder.btnUnblock.setOnClickListener {
-                viewModel.unblockUser(username) {
-                    UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
-                    val pos = holder.adapterPosition
-                    if (pos != RecyclerView.NO_POSITION) {
-                        blockedUsers.removeAt(pos)
-                        notifyItemRemoved(pos)
-                        
-                        if (blockedUsers.isEmpty()) {
-                            view?.findViewById<View>(R.id.layoutEmpty)?.visibility = View.VISIBLE
-                            view?.findViewById<RecyclerView>(R.id.rvBlockedUsers)?.visibility = View.GONE
+                android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Unblock User")
+                    .setMessage("Are you sure you want to unblock \"$username\"?")
+                    .setPositiveButton("Unblock") { _, _ ->
+                        viewModel.unblockUser(username) {
+                            UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
+                            val pos = holder.adapterPosition
+                            if (pos != RecyclerView.NO_POSITION) {
+                                blockedUsers.removeAt(pos)
+                                notifyItemRemoved(pos)
+                                
+                                if (blockedUsers.isEmpty()) {
+                                    view?.findViewById<View>(R.id.layoutEmpty)?.visibility = View.VISIBLE
+                                    view?.findViewById<RecyclerView>(R.id.rvBlockedUsers)?.visibility = View.GONE
+                                }
+                            }
                         }
                     }
-                }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
 
             holder.itemView.setOnClickListener {
