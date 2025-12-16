@@ -1,6 +1,8 @@
 package com.example.badart.ui
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -30,6 +32,24 @@ class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>()
         holder.binding.tvScore.text = "${user.totalScore} pts"
         holder.binding.tvCorrectGuesses.text = "${user.correctGuesses} solved"
         holder.binding.tvPostCount.text = "${user.postCount} posts"
+
+        // Display custom avatar if available
+        if (user.avatarBase64.isNotEmpty()) {
+            try {
+                val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                holder.binding.ivAvatar.setImageBitmap(bitmap)
+                holder.binding.ivAvatar.imageTintList = null
+            } catch (e: Exception) {
+                // Fall back to placeholder if decoding fails
+                holder.binding.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
+                holder.binding.ivAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
+            }
+        } else {
+            // Show placeholder for users without custom avatar
+            holder.binding.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
+            holder.binding.ivAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
+        }
 
         val colorRes = when(rank) {
             1 -> R.color.gold
