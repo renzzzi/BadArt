@@ -381,44 +381,68 @@ class SharedViewModel : ViewModel() {
             return
         }
 
+        if (newName.length > 15) {
+            onFailure("Username must be 15 characters or less")
+            return
+        }
+
+        val usernameRegex = Regex("^[a-zA-Z0-9_]+$")
+        if (!usernameRegex.matches(newName)) {
+            onFailure("Only letters, numbers, and underscores allowed")
+            return
+        }
+
         if (user.totalScore < cost) {
             onFailure("Not enough points! Cost: $cost")
             return
         }
 
-        val oldName = user.username
-        val newScore = user.totalScore - cost
-
-        db.collection("posts")
-            .whereEqualTo("artistName", oldName)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val batch = db.batch()
-
-                val userRef = db.collection("users").document(user.userId)
-                batch.update(userRef, "username", newName)
-                batch.update(userRef, "hasChangedUsername", true)
-                batch.update(userRef, "totalScore", newScore)
-
-                for (doc in snapshot.documents) {
-                    batch.update(doc.reference, "artistName", newName)
+        // Check if username is already taken
+        db.collection("users").whereEqualTo("username", newName).limit(1).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    onFailure("Username is already taken")
+                    return@addOnSuccessListener
                 }
 
-                batch.commit()
-                    .addOnSuccessListener {
-                        _currentUser.value = user.copy(
-                            username = newName,
-                            hasChangedUsername = true,
-                            totalScore = newScore
-                        )
-                        onSuccess()
+                // Username is available, proceed with update
+                val oldName = user.username
+                val newScore = user.totalScore - cost
+
+                db.collection("posts")
+                    .whereEqualTo("artistName", oldName)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val batch = db.batch()
+
+                        val userRef = db.collection("users").document(user.userId)
+                        batch.update(userRef, "username", newName)
+                        batch.update(userRef, "hasChangedUsername", true)
+                        batch.update(userRef, "totalScore", newScore)
+
+                        for (doc in snapshot.documents) {
+                            batch.update(doc.reference, "artistName", newName)
+                        }
+
+                        batch.commit()
+                            .addOnSuccessListener {
+                                _currentUser.value = user.copy(
+                                    username = newName,
+                                    hasChangedUsername = true,
+                                    totalScore = newScore
+                                )
+                                onSuccess()
+                            }
+                            .addOnFailureListener { e ->
+                                onFailure(e.localizedMessage ?: "Update failed")
+                            }
                     }
                     .addOnFailureListener { e ->
-                        onFailure(e.localizedMessage ?: "Update failed")
+                        onFailure(e.localizedMessage ?: "Network error")
                     }
             }
             .addOnFailureListener { e ->
-                onFailure(e.localizedMessage ?: "Network error")
+                onFailure(e.localizedMessage ?: "Failed to check username availability")
             }
     }
 

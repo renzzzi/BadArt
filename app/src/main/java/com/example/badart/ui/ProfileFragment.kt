@@ -225,7 +225,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun showNameDialog() {
         val input = EditText(requireContext())
-        input.hint = "New Username"
+        input.hint = "New Username (max 15 chars)"
+        
+        // Filter to allow only letters, numbers, and underscore, max 15 characters
+        val alphanumericFilter = android.text.InputFilter { source, start, end, _, _, _ ->
+            for (i in start until end) {
+                val c = source[i]
+                if (!c.isLetterOrDigit() && c != '_') {
+                    return@InputFilter ""
+                }
+            }
+            null
+        }
+        val maxLengthFilter = android.text.InputFilter.LengthFilter(15)
+        input.filters = arrayOf(alphanumericFilter, maxLengthFilter)
+        
         val container = LinearLayout(requireContext())
         container.orientation = LinearLayout.VERTICAL
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
