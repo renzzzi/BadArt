@@ -235,8 +235,8 @@ class SharedViewModel : ViewModel() {
                     val post = doc.toObject(Post::class.java)
 
                     if (post != null) {
-                        post.id = doc.id  // Set the document ID
-                        
+                        post.id = doc.id
+
                         if (blockedList.contains(post.artistName)) continue
                         if (reportedList.contains(post.id)) continue
 
@@ -261,18 +261,19 @@ class SharedViewModel : ViewModel() {
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(postRef)
+            val userSnap = transaction.get(userRef)
+
             val currentPost = snapshot.toObject(Post::class.java)
 
             if (currentPost?.isSolved == true) {
                 throw FirebaseFirestoreException("Already Solved", FirebaseFirestoreException.Code.ABORTED)
             }
 
-            transaction.update(postRef, "isSolved", true)
-            transaction.update(postRef, "winner", winnerName)
-
-            val userSnap = transaction.get(userRef)
             val currentScore = userSnap.getLong("totalScore") ?: 0
             val currentGuesses = userSnap.getLong("correctGuesses") ?: 0
+
+            transaction.update(postRef, "isSolved", true)
+            transaction.update(postRef, "winner", winnerName)
 
             transaction.update(userRef, "totalScore", currentScore + 10)
             transaction.update(userRef, "correctGuesses", currentGuesses + 1)
@@ -367,14 +368,12 @@ class SharedViewModel : ViewModel() {
 
     fun addReaction(post: Post, emoji: String, onFailure: ((String) -> Unit)? = null) {
         val user = _currentUser.value ?: return
-        
-        // Prevent reacting to your own post
+
         if (post.artistId == user.userId) {
             onFailure?.invoke("You cannot react to your own art")
             return
         }
-        
-        // Prevent multiple reactions from same user
+
         if (post.userReactions.containsKey(user.userId)) {
             onFailure?.invoke("You have already reacted to this post")
             return
@@ -469,7 +468,6 @@ class SharedViewModel : ViewModel() {
             return
         }
 
-        // Check if username is already taken
         db.collection("users").whereEqualTo("username", newName).limit(1).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
@@ -477,7 +475,6 @@ class SharedViewModel : ViewModel() {
                     return@addOnSuccessListener
                 }
 
-                // Username is available, proceed with update
                 val oldName = user.username
                 val newScore = user.totalScore - cost
 
