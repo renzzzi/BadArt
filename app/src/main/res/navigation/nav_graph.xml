@@ -49,6 +49,12 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_profileFragment_to_blockedUsersFragment"
+            app:destination="@id/blockedUsersFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_reportedContentFragment"
+            app:destination="@id/reportedContentFragment" />
     </fragment>
 
     <fragment
@@ -60,4 +66,20 @@
             android:id="@+id/action_leaderboardFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/blockedUsersFragment"
+        android:name="com.example.badart.ui.BlockedUsersFragment"
+        android:label="BlockedUsersFragment"
+        tools:layout="@layout/fragment_blocked_users">
+        <action
+            android:id="@+id/action_blockedUsersFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reportedContentFragment"
+        android:name="com.example.badart.ui.ReportedContentFragment"
+        android:label="ReportedContentFragment"
+        tools:layout="@layout/fragment_reported_content" />
 </navigation>

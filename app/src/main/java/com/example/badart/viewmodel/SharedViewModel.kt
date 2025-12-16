@@ -144,6 +144,37 @@ class SharedViewModel : ViewModel() {
             }
     }
 
+    fun getPostsByIds(postIds: List<String>, onResult: (List<Post>) -> Unit) {
+        if (postIds.isEmpty()) {
+            onResult(emptyList())
+            return
+        }
+
+        val posts = mutableListOf<Post>()
+        var completed = 0
+
+        postIds.forEach { postId ->
+            db.collection("posts").document(postId).get()
+                .addOnSuccessListener { document ->
+                    val post = document.toObject(Post::class.java)
+                    if (post != null) {
+                        post.id = document.id
+                        posts.add(post)
+                    }
+                    completed++
+                    if (completed == postIds.size) {
+                        onResult(posts)
+                    }
+                }
+                .addOnFailureListener {
+                    completed++
+                    if (completed == postIds.size) {
+                        onResult(posts)
+                    }
+                }
+        }
+    }
+
     private fun fetchLeaderboard() {
         db.collection("users")
             .orderBy("totalScore", Query.Direction.DESCENDING)
@@ -204,6 +235,8 @@ class SharedViewModel : ViewModel() {
                     val post = doc.toObject(Post::class.java)
 
                     if (post != null) {
+                        post.id = doc.id  // Set the document ID
+                        
                         if (blockedList.contains(post.artistName)) continue
                         if (reportedList.contains(post.id)) continue
 
@@ -301,6 +334,32 @@ class SharedViewModel : ViewModel() {
                 user.blockedUsers.add(artistName)
                 _currentUser.value = user
                 fetchPosts()
+            }
+    }
+
+    fun unblockUser(artistName: String, onSuccess: () -> Unit = {}) {
+        val user = _currentUser.value ?: return
+
+        db.collection("users").document(user.userId)
+            .update("blockedUsers", FieldValue.arrayRemove(artistName))
+            .addOnSuccessListener {
+                user.blockedUsers.remove(artistName)
+                _currentUser.value = user
+                fetchPosts()
+                onSuccess()
+            }
+    }
+
+    fun unreportPost(postId: String, onSuccess: () -> Unit = {}) {
+        val user = _currentUser.value ?: return
+
+        db.collection("users").document(user.userId)
+            .update("reportedPosts", FieldValue.arrayRemove(postId))
+            .addOnSuccessListener {
+                user.reportedPosts.remove(postId)
+                _currentUser.value = user
+                fetchPosts()
+                onSuccess()
             }
     }
 

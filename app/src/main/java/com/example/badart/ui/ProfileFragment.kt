@@ -61,6 +61,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             viewModel.getUser(viewedUserId!!) { user ->
                 if (user != null) {
                     populateUserData(user)
+                    setupBlockButton() // Setup after username is populated
                 } else {
                     UiUtils.showModal(requireContext(), "Error", "User not found")
                     findNavController().popBackStack()
@@ -94,6 +95,45 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.tvAvatarHint.visibility = View.INVISIBLE
         binding.btnLogout.visibility = View.GONE
         binding.btnDeleteAccount.visibility = View.GONE
+        binding.btnManageBlockedUsers.visibility = View.GONE
+        binding.btnManageReportedContent.visibility = View.GONE
+        
+        // Show block/unblock button for other users
+        binding.btnBlockUser.visibility = View.VISIBLE
+    }
+    
+    private fun setupBlockButton() {
+        val viewedUsername = binding.tvUsername.text.toString()
+        val currentUser = viewModel.currentUser.value ?: return
+        val isBlocked = currentUser.blockedUsers.contains(viewedUsername)
+        
+        if (isBlocked) {
+            binding.btnBlockUser.text = "Unblock User"
+            binding.btnBlockUser.setTextColor(ContextCompat.getColor(requireContext(), R.color.solved_green))
+            binding.btnBlockUser.setStrokeColorResource(R.color.solved_green)
+            binding.btnBlockUser.setIconTintResource(R.color.solved_green)
+        } else {
+            binding.btnBlockUser.text = "Block User"
+            binding.btnBlockUser.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
+            binding.btnBlockUser.setStrokeColorResource(R.color.error_red)
+            binding.btnBlockUser.setIconTintResource(R.color.error_red)
+        }
+        
+        binding.btnBlockUser.setOnClickListener {
+            val username = binding.tvUsername.text.toString()
+            val user = viewModel.currentUser.value ?: return@setOnClickListener
+            
+            if (user.blockedUsers.contains(username)) {
+                viewModel.unblockUser(username) {
+                    UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
+                    setupBlockButton()
+                }
+            } else {
+                viewModel.blockUser(username)
+                UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
+                setupBlockButton()
+            }
+        }
     }
 
     private fun setupEditMode() {
@@ -102,6 +142,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.tvAvatarHint.visibility = View.VISIBLE
         binding.btnLogout.visibility = View.VISIBLE
         binding.btnDeleteAccount.visibility = View.VISIBLE
+        binding.btnManageBlockedUsers.visibility = View.VISIBLE
+        binding.btnManageReportedContent.visibility = View.VISIBLE
 
         setupClickListeners()
     }
@@ -208,6 +250,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
+        }
+
+        binding.btnManageBlockedUsers.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_blockedUsersFragment)
+        }
+
+        binding.btnManageReportedContent.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_reportedContentFragment)
         }
     }
 
