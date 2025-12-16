@@ -13,7 +13,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -89,7 +92,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     .setNegativeButton("Cancel", null)
                     .show()
             },
-            onShare = { post -> sharePost(post) }
+            onShare = { post -> sharePost(post) },
+            onViewReactions = { post -> showReactionsDialog(post) },
+            onGetUser = { userId, callback -> viewModel.getUser(userId, callback) }
         )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -177,6 +182,21 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     }
 
     private fun showReactionDialog(post: Post) {
+        // Check if user is trying to react to their own post
+        val currentUser = viewModel.currentUser.value
+        if (currentUser != null && post.artistId == currentUser.userId) {
+            SoundManager.playErrorModal()
+            UiUtils.showModal(requireContext(), "Oops", "You cannot react to your own art!")
+            return
+        }
+        
+        // Check if user has already reacted
+        if (currentUser != null && post.userReactions.containsKey(currentUser.userId)) {
+            SoundManager.playErrorModal()
+            UiUtils.showModal(requireContext(), "Already Reacted", "You have already reacted to this post!")
+            return
+        }
+        
         val reactions = arrayOf(
             "🎨 Masterpiece", "💩 Trash", "🤦 Facepalm",
             "😂 Hilarious", "🤨 Confused", "🔥 Lit",
@@ -187,8 +207,14 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         AlertDialog.Builder(requireContext())
             .setTitle("React to this Bad Art")
             .setItems(reactions) { _, which ->
-                viewModel.addReaction(post, emojis[which])
-                UiUtils.showModal(requireContext(), "Reacted", "You added: ${emojis[which]}")
+                viewModel.addReaction(post, emojis[which]) { errorMessage ->
+                    SoundManager.playErrorModal()
+                    UiUtils.showModal(requireContext(), "Oops", errorMessage)
+                }
+                // Only show success if no error callback was triggered
+                if (currentUser != null && !post.userReactions.containsKey(currentUser.userId)) {
+                    UiUtils.showModal(requireContext(), "Reacted", "You added: ${emojis[which]}")
+                }
             }
             .show()
     }
@@ -298,5 +324,125 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         canvas.drawText("Artist: ${post.artistName}", width / 2f, top + boxSize + 250f, textPaint)
 
         return result
+    }
+
+    private fun showReactionsDialog(post: Post) {
+        if (post.userReactions.isEmpty()) {
+            UiUtils.showModal(requireContext(), "No Reactions", "No one has reacted to this post yet.")
+            return
+        }
+
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_reactions, null)
+        val tabLayout = dialogView.findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayoutReactions)
+        val recyclerView = dialogView.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvReactors)
+        val tvNoReactions = dialogView.findViewById<TextView>(R.id.tvNoReactions)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Get unique emojis that have reactions
+        val emojisWithReactions = post.userReactions.values.distinct()
+        
+        // Create list of all reactors (userId -> emoji)
+        val allReactors = post.userReactions.toList()
+
+        // Add "All" tab
+        tabLayout.addTab(tabLayout.newTab().setText("All (${allReactors.size})"))
+        
+        // Add tab for each emoji
+        emojisWithReactions.forEach { emoji ->
+            val count = allReactors.count { it.second == emoji }
+            tabLayout.addTab(tabLayout.newTab().setText("$emoji $count"))
+        }
+
+        // Create the dialog first so we can pass dismiss callback to adapter
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Reactions")
+            .setView(dialogView)
+            .setPositiveButton("Close", null)
+            .create()
+
+        // Create adapter with dismiss callback
+        val reactorAdapter = ReactorAdapter(allReactors.toMutableList()) { 
+            dialog.dismiss() 
+        }
+        recyclerView.adapter = reactorAdapter
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val position = tab?.position ?: 0
+                val filtered = if (position == 0) {
+                    allReactors
+                } else {
+                    val selectedEmoji = emojisWithReactions[position - 1]
+                    allReactors.filter { it.second == selectedEmoji }
+                }
+                reactorAdapter.updateList(filtered)
+                tvNoReactions.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
+                recyclerView.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
+        dialog.show()
+    }
+
+    // Inner adapter for reactions list
+    inner class ReactorAdapter(
+        private var reactors: List<Pair<String, String>>,
+        private val onDismiss: () -> Unit
+    ) : androidx.recyclerview.widget.RecyclerView.Adapter<ReactorAdapter.ViewHolder>() {
+
+        inner class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+            val ivAvatar: android.widget.ImageView = view.findViewById(R.id.ivAvatar)
+            val tvUsername: TextView = view.findViewById(R.id.tvUsername)
+            val tvEmoji: TextView = view.findViewById(R.id.tvEmoji)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_reactor, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val (userId, emoji) = reactors[position]
+            holder.tvEmoji.text = emoji
+            
+            // Reset to placeholder first
+            holder.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
+            holder.ivAvatar.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.medium_gray)
+            holder.tvUsername.text = "Loading..."
+            
+            // Try to get user info from viewModel
+            viewModel.getUser(userId) { user ->
+                holder.tvUsername.text = user?.username ?: "Unknown User"
+                
+                // Display custom avatar if available
+                if (user != null && user.avatarBase64.isNotEmpty()) {
+                    try {
+                        val decodedBytes = android.util.Base64.decode(user.avatarBase64, android.util.Base64.DEFAULT)
+                        val bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                        holder.ivAvatar.setImageBitmap(bitmap)
+                        holder.ivAvatar.imageTintList = null
+                    } catch (e: Exception) {
+                        // Keep placeholder on error
+                    }
+                }
+            }
+
+            holder.itemView.setOnClickListener {
+                // Dismiss dialog first, then navigate to user profile
+                onDismiss()
+                val bundle = Bundle().apply { putString("userId", userId) }
+                findNavController().navigate(R.id.action_feedFragment_to_profileFragment, bundle)
+            }
+        }
+
+        override fun getItemCount() = reactors.size
+
+        fun updateList(newReactors: List<Pair<String, String>>) {
+            reactors = newReactors
+            notifyDataSetChanged()
+        }
     }
 }

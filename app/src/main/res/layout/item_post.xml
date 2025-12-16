@@ -64,16 +64,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardReportWarning">
 
-            <ImageView
-                android:id="@+id/ivArtistAvatar"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:background="@drawable/circle_white_background"
-                android:padding="8dp"
-                android:src="@drawable/ic_person_placeholder"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardArtistAvatar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="21dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/light_gray"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/medium_gray" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivArtistAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_person_placeholder"
+                    app:tint="@color/medium_gray" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/tvArtist"
@@ -86,9 +96,9 @@
                 android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/ivArtistAvatar"
-                app:layout_constraintStart_toEndOf="@+id/ivArtistAvatar"
-                app:layout_constraintTop_toTopOf="@+id/ivArtistAvatar"
+                app:layout_constraintBottom_toBottomOf="@+id/cardArtistAvatar"
+                app:layout_constraintStart_toEndOf="@+id/cardArtistAvatar"
+                app:layout_constraintTop_toTopOf="@+id/cardArtistAvatar"
                 app:layout_constraintEnd_toStartOf="@+id/btnReport"/>
 
             <TextView
@@ -105,7 +115,7 @@
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivArtistAvatar"/>
+                app:layout_constraintTop_toBottomOf="@+id/cardArtistAvatar"/>
 
             <ImageButton
                 android:id="@+id/btnReport"
@@ -114,9 +124,9 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/content_desc_report"
                 android:src="@drawable/ic_flag_report"
-                app:layout_constraintBottom_toBottomOf="@+id/ivArtistAvatar"
+                app:layout_constraintBottom_toBottomOf="@+id/cardArtistAvatar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ivArtistAvatar"
+                app:layout_constraintTop_toTopOf="@+id/cardArtistAvatar"
                 app:tint="@color/error_red" />
 
             <ImageButton
@@ -127,9 +137,9 @@
                 android:contentDescription="Delete Post"
                 android:src="@drawable/ic_trash_delete"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/ivArtistAvatar"
+                app:layout_constraintBottom_toBottomOf="@+id/cardArtistAvatar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ivArtistAvatar"
+                app:layout_constraintTop_toTopOf="@+id/cardArtistAvatar"
                 app:tint="@color/error_red" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

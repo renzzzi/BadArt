@@ -1,8 +1,10 @@
 package com.example.badart.ui
 
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.badart.R
 import com.example.badart.databinding.ItemPostBinding
 import com.example.badart.model.Post
+import com.example.badart.model.User
 import com.google.android.material.chip.Chip
 import com.example.badart.util.SoundManager
 
@@ -24,7 +27,9 @@ class FeedAdapter(
     private val onDelete: (Post) -> Unit,
     private val onReact: (Post) -> Unit,
     private val onHint: (Post) -> Unit,
-    private val onShare: (Post) -> Unit
+    private val onShare: (Post) -> Unit,
+    private val onViewReactions: (Post) -> Unit,
+    private val onGetUser: (String, (User?) -> Unit) -> Unit
 ) : RecyclerView.Adapter<FeedAdapter.PostViewHolder>() {
 
     private var isMyArtMode = false
@@ -59,7 +64,8 @@ class FeedAdapter(
                         text = "$emoji $count"
                         chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.light_gray)
                         chipStrokeWidth = 0f
-                        isClickable = false
+                        isClickable = true
+                        setOnClickListener { onViewReactions(post) }
                     }
 
                     if (emoji == myReactionEmoji) {
@@ -82,6 +88,7 @@ class FeedAdapter(
 
             if (isMyArtMode) {
                 headerSection.visibility = View.VISIBLE
+                cardArtistAvatar.visibility = View.GONE
                 ivArtistAvatar.visibility = View.GONE
                 tvArtist.visibility = View.GONE
 
@@ -113,9 +120,30 @@ class FeedAdapter(
 
             } else {
                 headerSection.visibility = View.VISIBLE
+                cardArtistAvatar.visibility = View.VISIBLE
                 ivArtistAvatar.visibility = View.VISIBLE
                 tvArtist.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
+
+                // Reset avatar to placeholder first
+                ivArtistAvatar.setImageResource(R.drawable.ic_person_placeholder)
+                ivArtistAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
+
+                // Fetch and display artist's custom avatar
+                if (post.artistId.isNotEmpty()) {
+                    onGetUser(post.artistId) { user ->
+                        if (user != null && user.avatarBase64.isNotEmpty()) {
+                            try {
+                                val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
+                                val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                                ivArtistAvatar.setImageBitmap(bitmap)
+                                ivArtistAvatar.imageTintList = null
+                            } catch (e: Exception) {
+                                // Keep placeholder on error
+                            }
+                        }
+                    }
+                }
 
                 val navigateToProfile = View.OnClickListener {
                     if (post.artistId.isNotEmpty()) {

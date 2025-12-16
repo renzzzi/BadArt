@@ -304,9 +304,20 @@ class SharedViewModel : ViewModel() {
             }
     }
 
-    fun addReaction(post: Post, emoji: String) {
+    fun addReaction(post: Post, emoji: String, onFailure: ((String) -> Unit)? = null) {
         val user = _currentUser.value ?: return
-        if (post.userReactions.containsKey(user.userId)) return
+        
+        // Prevent reacting to your own post
+        if (post.artistId == user.userId) {
+            onFailure?.invoke("You cannot react to your own art")
+            return
+        }
+        
+        // Prevent multiple reactions from same user
+        if (post.userReactions.containsKey(user.userId)) {
+            onFailure?.invoke("You have already reacted to this post")
+            return
+        }
 
         val postRef = db.collection("posts").document(post.id)
 
