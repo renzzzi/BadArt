@@ -48,7 +48,6 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
                     layoutEmpty.visibility = View.GONE
                     rvReportedContent.visibility = View.VISIBLE
                     
-                    // Fetch reported posts
                     viewModel.getPostsByIds(reportedPostIds) { posts ->
                         rvReportedContent.adapter = ReportedContentAdapter(posts.toMutableList(), reportedPostIds.toMutableList())
                     }
@@ -80,7 +79,6 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
             
             holder.tvArtistName.text = post.artistName
             
-            // Show solved status instead of the word
             if (post.isSolved) {
                 holder.tvStatus.text = "Solved"
                 holder.tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.solved_green))
@@ -89,7 +87,6 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
                 holder.tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
             }
 
-            // Display drawing
             if (post.imageBase64.isNotEmpty()) {
                 try {
                     val decodedBytes = Base64.decode(post.imageBase64, Base64.DEFAULT)
@@ -100,11 +97,9 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
                 }
             }
 
-            // Reset artist avatar
             holder.ivArtistAvatar.setImageResource(R.drawable.ic_person_placeholder)
             holder.ivArtistAvatar.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.medium_gray)
 
-            // Fetch artist avatar
             if (post.artistId.isNotEmpty()) {
                 viewModel.getUser(post.artistId) { user ->
                     if (user != null && user.avatarBase64.isNotEmpty()) {
@@ -114,7 +109,6 @@ class ReportedContentFragment : Fragment(R.layout.fragment_reported_content) {
                             holder.ivArtistAvatar.setImageBitmap(bitmap)
                             holder.ivArtistAvatar.imageTintList = null
                         } catch (e: Exception) {
-                            // Keep placeholder
                         }
                     }
                 }

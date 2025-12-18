@@ -125,11 +125,9 @@ class FeedAdapter(
                 tvArtist.visibility = View.VISIBLE
                 tvArtist.text = post.artistName
 
-                // Reset avatar to placeholder first
                 ivArtistAvatar.setImageResource(R.drawable.ic_person_placeholder)
                 ivArtistAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
 
-                // Fetch and display artist's custom avatar
                 if (post.artistId.isNotEmpty()) {
                     onGetUser(post.artistId) { user ->
                         if (user != null && user.avatarBase64.isNotEmpty()) {
@@ -139,7 +137,6 @@ class FeedAdapter(
                                 ivArtistAvatar.setImageBitmap(bitmap)
                                 ivArtistAvatar.imageTintList = null
                             } catch (e: Exception) {
-                                // Keep placeholder on error
                             }
                         }
                     }

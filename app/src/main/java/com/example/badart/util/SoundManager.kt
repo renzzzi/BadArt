@@ -8,7 +8,6 @@ object SoundManager {
 
     private var soundPool: SoundPool? = null
 
-    // Sound IDs
     private var correctGuessId: Int = 0
     private var wrongGuessId: Int = 0
     private var brushId: Int = 0

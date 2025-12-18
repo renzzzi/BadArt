@@ -33,7 +33,6 @@ class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>()
         holder.binding.tvCorrectGuesses.text = "${user.correctGuesses} solved"
         holder.binding.tvPostCount.text = "${user.postCount} posts"
 
-        // Display custom avatar if available
         if (user.avatarBase64.isNotEmpty()) {
             try {
                 val decodedBytes = Base64.decode(user.avatarBase64, Base64.DEFAULT)
@@ -41,12 +40,10 @@ class LeaderboardAdapter : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>()
                 holder.binding.ivAvatar.setImageBitmap(bitmap)
                 holder.binding.ivAvatar.imageTintList = null
             } catch (e: Exception) {
-                // Fall back to placeholder if decoding fails
                 holder.binding.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
                 holder.binding.ivAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
             }
         } else {
-            // Show placeholder for users without custom avatar
             holder.binding.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
             holder.binding.ivAvatar.imageTintList = ContextCompat.getColorStateList(holder.itemView.context, R.color.medium_gray)
         }

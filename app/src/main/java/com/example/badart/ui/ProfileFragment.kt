@@ -1,6 +1,5 @@
 package com.example.badart.ui
 
-// import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -98,7 +97,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.btnManageBlockedUsers.visibility = View.GONE
         binding.btnManageReportedContent.visibility = View.GONE
         
-        // Show block/unblock button for other users
         binding.btnBlockUser.visibility = View.VISIBLE
     }
     
@@ -124,7 +122,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             val user = viewModel.currentUser.value ?: return@setOnClickListener
             
             if (user.blockedUsers.contains(username)) {
-                // Confirmation for unblock
                 UiUtils.showConfirmation(requireContext(), "Unblock User", "Are you sure you want to unblock \"$username\"? You will see their posts again.") {
                     viewModel.unblockUser(username) {
                         UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
@@ -132,7 +129,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     }
                 }
             } else {
-                // Confirmation for block
                 UiUtils.showConfirmation(requireContext(), "Block User", "Are you sure you want to block \"$username\"? You will no longer see their posts.") {
                     viewModel.blockUser(username) {
                         UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
@@ -268,7 +264,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         input.hint = "New Username (max 15 chars)"
 
-        // Filter to allow only letters, numbers, and underscore, max 15 characters
         val alphanumericFilter = android.text.InputFilter { source, start, end, _, _, _ ->
             for (i in start until end) {
                 val c = source[i]

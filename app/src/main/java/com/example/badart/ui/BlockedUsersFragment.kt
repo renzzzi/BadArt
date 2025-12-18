@@ -72,11 +72,9 @@ class BlockedUsersFragment : Fragment(R.layout.fragment_blocked_users) {
             val username = blockedUsers[position]
             holder.tvUsername.text = username
 
-            // Reset avatar
             holder.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
             holder.ivAvatar.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.medium_gray)
 
-            // Try to fetch user avatar
             viewModel.getUserByName(username) { user ->
                 if (user != null && user.avatarBase64.isNotEmpty()) {
                     try {
@@ -85,7 +83,6 @@ class BlockedUsersFragment : Fragment(R.layout.fragment_blocked_users) {
                         holder.ivAvatar.setImageBitmap(bitmap)
                         holder.ivAvatar.imageTintList = null
                     } catch (e: Exception) {
-                        // Keep placeholder
                     }
                 }
             }
@@ -109,7 +106,6 @@ class BlockedUsersFragment : Fragment(R.layout.fragment_blocked_users) {
             }
 
             holder.itemView.setOnClickListener {
-                // Navigate to user profile
                 viewModel.getUserByName(username) { user ->
                     if (user != null) {
                         val bundle = Bundle().apply { putString("userId", user.userId) }
