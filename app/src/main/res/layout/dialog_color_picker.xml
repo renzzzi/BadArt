@@ -22,13 +22,13 @@
 
         <com.example.badart.views.ColorWheelView
             android:id="@+id/colorWheel"
-            android:layout_width="200dp"
-            android:layout_height="200dp" />
+            android:layout_width="280dp"
+            android:layout_height="280dp" />
 
         <com.example.badart.views.ColorValueView
             android:id="@+id/colorValueSlider"
-            android:layout_width="40dp"
-            android:layout_height="200dp"
+            android:layout_width="50dp"
+            android:layout_height="280dp"
             android:layout_marginStart="16dp"/>
     </LinearLayout>
 

@@ -319,7 +319,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveAvatar)
         val layoutTools = dialogView.findViewById<LinearLayout>(R.id.tools_container_avatar)
 
-        val dialog = UiUtils.showCustom(requireContext(), "Change Avatar", dialogView)
+        val dialog = UiUtils.showCustom(requireContext(), "Change Avatar", dialogView, fullWidth = true)
 
         fun selectTool(selectedButton: View, tool: Tool) {
             layoutTools.children.filterIsInstance<MaterialButton>().forEach {
@@ -422,7 +422,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
                 pickerDialog?.dismiss()
             }
-            pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", pickerView)
+            pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", pickerView, fullWidth = true)
         }
 
         refreshColors()
