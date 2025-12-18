@@ -1,6 +1,6 @@
 package com.example.badart.ui
 
-import android.app.AlertDialog
+// import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -125,30 +125,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             
             if (user.blockedUsers.contains(username)) {
                 // Confirmation for unblock
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Unblock User")
-                    .setMessage("Are you sure you want to unblock \"$username\"? You will see their posts again.")
-                    .setPositiveButton("Unblock") { _, _ ->
-                        viewModel.unblockUser(username) {
-                            UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
-                            setupBlockButton()
-                        }
+                UiUtils.showConfirmation(requireContext(), "Unblock User", "Are you sure you want to unblock \"$username\"? You will see their posts again.") {
+                    viewModel.unblockUser(username) {
+                        UiUtils.showModal(requireContext(), "Unblocked", "\"$username\" has been unblocked.")
+                        setupBlockButton()
                     }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                }
             } else {
                 // Confirmation for block
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Block User")
-                    .setMessage("Are you sure you want to block \"$username\"? You will no longer see their posts.")
-                    .setPositiveButton("Block") { _, _ ->
-                        viewModel.blockUser(username) {
-                            UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
-                            setupBlockButton()
-                        }
+                UiUtils.showConfirmation(requireContext(), "Block User", "Are you sure you want to block \"$username\"? You will no longer see their posts.") {
+                    viewModel.blockUser(username) {
+                        UiUtils.showModal(requireContext(), "Blocked", "You will no longer see posts from \"$username\".")
+                        setupBlockButton()
                     }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                }
             }
         }
     }
@@ -194,19 +184,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.cardAvatar.setOnClickListener {
             val user = viewModel.currentUser.value ?: return@setOnClickListener
             if (user.hasChangedAvatar) {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Change Avatar")
-                    .setMessage("Changing your avatar will cost 50 points. Continue?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        if (user.totalScore >= 50) {
-                            showAvatarDialog()
-                        } else {
-                            SoundManager.playErrorModal()
-                            UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your avatar.")
-                        }
+                UiUtils.showConfirmation(requireContext(), "Change Avatar", "Changing your avatar will cost 50 points. Continue?") {
+                    if (user.totalScore >= 50) {
+                        showAvatarDialog()
+                    } else {
+                        SoundManager.playErrorModal()
+                        UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your avatar.")
                     }
-                    .setNegativeButton("No", null)
-                    .show()
+                }
             } else {
                 showAvatarDialog()
             }
@@ -215,58 +200,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.btnEditName.setOnClickListener {
             val user = viewModel.currentUser.value ?: return@setOnClickListener
             if (user.hasChangedUsername) {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Change Username")
-                    .setMessage("Changing your username will cost 50 points. Continue?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        if (user.totalScore >= 50) {
-                            showNameDialog()
-                        } else {
-                            SoundManager.playErrorModal()
-                            UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your username.")
-                        }
+                UiUtils.showConfirmation(requireContext(), "Change Username", "Changing your username will cost 50 points. Continue?") {
+                    if (user.totalScore >= 50) {
+                        showNameDialog()
+                    } else {
+                        SoundManager.playErrorModal()
+                        UiUtils.showModal(requireContext(), "Low Balance", "You need 50 points to change your username.")
                     }
-                    .setNegativeButton("No", null)
-                    .show()
+                }
             } else {
                 showNameDialog()
             }
         }
 
         binding.btnLogout.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Logout") { _, _ ->
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-                    googleSignInClient.signOut().addOnCompleteListener {
-                        viewModel.logout()
-                    }
+            UiUtils.showConfirmation(requireContext(), "Logout", "Are you sure you want to log out?") {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+                googleSignInClient.signOut().addOnCompleteListener {
+                    viewModel.logout()
                 }
-                .setNegativeButton("Cancel", null)
-                .show()
+            }
         }
 
         binding.btnDeleteAccount.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Delete Account")
-                .setMessage("Are you sure? All your data will be lost.")
-                .setPositiveButton("Delete") { _, _ ->
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-                    googleSignInClient.signOut().addOnCompleteListener {
-                        viewModel.deleteAccount()
-                    }
+            UiUtils.showConfirmation(requireContext(), "Delete Account", "Are you sure? All your data will be lost.") {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+                googleSignInClient.signOut().addOnCompleteListener {
+                    viewModel.deleteAccount()
                 }
-                .setNegativeButton("Cancel", null)
-                .show()
+            }
         }
 
         binding.btnManageBlockedUsers.setOnClickListener {
@@ -291,9 +261,13 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun showNameDialog() {
-        val input = EditText(requireContext())
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_content_input, null)
+        val input = dialogView.findViewById<EditText>(R.id.etInput)
+        val btnCancel = dialogView.findViewById<View>(R.id.btnCancel)
+        val btnSave = dialogView.findViewById<View>(R.id.btnSave)
+
         input.hint = "New Username (max 15 chars)"
-        
+
         // Filter to allow only letters, numbers, and underscore, max 15 characters
         val alphanumericFilter = android.text.InputFilter { source, start, end, _, _, _ ->
             for (i in start until end) {
@@ -306,34 +280,26 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
         val maxLengthFilter = android.text.InputFilter.LengthFilter(15)
         input.filters = arrayOf(alphanumericFilter, maxLengthFilter)
-        
-        val container = LinearLayout(requireContext())
-        container.orientation = LinearLayout.VERTICAL
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(50, 0, 50, 0)
-        input.layoutParams = params
-        container.addView(input)
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("New Username")
-            .setView(container)
-            .setPositiveButton("Save") { _, _ ->
-                val newName = input.text.toString().trim()
-                if (newName.isNotEmpty()) {
-                    viewModel.updateUsername(newName,
-                        onSuccess = {
-                            SoundManager.playSuccessModal()
-                            UiUtils.showModal(requireContext(), "Updated", "Your username has been changed.")
-                        },
-                        onFailure = { msg ->
-                            SoundManager.playErrorModal()
-                            UiUtils.showModal(requireContext(), "Error", msg)
-                        }
-                    )
-                }
+        val dialog = UiUtils.showCustom(requireContext(), "New Username", dialogView)
+
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        btnSave.setOnClickListener {
+            val newName = input.text.toString().trim()
+            if (newName.isNotEmpty()) {
+                viewModel.updateUsername(newName,
+                    onSuccess = {
+                        SoundManager.playSuccessModal()
+                        UiUtils.showModal(requireContext(), "Updated", "Your username has been changed.")
+                        dialog.dismiss()
+                    },
+                    onFailure = { msg ->
+                        SoundManager.playErrorModal()
+                        UiUtils.showModal(requireContext(), "Error", msg)
+                    }
+                )
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        }
     }
 
     private fun showAvatarDialog() {
@@ -353,9 +319,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveAvatar)
         val layoutTools = dialogView.findViewById<LinearLayout>(R.id.tools_container_avatar)
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
+        val dialog = UiUtils.showCustom(requireContext(), "Change Avatar", dialogView)
 
         fun selectTool(selectedButton: View, tool: Tool) {
             layoutTools.children.filterIsInstance<MaterialButton>().forEach {
@@ -440,9 +404,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 updatePreview()
             }
 
-            val pickerDialog = AlertDialog.Builder(requireContext())
-                .setView(pickerView)
-                .create()
+            var pickerDialog: android.app.Dialog? = null
 
             btnSelect.setOnClickListener {
                 val finalColor = Color.HSVToColor(floatArrayOf(currentHue, currentSat, currentValue))
@@ -458,9 +420,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     val newBtn = layoutColors.getChildAt(count - 1)
                     newBtn.performClick()
                 }
-                pickerDialog.dismiss()
+                pickerDialog?.dismiss()
             }
-            pickerDialog.show()
+            pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", pickerView)
         }
 
         refreshColors()

@@ -1,6 +1,6 @@
 package com.example.badart.ui
 
-import android.app.AlertDialog
+// import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -197,17 +197,15 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
             updatePreview()
         }
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
+        var pickerDialog: android.app.Dialog? = null
 
         btnSelect.setOnClickListener {
             val finalColor = Color.HSVToColor(floatArrayOf(currentHue, currentSat, currentValue))
             addNewColor(finalColor)
-            dialog.dismiss()
+            pickerDialog?.dismiss()
         }
 
-        dialog.show()
+        pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", dialogView)
     }
 
     private fun addNewColor(color: Int) {

@@ -1,6 +1,6 @@
 package com.example.badart.ui
 
-import android.app.AlertDialog
+
 import android.content.ClipData
 import android.content.ContentValues
 import android.content.Intent
@@ -74,23 +74,18 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             onDelete = { post -> showDeleteDialog(post) },
             onReact = { post -> showReactionDialog(post) },
             onHint = { post ->
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Buy Hint?")
-                    .setMessage("Spend 5 points to briefly reveal a letter?")
-                    .setPositiveButton("Buy") { _, _ ->
-                        viewModel.deductScore(5,
-                            onSuccess = {
-                                SoundManager.playCorrectGuess()
-                                adapter.triggerHint(post.id, post.wordToGuess)
-                            },
-                            onFailure = {
-                                SoundManager.playErrorModal()
-                                UiUtils.showModal(requireContext(), "Oops", "You don't have enough points!")
-                            }
-                        )
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                UiUtils.showConfirmation(requireContext(), "Buy Hint?", "Spend 5 points to briefly reveal a letter?") {
+                    viewModel.deductScore(5,
+                        onSuccess = {
+                            SoundManager.playCorrectGuess()
+                            adapter.triggerHint(post.id, post.wordToGuess)
+                        },
+                        onFailure = {
+                            SoundManager.playErrorModal()
+                            UiUtils.showModal(requireContext(), "Oops", "You don't have enough points!")
+                        }
+                    )
+                }
             },
             onShare = { post -> sharePost(post) },
             onViewReactions = { post -> showReactionsDialog(post) },
@@ -182,7 +177,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     }
 
     private fun showReactionDialog(post: Post) {
-        // Check if user is trying to react to their own post
         val currentUser = viewModel.currentUser.value
         if (currentUser != null && post.artistId == currentUser.userId) {
             SoundManager.playErrorModal()
@@ -190,7 +184,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             return
         }
         
-        // Check if user has already reacted
         if (currentUser != null && post.userReactions.containsKey(currentUser.userId)) {
             SoundManager.playErrorModal()
             UiUtils.showModal(requireContext(), "Already Reacted", "You have already reacted to this post!")
@@ -204,67 +197,57 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         )
         val emojis = arrayOf("🎨", "💩", "🤦", "😂", "🤨", "🔥", "👻", "🧠")
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("React to this Bad Art")
-            .setItems(reactions) { _, which ->
+        UiUtils.showList(requireContext(), "React to this Bad Art", reactions, true) { which ->
                 viewModel.addReaction(post, emojis[which]) { errorMessage ->
                     SoundManager.playErrorModal()
                     UiUtils.showModal(requireContext(), "Oops", errorMessage)
                 }
-                // Only show success if no error callback was triggered
                 if (currentUser != null && !post.userReactions.containsKey(currentUser.userId)) {
                     UiUtils.showModal(requireContext(), "Reacted", "You added: ${emojis[which]}")
                 }
             }
-            .show()
     }
 
     private fun showReportDialog(post: Post) {
         val options = arrayOf("Report Content", "Block User")
-        AlertDialog.Builder(requireContext())
-            .setTitle("Action")
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("Report Content")
-                            .setMessage("Are you sure you want to report this content? It will be reviewed and hidden from your feed.")
-                            .setPositiveButton("Report") { _, _ ->
-                                viewModel.reportPost(post) {
-                                    UiUtils.showModal(requireContext(), "Reported", "Thanks for keeping BadArt safe. This post has been reported.")
-                                }
-                            }
-                            .setNegativeButton("Cancel", null)
-                            .show()
+        UiUtils.showList(requireContext(), "Action", options) { which ->
+            when (which) {
+                0 -> {
+                    UiUtils.showConfirmation(
+                        requireContext(),
+                        "Report Content",
+                        "Are you sure you want to report this content? It will be reviewed and hidden from your feed."
+                    ) {
+                        viewModel.reportPost(post) {
+                            UiUtils.showModal(requireContext(), "Reported", "Thanks for keeping BadArt safe. This post has been reported.")
+                        }
                     }
-                    1 -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("Block User")
-                            .setMessage("Are you sure you want to block ${post.artistName}? You will no longer see their posts.")
-                            .setPositiveButton("Block") { _, _ ->
-                                viewModel.blockUser(post.artistName) {
-                                    UiUtils.showModal(requireContext(), "Blocked", "You will no longer see art from ${post.artistName}.")
-                                }
-                            }
-                            .setNegativeButton("Cancel", null)
-                            .show()
+                }
+                1 -> {
+                    UiUtils.showConfirmation(
+                        requireContext(),
+                        "Block User",
+                        "Are you sure you want to block ${post.artistName}? You will no longer see their posts."
+                    ) {
+                        viewModel.blockUser(post.artistName) {
+                            UiUtils.showModal(requireContext(), "Blocked", "You will no longer see art from ${post.artistName}.")
+                        }
                     }
                 }
             }
-            .show()
+        }
     }
 
     private fun showDeleteDialog(post: Post) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Delete Drawing")
-            .setMessage("Are you sure you want to delete this masterpiece?")
-            .setPositiveButton("Delete") { _, _ ->
-                SoundManager.playDelete()
-                viewModel.deletePost(post)
-                UiUtils.showModal(requireContext(), "Deleted", "Your artwork has been removed.")
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+        UiUtils.showConfirmation(
+            requireContext(),
+            "Delete Drawing",
+            "Are you sure you want to delete this masterpiece?"
+        ) {
+            SoundManager.playDelete()
+            viewModel.deletePost(post)
+            UiUtils.showModal(requireContext(), "Deleted", "Your artwork has been removed.")
+        }
     }
 
     private fun sharePost(post: Post) {
@@ -355,29 +338,19 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Get unique emojis that have reactions
         val emojisWithReactions = post.userReactions.values.distinct()
         
-        // Create list of all reactors (userId -> emoji)
         val allReactors = post.userReactions.toList()
 
-        // Add "All" tab
         tabLayout.addTab(tabLayout.newTab().setText("All (${allReactors.size})"))
         
-        // Add tab for each emoji
         emojisWithReactions.forEach { emoji ->
             val count = allReactors.count { it.second == emoji }
             tabLayout.addTab(tabLayout.newTab().setText("$emoji $count"))
         }
 
-        // Create the dialog first so we can pass dismiss callback to adapter
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Reactions")
-            .setView(dialogView)
-            .setPositiveButton("Close", null)
-            .create()
+        val dialog = UiUtils.showCustom(requireContext(), "Reactions", dialogView, fullWidth = true)
 
-        // Create adapter with dismiss callback
         val reactorAdapter = ReactorAdapter(allReactors.toMutableList()) { 
             dialog.dismiss() 
         }
@@ -399,11 +372,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-
-        dialog.show()
     }
 
-    // Inner adapter for reactions list
     inner class ReactorAdapter(
         private var reactors: List<Pair<String, String>>,
         private val onDismiss: () -> Unit
@@ -424,16 +394,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             val (userId, emoji) = reactors[position]
             holder.tvEmoji.text = emoji
             
-            // Reset to placeholder first
             holder.ivAvatar.setImageResource(R.drawable.ic_person_placeholder)
             holder.ivAvatar.imageTintList = ContextCompat.getColorStateList(requireContext(), R.color.medium_gray)
             holder.tvUsername.text = "Loading..."
             
-            // Try to get user info from viewModel
             viewModel.getUser(userId) { user ->
                 holder.tvUsername.text = user?.username ?: "Unknown User"
                 
-                // Display custom avatar if available
                 if (user != null && user.avatarBase64.isNotEmpty()) {
                     try {
                         val decodedBytes = android.util.Base64.decode(user.avatarBase64, android.util.Base64.DEFAULT)
@@ -441,13 +408,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                         holder.ivAvatar.setImageBitmap(bitmap)
                         holder.ivAvatar.imageTintList = null
                     } catch (e: Exception) {
-                        // Keep placeholder on error
                     }
                 }
             }
 
-            holder.itemView.setOnClickListener {
-                // Dismiss dialog first, then navigate to user profile
+            holder.ivAvatar.setOnClickListener {
                 onDismiss()
                 val bundle = Bundle().apply { putString("userId", userId) }
                 findNavController().navigate(R.id.action_feedFragment_to_profileFragment, bundle)

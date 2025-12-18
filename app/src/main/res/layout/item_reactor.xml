@@ -8,13 +8,12 @@
     android:paddingVertical="10dp"
     android:paddingHorizontal="8dp">
 
-    <!-- Profile Picture -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="24dp"
         app:cardElevation="1dp">
 
         <ImageView
@@ -26,7 +25,6 @@
             app:tint="@color/medium_gray" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Username -->
     <TextView
         android:id="@+id/tvUsername"
         android:layout_width="0dp"
@@ -36,10 +34,8 @@
         android:text="Username"
         android:textColor="@color/text_primary"
         android:textSize="15sp"
-        android:ellipsize="end"
-        android:maxLines="1" />
+        android:ellipsize="end" />
 
-    <!-- Reaction Emoji -->
     <TextView
         android:id="@+id/tvEmoji"
         android:layout_width="wrap_content"
