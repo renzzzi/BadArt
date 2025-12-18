@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.badart.ui
 
 import android.content.res.ColorStateList
@@ -211,10 +213,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         binding.btnLogout.setOnClickListener {
             UiUtils.showConfirmation(requireContext(), "Logout", "Are you sure you want to log out?") {
+                @Suppress("DEPRECATION")
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .build()
+                @Suppress("DEPRECATION")
                 val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
                 googleSignInClient.signOut().addOnCompleteListener {
                     viewModel.logout()
@@ -224,10 +228,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         binding.btnDeleteAccount.setOnClickListener {
             UiUtils.showConfirmation(requireContext(), "Delete Account", "Are you sure? All your data will be lost.") {
+                @Suppress("DEPRECATION")
                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .build()
+                @Suppress("DEPRECATION")
                 val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
                 googleSignInClient.signOut().addOnCompleteListener {
                     viewModel.deleteAccount()
