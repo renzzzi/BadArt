@@ -210,7 +210,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private fun showReportDialog(post: Post) {
         val options = arrayOf("Report Content", "Block User")
-        UiUtils.showList(requireContext(), "Action", options) { which ->
+        UiUtils.showList(requireContext(), "Action", options, true) { which ->
             when (which) {
                 0 -> {
                     UiUtils.showConfirmation(
