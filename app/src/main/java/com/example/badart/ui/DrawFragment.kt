@@ -204,7 +204,7 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
             pickerDialog?.dismiss()
         }
 
-        pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", dialogView)
+        pickerDialog = UiUtils.showCustom(requireContext(), "Select Color", dialogView, fullWidth = true)
     }
 
     private fun addNewColor(color: Int) {
