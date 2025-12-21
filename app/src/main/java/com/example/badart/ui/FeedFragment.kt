@@ -311,11 +311,24 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             color = Color.WHITE
             textSize = 90f
             isAntiAlias = true
-            textAlign = Paint.Align.CENTER
+            textAlign = Paint.Align.LEFT
             typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
             letterSpacing = 0.1f
         }
-        canvas.drawText("🎨 BadArt", width / 2f, 140f, titlePaint)
+        
+        val logoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_launcher_foreground)
+        val logoSize = 180
+        val textBadArt = "BadArt"
+        val textWidth = titlePaint.measureText(textBadArt)
+        val totalWidth = logoSize + 20 + textWidth
+        val startX = (width - totalWidth) / 2f
+        
+        logoDrawable?.let {
+            it.setBounds(startX.toInt(), 0, (startX + logoSize).toInt(), 0 + logoSize)
+            it.draw(canvas)
+        }
+        
+        canvas.drawText(textBadArt, startX + logoSize , 140f, titlePaint)
 
         val subtitlePaint = Paint().apply {
             color = Color.WHITE
