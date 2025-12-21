@@ -297,30 +297,120 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         val canvas = Canvas(result)
 
         val primaryColor = ContextCompat.getColor(requireContext(), R.color.primary_color)
-        canvas.drawColor(primaryColor)
+        val gradientPaint = Paint()
+        val gradient = android.graphics.LinearGradient(
+            0f, 0f, width.toFloat(), height.toFloat(),
+            primaryColor,
+            Color.parseColor("#1A1A2E"),
+            android.graphics.Shader.TileMode.CLAMP
+        )
+        gradientPaint.shader = gradient
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), gradientPaint)
 
-        val textPaint = Paint().apply {
+        val titlePaint = Paint().apply {
             color = Color.WHITE
-            textSize = 100f
+            textSize = 90f
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+            letterSpacing = 0.1f
         }
-        canvas.drawText("BadArt", width / 2f, 200f, textPaint)
+        canvas.drawText("🎨 BadArt", width / 2f, 140f, titlePaint)
 
-        val boxSize = 900
-        val left = (width - boxSize) / 2
-        val top = (height - boxSize) / 2
-        val destRect = Rect(left, top, left + boxSize, top + boxSize)
-        val bgPaint = Paint().apply { color = Color.WHITE }
-        canvas.drawRect(destRect, bgPaint)
+        val subtitlePaint = Paint().apply {
+            color = Color.WHITE
+            textSize = 36f
+            isAntiAlias = true
+            textAlign = Paint.Align.CENTER
+            alpha = 180
+            letterSpacing = 0.15f
+        }
+        canvas.drawText("CAN YOU GUESS THIS DRAWING?", width / 2f, 200f, subtitlePaint)
+
+        val cardSize = 860
+        val cardLeft = (width - cardSize) / 2f
+        val cardTop = 260f
+        val cornerRadius = 32f
+
+        val shadowPaint = Paint().apply {
+            color = Color.parseColor("#40000000")
+            isAntiAlias = true
+            maskFilter = android.graphics.BlurMaskFilter(25f, android.graphics.BlurMaskFilter.Blur.NORMAL)
+        }
+        canvas.drawRoundRect(
+            cardLeft + 8, cardTop + 12,
+            cardLeft + cardSize + 8, cardTop + cardSize + 12,
+            cornerRadius, cornerRadius, shadowPaint
+        )
+
+        val cardPaint = Paint().apply {
+            color = Color.WHITE
+            isAntiAlias = true
+        }
+        canvas.drawRoundRect(
+            cardLeft, cardTop,
+            cardLeft + cardSize, cardTop + cardSize,
+            cornerRadius, cornerRadius, cardPaint
+        )
+
+        val padding = 20f
+        val imageSize = cardSize - (padding * 2).toInt()
+        val imageLeft = cardLeft + padding
+        val imageTop = cardTop + padding
+
+        val saveCount = canvas.save()
+        val clipPath = android.graphics.Path()
+        clipPath.addRoundRect(
+            imageLeft, imageTop,
+            imageLeft + imageSize, imageTop + imageSize,
+            cornerRadius - 8, cornerRadius - 8,
+            android.graphics.Path.Direction.CW
+        )
+        canvas.clipPath(clipPath)
+        val destRect = android.graphics.RectF(imageLeft, imageTop, imageLeft + imageSize, imageTop + imageSize)
         canvas.drawBitmap(original, null, destRect, null)
+        canvas.restoreToCount(saveCount)
 
-        textPaint.textSize = 60f
-        canvas.drawText("Draw poorly. Guess correctly.", width / 2f, top + boxSize + 150f, textPaint)
-        textPaint.textSize = 40f
-        textPaint.alpha = 200
-        canvas.drawText("Artist: ${post.artistName}", width / 2f, top + boxSize + 250f, textPaint)
+        val artistBgPaint = Paint().apply {
+            color = Color.parseColor("#CC000000")
+            isAntiAlias = true
+        }
+        val artistBgHeight = 70f
+        val artistBgTop = cardTop + cardSize - artistBgHeight - padding
+        canvas.drawRoundRect(
+            imageLeft, artistBgTop,
+            imageLeft + imageSize, artistBgTop + artistBgHeight,
+            16f, 16f, artistBgPaint
+        )
+
+        val artistNamePaint = Paint().apply {
+            color = Color.WHITE
+            textSize = 34f
+            isAntiAlias = true
+            textAlign = Paint.Align.CENTER
+            typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+        }
+        canvas.drawText("✏️ ${post.artistName}", width / 2f, artistBgTop + 48f, artistNamePaint)
+
+        val footerY = cardTop + cardSize + 80f
+
+        val taglinePaint = Paint().apply {
+            color = Color.WHITE
+            textSize = 48f
+            isAntiAlias = true
+            textAlign = Paint.Align.CENTER
+            typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+        }
+        canvas.drawText("Draw poorly. Guess correctly.", width / 2f, footerY, taglinePaint)
+
+        val ctaPaint = Paint().apply {
+            color = Color.WHITE
+            textSize = 32f
+            isAntiAlias = true
+            textAlign = Paint.Align.CENTER
+            alpha = 200
+        }
+        canvas.drawText("Download BadArt and play now!", width / 2f, footerY + 60f, ctaPaint)
 
         return result
     }
