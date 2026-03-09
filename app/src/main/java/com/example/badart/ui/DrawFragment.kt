@@ -103,6 +103,10 @@ class DrawFragment : Fragment(R.layout.fragment_draw) {
             SoundManager.playFill()
             selectTool(it, Tool.FILL)
         }
+        binding.btnAntigravity.setOnClickListener {
+            SoundManager.playBrush()
+            selectTool(it, Tool.ANTIGRAVITY)
+        }
         selectTool(binding.btnBrush, Tool.BRUSH)
     }
 
