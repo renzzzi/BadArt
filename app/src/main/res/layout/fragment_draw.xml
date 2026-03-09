@@ -217,6 +217,22 @@
                     app:iconGravity="top"
                     app:iconPadding="4dp"
                     app:iconSize="24dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAntigravity"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="Antigravity"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_antigravity"
+                    app:iconGravity="top"
+                    app:iconPadding="4dp"
+                    app:iconSize="24dp" />
             </LinearLayout>
 
             <LinearLayout

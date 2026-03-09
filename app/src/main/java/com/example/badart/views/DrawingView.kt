@@ -59,12 +59,17 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         }
     }
 
+    private var mirrorPath: Path = Path()
+
     override fun onDraw(canvas: Canvas) {
         canvasBitmap?.let {
             canvas.drawBitmap(it, 0f, 0f, canvasPaint)
         }
         if (currentTool != Tool.FILL) {
             canvas.drawPath(drawPath, drawPaint)
+            if (currentTool == Tool.ANTIGRAVITY) {
+                canvas.drawPath(mirrorPath, drawPaint)
+            }
         }
     }
 
@@ -82,17 +87,29 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             return true
         }
 
+        val mirrorY = height - touchY
+
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 saveToUndoStack()
                 drawPath.moveTo(touchX, touchY)
+                if (currentTool == Tool.ANTIGRAVITY) {
+                    mirrorPath.moveTo(touchX, mirrorY)
+                }
             }
             MotionEvent.ACTION_MOVE -> {
                 drawPath.lineTo(touchX, touchY)
+                if (currentTool == Tool.ANTIGRAVITY) {
+                    mirrorPath.lineTo(touchX, mirrorY)
+                }
             }
             MotionEvent.ACTION_UP -> {
                 drawCanvas?.drawPath(drawPath, drawPaint)
+                if (currentTool == Tool.ANTIGRAVITY) {
+                    drawCanvas?.drawPath(mirrorPath, drawPaint)
+                }
                 drawPath.reset()
+                mirrorPath.reset()
             }
             else -> return false
         }
@@ -148,6 +165,8 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     fun setTool(tool: Tool) {
         currentTool = tool
+        drawPath.reset()
+        mirrorPath.reset()
         when (tool) {
             Tool.BRUSH -> {
                 drawPaint.color = paintColor
@@ -155,6 +174,10 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
             }
             Tool.ERASER -> {
                 drawPaint.color = Color.WHITE
+                drawPaint.style = Paint.Style.STROKE
+            }
+            Tool.ANTIGRAVITY -> {
+                drawPaint.color = paintColor
                 drawPaint.style = Paint.Style.STROKE
             }
             Tool.FILL -> {}
